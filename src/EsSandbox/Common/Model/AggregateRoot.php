@@ -2,10 +2,12 @@
 
 namespace EsSandbox\Common\Model;
 
+use Ramsey\Uuid\UuidInterface;
+
 interface AggregateRoot
 {
     /**
-     * @return Identifier
+     * @return UuidInterface
      */
     public function id();
 
@@ -13,4 +15,11 @@ interface AggregateRoot
      * @param Event $event
      */
     public function recordThat(Event $event);
+
+    /**
+     * @param AggregateHistory $history
+     *
+     * @return AggregateRoot
+     */
+    public static function reconstituteFrom(AggregateHistory $history);
 }

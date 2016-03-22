@@ -7,7 +7,7 @@ use Ramsey\Uuid\UuidInterface;
 interface Command
 {
     /**
-     * @return string|int|UuidInterface
+     * @return UuidInterface
      */
     public function id();
 }

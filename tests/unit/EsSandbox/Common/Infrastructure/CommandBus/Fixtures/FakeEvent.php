@@ -6,4 +6,9 @@ use EsSandbox\Common\Model\Event;
 
 final class FakeEvent implements Event
 {
+    /** {@inheritdoc} */
+    public function id()
+    {
+        return FakeIdentifier::generate();
+    }
 }

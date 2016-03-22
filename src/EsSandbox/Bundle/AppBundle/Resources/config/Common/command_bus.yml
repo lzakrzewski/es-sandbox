@@ -1,0 +1,60 @@
+services:
+    es_sandbox.command_bus:
+        class: EsSandbox\Common\Infrastructure\CommandBus\SimpleBusCommandBus
+        arguments:
+            - "@command_bus"
+
+    simple_bus.command_bus.callable_resolver:
+        class: SimpleBus\Message\CallableResolver\ServiceLocatorAwareCallableResolver
+        public: false
+        arguments:
+            - "@es_sandbox.command_bus.enforcing_command_handler_service_locator"
+
+    simple_bus.event_bus.callable_resolver:
+        class: SimpleBus\Message\CallableResolver\ServiceLocatorAwareCallableResolver
+        public: false
+        arguments:
+            - "@es_sandbox.event_bus.enforcing_event_subscriber_service_locator"
+
+    es_sandbox.command_bus.enforcing_command_handler_service_locator:
+        class: EsSandbox\Common\Infrastructure\CommandBus\EnforcingTypeServiceLocator
+        public: false
+        arguments:
+            - ["@service_container", 'get']
+            - EsSandbox\Common\Application\CommandBus\CommandHandler
+
+    es_sandbox.event_bus.enforcing_event_subscriber_service_locator:
+        class: EsSandbox\Common\Infrastructure\CommandBus\EnforcingTypeServiceLocator
+        public: false
+        arguments:
+            - ["@service_container", 'get']
+            - EsSandbox\Common\Application\CommandBus\EventSubscriber
+
+    es_sandbox.event_bus.log_event:
+        class: EsSandbox\Common\Infrastructure\CommandBus\LogEventMiddleware
+        arguments:
+            - "@logger"
+        tags:
+            - { name: event_bus_middleware, priority: 999 }
+            - { name: monolog.logger, channel: event_bus }
+
+    es_sandbox.command_bus.log_errors:
+        class: EsSandbox\Common\Infrastructure\CommandBus\LogExceptionMiddleware
+        arguments:
+          - "@logger"
+        tags:
+            - { name: command_bus_middleware, priority: 300 }
+
+    es_sandbox.command_bus.domain_events:
+        class: EsSandbox\Common\Application\CommandBus\DomainEvents
+        factory: [EsSandbox\Common\Application\CommandBus\DomainEvents, instance]
+        public: false
+        tags:
+            - { name: event_recorder }
+
+    es_sandbox.command_bus.domain_events_middleware:
+        class: EsSandbox\Common\Infrastructure\CommandBus\DomainEventsMiddleware
+        arguments:
+          - "@es_sandbox.command_bus.domain_events"
+        tags:
+            - { name: command_bus_middleware, priority: -1000 }

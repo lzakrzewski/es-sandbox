@@ -1,0 +1,11 @@
+language: php
+
+php:
+  - 7.0
+
+before_install:
+  - composer self-update
+  - composer install
+
+script:
+  - bin/script test

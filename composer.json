@@ -1,0 +1,92 @@
+{
+    "name": "lzakrzewski/es-sandbox",
+    "license": "MIT",
+    "type": "project",
+    "description": "Event sourcing sandbox",
+    "autoload": {
+        "psr-4": {
+            "EsSandbox\\": "src/EsSandbox"
+        },
+        "files": [
+            "app/MicroKernel.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "tests\\": "tests"
+        },
+        "files": [
+            "tests/builders/builders.php"
+        ]
+    },
+    "authors": [
+        {
+            "name": "lzakrzewski",
+            "email": "contact@lzakrzewski.com"
+        }
+    ],
+    "require": {
+        "ramsey/uuid": "~3.0",
+        "incenteev/composer-parameter-handler": "~2.0",
+
+        "symfony/symfony": "~3.0",
+        "symfony/monolog-bundle": "~2.9",
+
+        "simple-bus/message-bus": "^2.2",
+        "simple-bus/symfony-bridge": "^4.1"
+    },
+    "require-dev": {
+        "fabpot/php-cs-fixer": "~1.6",
+        "squizlabs/php_codesniffer": "~2.3",
+        "phpmd/phpmd": "~2.2",
+        "mayflower/php-codebrowser": "~1.1",
+
+        "phpunit/phpunit": "~5.0",
+        "phpspec/phpspec": "~2.3",
+        "behat/behat": "~3.0-RC",
+        "behat/symfony2-extension": "~2.1"
+    },
+    "config": {
+        "bin-dir": "bin"
+    },
+    "scripts": {
+        "static-analysis": [
+            "./bin/php-cs-fixer fix --config-file=build/.php_cs",
+            "./bin/phpcs --standard=./build/phpcs.xml --extensions=php src tests",
+            "./bin/phpmd src,tests text ./build/phpmd.xml"
+        ],
+        "unit-test": [
+            "./bin/phpunit --testsuite unit ",
+            "./bin/phpspec run"
+        ],
+        "integration-test": "./bin/phpunit --testsuite integration",
+        "cache-clear-test": "./bin/console cache:clear --env=test -vvv",
+        "behat": "./bin/behat --format=progress --out=std",
+        "test": [
+            "@static-analysis",
+            "@unit-test",
+            "@integration-test",
+            "@behat"
+        ],
+        "setup-database-test": [
+            "./bin/console doctrine:database:drop --force --env=test",
+            "./bin/console doctrine:schema:create --env=test"
+        ],
+        "post-install-cmd": [
+            "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters"
+        ],
+        "post-update-cmd": [
+            "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters"
+        ]
+    },
+    "extra": {
+        "symfony-app-dir": "app",
+        "symfony-bin-dir": "bin",
+        "symfony-var-dir": "var",
+        "symfony-web-dir": "web",
+        "symfony-assets-install": "relative",
+        "incenteev-parameters": {
+            "file": "app/config/parameters.yml"
+        }
+    }
+}

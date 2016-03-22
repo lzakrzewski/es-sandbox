@@ -1,0 +1,7 @@
+suites:
+    src:
+        spec_prefix: tests\unit
+    tests:
+        spec_prefix: tests\unit
+        src_path:    .
+        namespace:   tests

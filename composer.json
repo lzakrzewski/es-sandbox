@@ -55,6 +55,11 @@
             "./bin/phpcs --standard=./build/phpcs.xml --extensions=php src tests",
             "./bin/phpmd src,tests text ./build/phpmd.xml"
         ],
+        "static-analysis-ci": [
+            "./bin/php-cs-fixer fix --dry-run --config-file=build/.php_cs",
+            "./bin/phpcs --standard=./build/phpcs.xml --extensions=php src tests",
+            "./bin/phpmd src,tests text ./build/phpmd.xml"
+        ],
         "unit-test": [
             "./bin/phpunit --testsuite unit ",
             "./bin/phpspec run"
@@ -64,6 +69,12 @@
         "behat": "./bin/behat --format=progress --out=std",
         "test": [
             "@static-analysis",
+            "@unit-test",
+            "@integration-test",
+            "@behat"
+        ],
+        "test-ci": [
+            "@static-analysis-ci",
             "@unit-test",
             "@integration-test",
             "@behat"

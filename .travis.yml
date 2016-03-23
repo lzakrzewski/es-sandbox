@@ -8,4 +8,4 @@ before_install:
   - composer install
 
 script:
-  - bin/script test
+  - bin/script test-ci

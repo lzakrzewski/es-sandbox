@@ -5,10 +5,9 @@ namespace EsSandbox\Common\Application\CommandBus;
 use EsSandbox\Common\Model\Event;
 use SimpleBus\Message\Recorder\ContainsRecordedMessages;
 
-//Todo: rename to recorder
-final class DomainEvents implements ContainsRecordedMessages
+final class RecordedEvents implements ContainsRecordedMessages
 {
-    /** @var self */
+    /** @var RecordedEvents */
     private static $instance;
 
     /** @var Event[] */
@@ -19,7 +18,7 @@ final class DomainEvents implements ContainsRecordedMessages
     }
 
     /**
-     * @return DomainEvents
+     * @return RecordedEvents
      */
     public static function instance()
     {

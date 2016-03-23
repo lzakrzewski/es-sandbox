@@ -2,20 +2,20 @@
 
 namespace tests\unit\EsSandbox\Common\Application\CommandBus;
 
-use EsSandbox\Common\Application\CommandBus\DomainEvents;
+use EsSandbox\Common\Application\CommandBus\RecordedEvents;
 use EsSandbox\Common\Model\Event;
 use PhpSpec\ObjectBehavior;
 
 /**
- * @mixin DomainEvents
+ * @mixin RecordedEvents
  */
-class DomainEventsSpec extends ObjectBehavior
+class RecordedEventsSpec extends ObjectBehavior
 {
     public function it_is_singleton()
     {
         $this->beConstructedThrough('instance');
 
-        $domainEvents2 = DomainEvents::instance();
+        $domainEvents2 = RecordedEvents::instance();
 
         $this->shouldBe($domainEvents2);
     }

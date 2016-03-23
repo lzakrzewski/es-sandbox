@@ -1,0 +1,4 @@
+services:
+    es_sandbox.event_store:
+        class: EsSandbox\Common\Infrastructure\EventStore\InMemoryEventStore
+        factory: [EsSandbox\Common\Infrastructure\EventStore\InMemoryEventStore, instance]

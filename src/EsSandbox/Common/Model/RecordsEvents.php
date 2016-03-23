@@ -2,7 +2,7 @@
 
 namespace EsSandbox\Common\Model;
 
-use EsSandbox\Common\Application\CommandBus\DomainEvents;
+use EsSandbox\Common\Application\CommandBus\RecordedEvents;
 
 trait RecordsEvents
 {
@@ -11,6 +11,6 @@ trait RecordsEvents
      */
     public function recordThat(Event $event)
     {
-        DomainEvents::instance()->record($event);
+        RecordedEvents::instance()->record($event);
     }
 }

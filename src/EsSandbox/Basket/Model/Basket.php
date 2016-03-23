@@ -8,6 +8,7 @@ use EsSandbox\Common\Model\Event;
 use EsSandbox\Common\Model\RecordsEvents;
 
 //Todo: handle cases when unable to reconstruct
+//Todo: add trait to simplify aplying events
 final class Basket implements AggregateRoot
 {
     use RecordsEvents;

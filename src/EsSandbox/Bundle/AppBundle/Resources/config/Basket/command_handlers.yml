@@ -3,3 +3,17 @@ services:
         class: EsSandbox\Basket\Application\Command\PickUpBasketHandler
         tags:
             - { name: command_handler, handles: EsSandbox\Basket\Application\Command\PickUpBasket }
+
+    es_sandbox.add_product_to_basket:
+        class: EsSandbox\Basket\Application\Command\AddProductToBasketHandler
+        arguments:
+            - "@es_sandbox.event_store"
+        tags:
+            - { name: command_handler, handles: EsSandbox\Basket\Application\Command\AddProductToBasket }
+
+    es_sandbox.remove_product_from_basket:
+        class: EsSandbox\Basket\Application\Command\RemoveProductFromBasketHandler
+        arguments:
+            - "@es_sandbox.event_store"
+        tags:
+            - { name: command_handler, handles: EsSandbox\Basket\Application\Command\RemoveProductFromBasket }

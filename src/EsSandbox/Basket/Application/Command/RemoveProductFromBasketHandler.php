@@ -8,7 +8,7 @@ use EsSandbox\Basket\Model\ProductId;
 use EsSandbox\Common\Application\CommandBus\CommandHandler;
 use EsSandbox\Common\Model\EventStore;
 
-final class AddProductToBasketHandler implements CommandHandler
+final class RemoveProductFromBasketHandler implements CommandHandler
 {
     /** @var EventStore */
     private $events;
@@ -22,13 +22,13 @@ final class AddProductToBasketHandler implements CommandHandler
     }
 
     /**
-     * @param AddProductToBasket $command
+     * @param RemoveProductFromBasket $command
      */
-    public function handle(AddProductToBasket $command)
+    public function handle(RemoveProductFromBasket $command)
     {
         $basketId = BasketId::of($command->id());
 
         $basket = Basket::reconstituteFrom($this->events->aggregateHistoryFor($basketId));
-        $basket->addProduct(ProductId::of($command->productId), $command->name);
+        $basket->removeProduct(ProductId::of($command->productId));
     }
 }

@@ -15,6 +15,9 @@ class EsSandboxAppExtension extends Extension
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config/Common'));
         $loader->load('command_bus.yml');
 
+        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config/Basket'));
+        $loader->load('command_handlers.yml');
+
         $configuration = new Configuration();
         $this->processConfiguration($configuration, $config);
     }

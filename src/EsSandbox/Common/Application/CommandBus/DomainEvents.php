@@ -5,6 +5,7 @@ namespace EsSandbox\Common\Application\CommandBus;
 use EsSandbox\Common\Model\Event;
 use SimpleBus\Message\Recorder\ContainsRecordedMessages;
 
+//Todo: rename to recorder
 final class DomainEvents implements ContainsRecordedMessages
 {
     /** @var self */
@@ -12,8 +13,6 @@ final class DomainEvents implements ContainsRecordedMessages
 
     /** @var Event[] */
     private $events = [];
-
-    private $recording = false;
 
     private function __construct()
     {
@@ -36,34 +35,16 @@ final class DomainEvents implements ContainsRecordedMessages
      */
     public function record(Event $event)
     {
-        if (!$this->recording) {
-            return;
-        }
-
         $this->events[] = $event;
     }
 
-    public function enableRecording()
-    {
-        $this->recording = true;
-    }
-
-    public function disableRecording()
-    {
-        $this->recording = false;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
+    /** {@inheritdoc} */
     public function recordedMessages()
     {
         return $this->events;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    /** {@inheritdoc} */
     public function eraseMessages()
     {
         $this->events = [];

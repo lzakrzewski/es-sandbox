@@ -2,12 +2,10 @@
 
 namespace EsSandbox\Common\Model;
 
-use Ramsey\Uuid\UuidInterface;
-
 interface Event
 {
     /**
-     * @return UuidInterface
+     * @return Identifier
      */
     public function id();
 }

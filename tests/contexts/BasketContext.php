@@ -2,85 +2,54 @@
 
 namespace tests\contexts;
 
+use Assert\Assertion;
+use EsSandbox\Basket\Application\Command\PickUpBasket;
+use EsSandbox\Basket\Model\Basket;
+use EsSandbox\Basket\Model\BasketId;
+use EsSandbox\Basket\Model\BasketWasPickedUp;
 use tests\builders\PersistedBuilderDictionary;
-use tests\common\CommandBusDictionary;
 
 class BasketContext extends DefaultContext
 {
     use PersistedBuilderDictionary;
-    use CommandBusDictionary;
+
+    /** @var BasketId */
+    private $basketId;
 
     /**
-     * @Given My basket is empty
+     * @Given I don't have basket
      */
-    public function myBasketIsEmpty()
+    public function iDonTHaveBasket()
     {
-
     }
 
     /**
-     * @When I add product with id :arg1 and name :arg2
+     * @When I pick up basket with id :basketId
      */
-    public function iAddProductWithIdAndName($arg1, $arg2)
+    public function iPickUpBasketWithId(BasketId $basketId)
     {
-        throw new PendingException();
+        $this->basketId = $basketId;
+
+        $this->when(new PickUpBasket($basketId->raw()));
     }
 
     /**
-     * @Then I should be notified that product was added to basket
+     * @Then I should be notified that was picked up
      */
-    public function iShouldBeNotifiedThatProductWasAddedToBasket()
+    public function iShouldBeNotifiedThatWasPickedUp()
     {
-        throw new PendingException();
+        $this->then(BasketWasPickedUp::class);
     }
 
     /**
-     * @Then My basket should contain :arg1 products
+     * @Then My basket should contain :count products
      */
-    public function myBasketShouldContainProducts($arg1)
+    public function myBasketShouldContainProducts($count)
     {
-        throw new PendingException();
+        $basket = Basket::reconstituteFrom(
+            $this->container()->get('es_sandbox.event_store')->aggregateHistoryFor($this->basketId)
+        );
+
+        Assertion::eq($count, $basket->count());
     }
-
-    /**
-     * @Given My basket contains products:
-     */
-    public function myBasketContainsProducts(TableNode $table)
-    {
-        throw new PendingException();
-    }
-
-    /**
-     * @When I remove product with :arg1
-     */
-    public function iRemoveProductWith($arg1)
-    {
-        throw new PendingException();
-    }
-
-    /**
-     * @Then I should be notified that product was removed from basket
-     */
-    public function iShouldBeNotifiedThatProductWasRemovedFromBasket()
-    {
-        throw new PendingException();
-    }
-
-    /**
-     * @When I view my basket
-     */
-    public function iViewMyBasket()
-    {
-        throw new PendingException();
-    }
-
-    /**
-     * @Then I should see:
-     */
-    public function iShouldSee(TableNode $table)
-    {
-        throw new PendingException();
-    }
-
-
 }

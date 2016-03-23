@@ -52,9 +52,13 @@ services:
         tags:
             - { name: event_recorder }
 
-    es_sandbox.command_bus.domain_events_middleware:
-        class: EsSandbox\Common\Infrastructure\CommandBus\DomainEventsMiddleware
+    es_sandbox.event_store:
+        class: EsSandbox\Common\Infrastructure\EventStore\InMemoryEventStore
+        factory: [EsSandbox\Common\Infrastructure\EventStore\InMemoryEventStore, instance]
+
+    es_sandbox.command_bus.commit_events_middleware:
+        class: EsSandbox\Common\Infrastructure\CommandBus\CommitEventsMiddleware
         arguments:
-          - "@es_sandbox.command_bus.domain_events"
+          - "@es_sandbox.event_store"
         tags:
             - { name: command_bus_middleware, priority: -1000 }

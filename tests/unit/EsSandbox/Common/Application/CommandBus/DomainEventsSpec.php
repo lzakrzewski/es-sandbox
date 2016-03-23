@@ -20,34 +20,19 @@ class DomainEventsSpec extends ObjectBehavior
         $this->shouldBe($domainEvents2);
     }
 
-    public function it_does_not_record_events_by_default(Event $event)
+    public function it_records_events(Event $event1, Event $event2)
     {
         $this->beConstructedThrough('instance');
 
-        $this->record($event);
-
-        $this->recordedMessages()->shouldBe([]);
-    }
-
-    public function it_records_events_if_recording_is_enabled(Event $event1, Event $event2, Event $event3)
-    {
-        $this->beConstructedThrough('instance');
-
-        $this->enableRecording();
         $this->record($event1);
         $this->record($event2);
 
-        $this->disableRecording();
-        $this->record($event3);
-
-        $this->recordedMessages()->shouldBe([$event1, $event2]);
+        $this->recordedMessages()->shouldBeLike([$event1, $event2]);
     }
 
     public function it_erases_events(Event $event1, Event $event2)
     {
         $this->beConstructedThrough('instance');
-
-        $this->enableRecording();
 
         $this->record($event1);
         $this->record($event2);
@@ -55,5 +40,10 @@ class DomainEventsSpec extends ObjectBehavior
         $this->eraseMessages();
 
         $this->recordedMessages()->shouldBe([]);
+    }
+
+    public function letGo()
+    {
+        $this->eraseMessages();
     }
 }

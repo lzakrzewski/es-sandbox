@@ -2,9 +2,13 @@
 
 namespace tests\contexts;
 
+use Assert\Assertion;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
 use Behat\Symfony2Extension\Context\KernelDictionary;
+use EsSandbox\Basket\Model\BasketId;
+use EsSandbox\Common\Application\CommandBus\Command;
+use EsSandbox\Common\Model\Event;
 
 class DefaultContext implements KernelAwareContext, SnippetAcceptingContext
 {
@@ -13,5 +17,27 @@ class DefaultContext implements KernelAwareContext, SnippetAcceptingContext
     protected function container()
     {
         return $this->getContainer();
+    }
+
+    /**
+     * @Transform :basketId
+     */
+    public function basketId($basketId)
+    {
+        return BasketId::fromString($basketId);
+    }
+
+    protected function when(Command $command)
+    {
+        $this->container()->get('es_sandbox.command_bus')->handle($command);
+    }
+
+    protected function then($expectedEventClass)
+    {
+        $events = $this->container()->get('es_sandbox.event_store')->events();
+
+        Assertion::notEmpty(array_filter($events, function (Event $event) use ($expectedEventClass) {
+            return $event instanceof $expectedEventClass;
+        }));
     }
 }

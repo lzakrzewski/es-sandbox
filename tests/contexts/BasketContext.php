@@ -13,12 +13,9 @@ use EsSandbox\Basket\Model\BasketWasPickedUp;
 use EsSandbox\Basket\Model\ProductId;
 use EsSandbox\Basket\Model\ProductWasAddedToBasket;
 use EsSandbox\Basket\Model\ProductWasRemovedFromBasket;
-use tests\builders\PersistedBuilderDictionary;
 
 class BasketContext extends DefaultContext
 {
-    use PersistedBuilderDictionary;
-
     /** @var BasketId */
     private $basketId;
 

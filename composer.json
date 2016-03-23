@@ -14,10 +14,7 @@
     "autoload-dev": {
         "psr-4": {
             "tests\\": "tests"
-        },
-        "files": [
-            "tests/builders/builders.php"
-        ]
+        }
     },
     "authors": [
         {

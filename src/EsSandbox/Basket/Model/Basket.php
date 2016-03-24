@@ -4,14 +4,14 @@ namespace EsSandbox\Basket\Model;
 
 use EsSandbox\Common\Model\AggregateHistory;
 use EsSandbox\Common\Model\AggregateRoot;
-use EsSandbox\Common\Model\Event;
+use EsSandbox\Common\Model\ApplyEvents;
 use EsSandbox\Common\Model\RecordsEvents;
 
 //Todo: handle cases when unable to reconstruct
-//Todo: add trait to simplify aplying events
 final class Basket implements AggregateRoot
 {
     use RecordsEvents;
+    use ApplyEvents;
 
     /** @var BasketId */
     private $basketId;
@@ -29,10 +29,12 @@ final class Basket implements AggregateRoot
      */
     public static function pickUp(BasketId $basketId)
     {
-        $self           = new self();
-        $self->basketId = $basketId;
+        $self  = new self();
+        $event = new BasketWasPickedUp($basketId);
 
-        $self->recordThat(new BasketWasPickedUp($basketId));
+        $self->applyBasketWasPickedUp($event);
+
+        $self->recordThat($event);
 
         return $self;
     }
@@ -51,9 +53,11 @@ final class Basket implements AggregateRoot
      */
     public function addProduct(ProductId $productId, $name)
     {
-        $this->products[(string) $productId] = $name;
+        $event = new ProductWasAddedToBasket($this->id(), $productId, $name);
 
-        $this->recordThat(new ProductWasAddedToBasket($this->id(), $productId, $name));
+        $this->applyProductWasAddedToBasket($event);
+
+        $this->recordThat($event);
     }
 
     /**
@@ -71,9 +75,11 @@ final class Basket implements AggregateRoot
             );
         }
 
-        unset($this->products[(string) $productId]);
+        $event = new ProductWasRemovedFromBasket($this->id(), $productId);
 
-        $this->recordThat(new ProductWasRemovedFromBasket($this->id(), $productId));
+        $this->applyProductWasRemovedFromBasket($event);
+
+        $this->recordThat($event);
     }
 
     /**
@@ -101,27 +107,16 @@ final class Basket implements AggregateRoot
     }
 
     /** @SuppressWarnings(PHPMD.UnusedPrivateMethod) */
-    private function apply(Event $event)
-    {
-        $reflection = new \ReflectionClass($event);
-        $method     = 'apply'.$reflection->getShortName();
-
-        $this->$method($event);
-    }
-
-    /** @SuppressWarnings(PHPMD.UnusedPrivateMethod) */
     private function applyBasketWasPickedUp(BasketWasPickedUp $event)
     {
         $this->basketId = $event->id();
     }
 
-    /** @SuppressWarnings(PHPMD.UnusedPrivateMethod) */
     private function applyProductWasAddedToBasket(ProductWasAddedToBasket $event)
     {
         $this->products[(string) $event->productId()] = $event->name();
     }
 
-    /** @SuppressWarnings(PHPMD.UnusedPrivateMethod) */
     private function applyProductWasRemovedFromBasket(ProductWasRemovedFromBasket $event)
     {
         if ($this->hasProduct($productId = $event->productId())) {

@@ -19,7 +19,7 @@ final class AddProductToBasket implements Command
     /**
      * @param UuidInterface $basketId
      * @param UuidInterface $productId
-     * @param               $name
+     * @param string        $name
      */
     public function __construct(UuidInterface $basketId, UuidInterface $productId, $name)
     {

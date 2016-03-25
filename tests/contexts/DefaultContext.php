@@ -6,6 +6,7 @@ use Assert\Assertion;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
 use Behat\Symfony2Extension\Context\KernelDictionary;
+use EsSandbox\Basket\Infrastructure\Projection\InMemoryStorage;
 use EsSandbox\Basket\Model\BasketId;
 use EsSandbox\Basket\Model\ProductId;
 use EsSandbox\Common\Application\CommandBus\Command;
@@ -14,6 +15,21 @@ use EsSandbox\Common\Model\Event;
 class DefaultContext implements KernelAwareContext, SnippetAcceptingContext
 {
     use KernelDictionary;
+
+    /** @var mixed */
+    protected $view;
+
+    /** @BeforeScenario */
+    public function beforeScenario()
+    {
+        InMemoryStorage::instance()->clear();
+    }
+
+    /** @AfterScenario */
+    public function afterScenario()
+    {
+        $this->view = null;
+    }
 
     protected function container()
     {
@@ -38,12 +54,17 @@ class DefaultContext implements KernelAwareContext, SnippetAcceptingContext
 
     protected function given(Event $event)
     {
-        $this->container()->get('es_sandbox.event_store')->commit($event);
+        $this->container()->get('event_bus')->handle($event);
     }
 
     protected function when(Command $command)
     {
         $this->container()->get('es_sandbox.command_bus')->handle($command);
+    }
+
+    protected function see($view)
+    {
+        $this->view = $view;
     }
 
     protected function then($expectedEventClass)

@@ -58,4 +58,4 @@ services:
           - "@es_sandbox.event_store"
           - "@es_sandbox.command_bus.recorded_events"
         tags:
-            - { name: command_bus_middleware, priority: -1000 }
+            - { name: command_bus_middleware, priority: -2000 }

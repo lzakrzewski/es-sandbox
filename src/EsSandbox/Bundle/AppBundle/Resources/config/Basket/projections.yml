@@ -1,0 +1,17 @@
+services:
+    es_sandbox.projection.storage:
+        class: EsSandbox\Basket\Infrastructure\Projection\InMemoryStorage
+        factory: [EsSandbox\Basket\Infrastructure\Projection\InMemoryStorage, instance]
+
+    es_sandbox.projector.basket:
+        class: EsSandbox\Basket\Infrastructure\Projection\InMemoryBasketProjector
+        arguments:
+            - "@es_sandbox.projection.storage"
+        tags:
+            - { name: event_subscriber, subscribes_to: EsSandbox\Basket\Model\ProductWasAddedToBasket, method: applyProductWasAddedToBasket }
+            - { name: event_subscriber, subscribes_to: EsSandbox\Basket\Model\ProductWasRemovedFromBasket, method: applyProductWasRemovedFromBasket }
+
+    es_sandbox.projection.basket:
+        class: EsSandbox\Basket\Infrastructure\Projection\InMemoryBasketProjection
+        arguments:
+            - "@es_sandbox.projection.storage"

@@ -7,6 +7,7 @@ use Behat\Gherkin\Node\TableNode;
 use EsSandbox\Basket\Application\Command\AddProductToBasket;
 use EsSandbox\Basket\Application\Command\PickUpBasket;
 use EsSandbox\Basket\Application\Command\RemoveProductFromBasket;
+use EsSandbox\Basket\Application\Projection\ProductView;
 use EsSandbox\Basket\Model\Basket;
 use EsSandbox\Basket\Model\BasketId;
 use EsSandbox\Basket\Model\BasketWasPickedUp;
@@ -18,6 +19,12 @@ class BasketContext extends DefaultContext
 {
     /** @var BasketId */
     private $basketId;
+
+    /** @AfterScenario */
+    public function afterScenario()
+    {
+        $this->basketId = null;
+    }
 
     /**
      * @Given I don't have basket
@@ -77,6 +84,14 @@ class BasketContext extends DefaultContext
     }
 
     /**
+     * @When I view my basket
+     */
+    public function iViewMyBasket()
+    {
+        $this->see($this->container()->get('es_sandbox.projection.basket')->get($this->basketId->raw()));
+    }
+
+    /**
      * @Then I should be notified that was picked up
      */
     public function iShouldBeNotifiedThatWasPickedUp()
@@ -110,5 +125,23 @@ class BasketContext extends DefaultContext
         );
 
         Assertion::eq($count, $basket->count());
+    }
+
+    /**
+     * @Then I should see:
+     */
+    public function iShouldSee(TableNode $table)
+    {
+        $products = $table->getTable();
+
+        array_shift($products);
+
+        $expectedProducts = [];
+
+        foreach ($products as $product) {
+            $expectedProducts[] = new ProductView($product[0], $product[1]);
+        }
+
+        Assertion::eq($expectedProducts, $this->view);
     }
 }

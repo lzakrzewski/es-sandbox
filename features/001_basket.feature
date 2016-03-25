@@ -21,6 +21,12 @@ Feature: Basket
      Then I should be notified that product was removed from basket
       And My basket should contain 0 products
 
+  Scenario: Remove not existing product from basket
+    Given I have basket with id "5a1d6275-9976-4000-abcf-654d184b81a5" picked up
+     When I remove product with "6a45032e-738a-48b7-893d-ebdc60d0c3b7" from my basket
+     Then I should be notified that product does not exists
+      And My basket should contain 0 products
+
   Scenario: View basket products
     Given I have basket with id "5a1d6275-9976-4000-abcf-654d184b81a5" picked up
       And My basket contains products:

@@ -66,7 +66,7 @@ final class Basket implements AggregateRoot
     public function removeProduct(ProductId $productId)
     {
         if (!$this->hasProduct($productId)) {
-            throw new \DomainException(
+            throw new ProductDoesNotExist(
                 sprintf(
                     'Product with id %s does not exist within basket with id %s',
                     $productId,

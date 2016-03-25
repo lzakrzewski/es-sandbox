@@ -11,10 +11,14 @@ use EsSandbox\Basket\Application\Projection\ProductView;
 use EsSandbox\Basket\Model\Basket;
 use EsSandbox\Basket\Model\BasketId;
 use EsSandbox\Basket\Model\BasketWasPickedUp;
+use EsSandbox\Basket\Model\ProductDoesNotExist;
 use EsSandbox\Basket\Model\ProductId;
 use EsSandbox\Basket\Model\ProductWasAddedToBasket;
 use EsSandbox\Basket\Model\ProductWasRemovedFromBasket;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class BasketContext extends DefaultContext
 {
     /** @var BasketId */
@@ -113,6 +117,14 @@ class BasketContext extends DefaultContext
     public function iShouldBeNotifiedThatProductWasRemovedFromBasket()
     {
         $this->then(ProductWasRemovedFromBasket::class);
+    }
+
+    /**
+     * @Then I should be notified that product does not exists
+     */
+    public function iShouldBeNotifiedThatProductDoesNotExists()
+    {
+        $this->expectException(ProductDoesNotExist::class);
     }
 
     /**

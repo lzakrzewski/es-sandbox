@@ -16,6 +16,9 @@ class DefaultContext implements KernelAwareContext, SnippetAcceptingContext
 {
     use KernelDictionary;
 
+    /** @var \Exception */
+    private $exception;
+
     /** @var mixed */
     protected $view;
 
@@ -28,7 +31,8 @@ class DefaultContext implements KernelAwareContext, SnippetAcceptingContext
     /** @AfterScenario */
     public function afterScenario()
     {
-        $this->view = null;
+        $this->view      = null;
+        $this->exception = null;
     }
 
     protected function container()
@@ -59,7 +63,16 @@ class DefaultContext implements KernelAwareContext, SnippetAcceptingContext
 
     protected function when(Command $command)
     {
-        $this->container()->get('es_sandbox.command_bus')->handle($command);
+        try {
+            $this->container()->get('es_sandbox.command_bus')->handle($command);
+        } catch (\Exception $e) {
+            $this->exception = $e;
+        }
+    }
+
+    protected function expectException($exception)
+    {
+        Assertion::eq($exception, get_class($this->exception));
     }
 
     protected function see($view)

@@ -24,6 +24,7 @@ class LogEventMiddleware implements MessageBusMiddleware
      */
     public function handle($message, callable $next)
     {
+        var_dump('cycuszki');
         Assertion::isInstanceOf($message, Event::class);
 
         $this->logger->info('Event recorded', ['event' => serialize($message)]);

@@ -2,15 +2,13 @@
 
 namespace EsSandbox\Bundle\AppBundle\Command;
 
-use Assert\Assertion;
-use EsSandbox\Basket\Application\Command\AddProductToBasket;
-use EsSandbox\Basket\Application\Command\PickUpBasket;
-use EsSandbox\Basket\Application\Command\RemoveProductFromBasket;
 use EsSandbox\Basket\Model\Basket;
 use EsSandbox\Basket\Model\BasketId;
+use EsSandbox\Basket\Model\BasketWasPickedUp;
 use EsSandbox\Basket\Model\ProductId;
+use EsSandbox\Basket\Model\ProductWasAddedToBasket;
+use EsSandbox\Basket\Model\ProductWasRemovedFromBasket;
 use EsSandbox\Common\Application\CommandBus\Command;
-use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
@@ -19,7 +17,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- * Todo: refactor this shitty code
  */
 class SimulateShoppingCommand extends ContainerAwareCommand
 {
@@ -29,6 +26,7 @@ class SimulateShoppingCommand extends ContainerAwareCommand
     {
         $this
             ->setName('es_sandbox:basket:simulate-shopping')
+            ->addArgument('basketId', InputArgument::OPTIONAL, 'Id of basket')
             ->addArgument('limit', InputArgument::OPTIONAL, 'Limit of products')
             ->setDescription('Example command for simulate shopping');
     }
@@ -36,40 +34,28 @@ class SimulateShoppingCommand extends ContainerAwareCommand
     /** {@inheritdoc} */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $limit = $input->getArgument('limit') ?: self::DEFAULT_LIMIT_OF_PRODUCTS;
+        $limit    = $this->limit($input);
+        $basketId = $this->basketId($input);
 
         try {
-            $this->shopping($output, $limit);
+            $this->handle(
+                ShoppingSimulation::simulate($basketId, $limit)->get()
+            );
+
+            $this->renderRecordedEvents($output, $basketId);
+            $this->renderProjection($output, $basketId);
         } catch (\Exception $e) {
             return $this->handleError($output, $e);
         }
     }
 
-    private function shopping(OutputInterface $output, $limit)
+    private function handle(array $commands)
     {
-        $basketId   = BasketId::generate();
         $commandBus = $this->getContainer()->get('es_sandbox.command_bus');
 
-        Assertion::greaterOrEqualThan($limit, 0);
-
-        $commandBus->handle(new PickUpBasket($basketId->raw()));
-        $output->writeln('===============================================================================');
-        $output->writeln(PHP_EOL.sprintf('Basket with id %s was <info>picked up</info>.', $basketId).PHP_EOL);
-
-        $count = 0;
-
-        while ($count < $limit) {
-            $command = $this->handleCommandOnBasket($basketId);
-
-            $this->printCommandInfo($output, $command);
-
-            $count = $this->basket($basketId)->count();
+        foreach ($commands as $command) {
+            $commandBus->handle($command);
         }
-
-        $output->writeln('===============================================================================');
-        $output->writeln('Your basket contains products:');
-
-        $this->renderProjection($output, $basketId);
     }
 
     private function handleError(OutputInterface $output, \Exception $exception)
@@ -79,75 +65,42 @@ class SimulateShoppingCommand extends ContainerAwareCommand
         return 1;
     }
 
-    private function handleCommandOnBasket(BasketId $basketId)
+    private function renderRecordedEvents(OutputInterface $output, BasketId $basketId)
     {
-        $commandBus = $this->getContainer()->get('es_sandbox.command_bus');
-        $basket     = $this->basket($basketId);
+        $output->writeln('');
+        $output->writeln('Facts about your basket:');
 
-        if ($basket->count() > 0) {
-            $commandBus->handle($command = $this->randomCommand($basket));
+        $events = $this->getContainer()
+            ->get('es_sandbox.event_store')
+            ->aggregateHistoryFor($basketId);
 
-            return $command;
+        $table = new Table($output);
+
+        foreach ($events as $event) {
+            if ($event instanceof BasketWasPickedUp) {
+                $table->addRow(['Basket with id: ', (string) $event->id(), 'was <info>picked up</info>.']);
+            }
+
+            if ($event instanceof ProductWasAddedToBasket) {
+                $table->addRow(['Product with id: ', (string) $event->productId(), 'was <info>added</info> to basket.']);
+            }
+
+            if ($event instanceof ProductWasRemovedFromBasket) {
+                $table->addRow(['Product with id: ', (string) $event->productId(), 'was <comment>removed</comment> from basket.']);
+            }
         }
 
-        $commandBus->handle($command = new AddProductToBasket($basketId->raw(), ProductId::generate()->raw(), $this->randomProductName()));
-
-        return $command;
-    }
-
-    private function printCommandInfo(OutputInterface $output, Command $command)
-    {
-        if ($command instanceof RemoveProductFromBasket) {
-            $output->writeln(sprintf('Product with id %s was <comment>removed</comment> from basket.', $command->productId));
-
-            return;
-        }
-
-        $output->writeln(sprintf('Product with id %s was <info>added</info> to basket.', $command->productId));
-    }
-
-    private function basket(BasketId $basketId)
-    {
-        $events = $this->getContainer()->get('es_sandbox.event_store')->aggregateHistoryFor($basketId);
-
-        return Basket::reconstituteFrom($events);
-    }
-
-    private function randomCommand(Basket $basket)
-    {
-        $productId = ProductId::generate();
-
-        if ((bool) rand(0, 3)) {
-            return new AddProductToBasket($basket->id()->raw(), $productId->raw(), $this->randomProductName());
-        }
-
-        $products        = $basket->products();
-        $productToRemove = array_rand(array_keys($basket->products()));
-
-        return new RemoveProductFromBasket($basket->id()->raw(), Uuid::fromString(array_keys($products)[$productToRemove]));
-    }
-
-    private function randomProductName()
-    {
-        $names = [
-            'Apple',
-            'Beer',
-            'Blender',
-            'Glass',
-            'HairDryer',
-            'Juice',
-            'Mango',
-            'Phone',
-            'Teapot',
-            'Water',
-        ];
-
-        return $names[array_rand($names)];
+        $table->setStyle('borderless');
+        $table->render();
     }
 
     private function renderProjection(OutputInterface $output, BasketId $basketId)
     {
-        $products = $this->getContainer()->get('es_sandbox.projection.basket')->get($basketId->raw());
+        $output->writeln('');
+        $output->writeln('Your basket now contains:');
+        $products = $this->getContainer()
+            ->get('es_sandbox.projection.basket')
+            ->get($basketId->raw());
 
         $table = new Table($output);
         $table
@@ -158,5 +111,15 @@ class SimulateShoppingCommand extends ContainerAwareCommand
         }
 
         $table->render();
+    }
+
+    private function limit(InputInterface $input)
+    {
+        return $input->getArgument('limit') ?: self::DEFAULT_LIMIT_OF_PRODUCTS;
+    }
+
+    private function basketId(InputInterface $input)
+    {
+        return ($input->getArgument('basketId') === null) ? BasketId::generate() : BasketId::fromString($input->getArgument('basketId'));
     }
 }

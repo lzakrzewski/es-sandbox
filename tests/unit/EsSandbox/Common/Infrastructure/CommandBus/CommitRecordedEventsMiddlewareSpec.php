@@ -37,14 +37,14 @@ class CommitRecordedEventsMiddlewareSpec extends ObjectBehavior
         $eventStore->commit(Argument::any())->shouldNotBeCalled();
     }
 
-    public function it_erases_events_after_commit()
+    public function it_does_not_erase_events_after_commit()
     {
         $event = new FakeEvent();
         RecordedEvents::instance()->record($event);
 
         $this->handle($this->message(), $this->dummyCallable());
 
-        Assertion::count(RecordedEvents::instance()->recordedMessages(), 0);
+        Assertion::count(RecordedEvents::instance()->recordedMessages(), 1);
     }
 
     private function message()

@@ -9,22 +9,20 @@ use SimpleBus\Message\Bus\Middleware\MessageBusMiddleware;
 
 class LogEventMiddleware implements MessageBusMiddleware
 {
-    /**
-     * @var LoggerInterface
-     */
+    /** @var LoggerInterface */
     private $logger;
 
+    /**.
+     * @param LoggerInterface $logger
+     */
     public function __construct(LoggerInterface $logger)
     {
         $this->logger = $logger;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    /** {@inheritdoc} */
     public function handle($message, callable $next)
     {
-        var_dump('cycuszki');
         Assertion::isInstanceOf($message, Event::class);
 
         $this->logger->info('Event recorded', ['event' => serialize($message)]);

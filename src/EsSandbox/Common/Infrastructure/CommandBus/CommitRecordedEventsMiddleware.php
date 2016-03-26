@@ -30,7 +30,5 @@ class CommitRecordedEventsMiddleware implements MessageBusMiddleware
         foreach ($this->recordedEvents->recordedMessages() as $event) {
             $this->eventStore->commit($event);
         }
-
-        $this->recordedEvents->eraseMessages();
     }
 }

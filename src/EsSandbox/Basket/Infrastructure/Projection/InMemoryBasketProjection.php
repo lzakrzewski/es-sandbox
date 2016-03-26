@@ -30,6 +30,9 @@ final class InMemoryBasketProjection implements BasketProjection
 
         foreach ($this->storage->read((string) $basketId) as $product) {
             if (!empty($product) && isset($product['productId']) && isset($product['name'])) {
+
+                //print_r($this->storage);die;
+
                 $result[] = new ProductView($product['productId'], $product['name']);
             }
         }

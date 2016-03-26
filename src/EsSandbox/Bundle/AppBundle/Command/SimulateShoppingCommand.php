@@ -12,6 +12,7 @@ use EsSandbox\Basket\Model\ProductId;
 use EsSandbox\Common\Application\CommandBus\Command;
 use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -68,7 +69,7 @@ class SimulateShoppingCommand extends ContainerAwareCommand
         $output->writeln('===============================================================================');
         $output->writeln('Your basket contains products:');
 
-        print_r($this->getContainer()->get('es_sandbox.projection.basket')->get($basketId->raw()));
+        $this->renderProjection($output, $basketId);
     }
 
     private function handleError(OutputInterface $output, \Exception $exception)
@@ -128,7 +129,7 @@ class SimulateShoppingCommand extends ContainerAwareCommand
 
     private function randomProductName()
     {
-        return array_rand([
+        $names = [
             'Apple',
             'Beer',
             'Blender',
@@ -139,6 +140,23 @@ class SimulateShoppingCommand extends ContainerAwareCommand
             'Phone',
             'Teapot',
             'Water',
-        ]);
+        ];
+
+        return $names[array_rand($names)];
+    }
+
+    private function renderProjection(OutputInterface $output, BasketId $basketId)
+    {
+        $products = $this->getContainer()->get('es_sandbox.projection.basket')->get($basketId->raw());
+
+        $table = new Table($output);
+        $table
+            ->setHeaders(['productId', 'name']);
+
+        foreach ($products as $product) {
+            $table->addRow([$product->productId, $product->name]);
+        }
+
+        $table->render();
     }
 }

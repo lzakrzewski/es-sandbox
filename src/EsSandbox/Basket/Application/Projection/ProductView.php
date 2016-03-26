@@ -5,10 +5,10 @@ namespace EsSandbox\Basket\Application\Projection;
 final class ProductView
 {
     /** @var string */
-    private $productId;
+    public $productId;
 
     /** @var string */
-    private $name;
+    public $name;
 
     /**
      * @param string $productId

@@ -106,14 +106,6 @@ final class Basket implements AggregateRoot
         return count($this->products);
     }
 
-    /**
-     * @return array
-     */
-    public function products()
-    {
-        return $this->products;
-    }
-
     /** @SuppressWarnings(PHPMD.UnusedPrivateMethod) */
     private function applyBasketWasPickedUp(BasketWasPickedUp $event)
     {

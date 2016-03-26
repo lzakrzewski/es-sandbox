@@ -13,37 +13,37 @@ use tests\integration\CLITestCase;
 class SimulateShoppingCommandTest extends CLITestCase
 {
     /** @test */
-    public function it_simulates_shopping_with_default_limit_of_products()
+    public function it_simulates_shopping()
+    {
+        $basketId = BasketId::generate();
+
+        $this->executeCommand(new SimulateShoppingCommand(), ['basketId' => (string) $basketId, 'limit' => 10]);
+
+        $this->outputShouldStatusCodeIs(0);
+        $this->countProducts($basketId, 10);
+    }
+
+    /** @test */
+    public function it_simulates_shopping_with_default_values()
     {
         $this->executeCommand(new SimulateShoppingCommand());
 
         $this->outputShouldStatusCodeIs(0);
-        $this->countProducts(SimulateShoppingCommand::DEFAULT_LIMIT_OF_PRODUCTS);
     }
 
     /** @test */
-    public function it_fails_when_limit_of_products_is_negative()
+    public function it_fails_when_unexpected_error_occures()
     {
         $this->executeCommand(new SimulateShoppingCommand(), ['limit' => -1]);
 
         $this->outputShouldStatusCodeIs(1);
     }
 
-    /** @test */
-    public function it_simulates_shopping_with_custom_limit_of_products()
-    {
-        $this->executeCommand(new SimulateShoppingCommand());
-
-        $this->outputShouldStatusCodeIs(0);
-        $this->countProducts(10);
-    }
-
-    //Todo: do it better
-    private function countProducts($products)
+    private function countProducts(BasketId $basketId, $products)
     {
         $events = $this->container()->get('es_sandbox.event_store')->events();
 
-        $this->assertEquals($products, Basket::reconstituteFrom(AggregateHistory::of(BasketId::generate(), $events))->count());
+        $this->assertEquals($products, Basket::reconstituteFrom(AggregateHistory::of($basketId, $events))->count());
     }
 
     /** {@inheritdoc} */

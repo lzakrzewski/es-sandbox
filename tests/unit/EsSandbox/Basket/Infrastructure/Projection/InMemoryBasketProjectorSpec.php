@@ -28,8 +28,6 @@ class InMemoryBasketProjectorSpec extends ObjectBehavior
 
         $this->applyProductWasAddedToBasket(new ProductWasAddedToBasket($basketId, $productId, 'Teapot'));
 
-        //var_dump(InMemoryStorage::instance()->read('4ea0aafc-79e1-4f55-9610-a9075a71fcef'));die;
-
         Assertion::eq(
             InMemoryStorage::instance()->read('4ea0aafc-79e1-4f55-9610-a9075a71fcef'),
             [[

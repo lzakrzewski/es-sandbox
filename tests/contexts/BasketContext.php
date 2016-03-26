@@ -7,7 +7,6 @@ use Behat\Gherkin\Node\TableNode;
 use EsSandbox\Basket\Application\Command\AddProductToBasket;
 use EsSandbox\Basket\Application\Command\PickUpBasket;
 use EsSandbox\Basket\Application\Command\RemoveProductFromBasket;
-use EsSandbox\Basket\Application\Projection\ProductView;
 use EsSandbox\Basket\Model\Basket;
 use EsSandbox\Basket\Model\BasketId;
 use EsSandbox\Basket\Model\BasketWasPickedUp;
@@ -80,19 +79,11 @@ class BasketContext extends DefaultContext
     }
 
     /**
-     * @When I remove product with :productId from my basket
+     * @When I remove product with id :productId from my basket
      */
-    public function iRemoveProductWithFromMyBasket(ProductId $productId)
+    public function iRemoveProductWithIdFromMyBasket(ProductId $productId)
     {
         $this->when(new RemoveProductFromBasket($this->basketId->raw(), $productId->raw()));
-    }
-
-    /**
-     * @When I view my basket
-     */
-    public function iViewMyBasket()
-    {
-        $this->see($this->container()->get('es_sandbox.projection.basket')->get($this->basketId->raw()));
     }
 
     /**
@@ -137,23 +128,5 @@ class BasketContext extends DefaultContext
         );
 
         Assertion::eq($count, $basket->count());
-    }
-
-    /**
-     * @Then I should see:
-     */
-    public function iShouldSee(TableNode $table)
-    {
-        $products = $table->getTable();
-
-        array_shift($products);
-
-        $expectedProducts = [];
-
-        foreach ($products as $product) {
-            $expectedProducts[] = new ProductView($product[0], $product[1]);
-        }
-
-        Assertion::eq($expectedProducts, $this->view);
     }
 }

@@ -19,9 +19,6 @@ class DefaultContext implements KernelAwareContext, SnippetAcceptingContext
     /** @var \Exception */
     private $exception;
 
-    /** @var mixed */
-    protected $view;
-
     /** @BeforeScenario */
     public function beforeScenario()
     {
@@ -31,7 +28,6 @@ class DefaultContext implements KernelAwareContext, SnippetAcceptingContext
     /** @AfterScenario */
     public function afterScenario()
     {
-        $this->view      = null;
         $this->exception = null;
     }
 
@@ -58,7 +54,7 @@ class DefaultContext implements KernelAwareContext, SnippetAcceptingContext
 
     protected function given(Event $event)
     {
-        $this->container()->get('event_bus')->handle($event);
+        $this->container()->get('es_sandbox.event_store')->commit($event);
     }
 
     protected function when(Command $command)
@@ -73,11 +69,6 @@ class DefaultContext implements KernelAwareContext, SnippetAcceptingContext
     protected function expectException($exception)
     {
         Assertion::eq($exception, get_class($this->exception));
-    }
-
-    protected function see($view)
-    {
-        $this->view = $view;
     }
 
     protected function then($expectedEventClass)

@@ -97,7 +97,7 @@ class SimulateShoppingCommand extends ContainerAwareCommand
     private function renderProjection(OutputInterface $output, BasketId $basketId)
     {
         $output->writeln('');
-        $output->writeln('Your basket now contains:');
+        $output->writeln('Your basket contains:');
         $products = $this->getContainer()
             ->get('es_sandbox.projection.basket')
             ->get($basketId->raw());

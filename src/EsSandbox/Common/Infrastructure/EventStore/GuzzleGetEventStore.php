@@ -94,7 +94,7 @@ class GuzzleGetEventStore implements EventStore
 
             return json_decode($response->getBody()->getContents(), true);
         } catch (RequestException $e) {
-            return;
+            return [];
         }
     }
 

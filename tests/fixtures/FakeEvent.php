@@ -1,11 +1,10 @@
 <?php
 
-namespace tests\unit\EsSandbox\Common\Infrastructure\EventStore\Fixtures;
+namespace tests\fixtures;
 
 use EsSandbox\Common\Model\Event;
-use tests\fixtures\FakeId;
 
-final class FakeEvent2 implements Event
+final class FakeEvent implements Event
 {
     /** @var FakeId */
     private $id;

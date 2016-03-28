@@ -4,8 +4,8 @@ namespace tests\unit\EsSandbox\Common\Model;
 
 use EsSandbox\Common\Model\AggregateHistory;
 use PhpSpec\ObjectBehavior;
-use tests\unit\EsSandbox\Common\Model\Fixtures\ExampleEvent;
-use tests\unit\EsSandbox\Common\Model\Identifier\Fixtures\TestUuid1;
+use tests\fixtures\FakeEvent;
+use tests\fixtures\FakeId;
 
 /**
  * @mixin AggregateHistory
@@ -14,17 +14,17 @@ class AggregateHistorySpec extends ObjectBehavior
 {
     public function it_can_be_count()
     {
-        $id = TestUuid1::generate();
+        $id = FakeId::generate();
 
-        $this->beConstructedThrough('of', [$id, [new ExampleEvent($id), new ExampleEvent($id)]]);
+        $this->beConstructedThrough('of', [$id, [new FakeEvent($id), new FakeEvent($id)]]);
 
         $this->count()->shouldReturn(2);
     }
 
     public function it_can_be_array()
     {
-        $id     = TestUuid1::generate();
-        $events = [new ExampleEvent($id), new ExampleEvent($id)];
+        $id     = FakeId::generate();
+        $events = [new FakeEvent($id), new FakeEvent($id)];
 
         $this->beConstructedThrough('of', [$id, $events]);
 
@@ -34,18 +34,18 @@ class AggregateHistorySpec extends ObjectBehavior
 
     public function it_is_immutable()
     {
-        $id = TestUuid1::generate();
+        $id = FakeId::generate();
 
-        $this->beConstructedThrough('of', [$id, [new ExampleEvent($id), new ExampleEvent($id)]]);
+        $this->beConstructedThrough('of', [$id, [new FakeEvent($id), new FakeEvent($id)]]);
 
-        $this->shouldThrow(\RuntimeException::class)->during('offsetSet', [new ExampleEvent($id), 2]);
+        $this->shouldThrow(\RuntimeException::class)->during('offsetSet', [new FakeEvent($id), 2]);
     }
 
     /** @SuppressWarnings(PHPMD.UnusedLocalVariable) */
     public function it_can_be_iterable()
     {
-        $id     = TestUuid1::generate();
-        $events = [new ExampleEvent($id)];
+        $id     = FakeId::generate();
+        $events = [new FakeEvent($id)];
 
         $this->beConstructedThrough('of', [$id, $events]);
 

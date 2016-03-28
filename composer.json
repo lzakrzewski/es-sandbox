@@ -25,6 +25,7 @@
     "require": {
         "ramsey/uuid": "~3.0",
         "incenteev/composer-parameter-handler": "~2.0",
+        "guzzlehttp/guzzle": "~6.0",
 
         "symfony/symfony": "~3.0",
         "symfony/monolog-bundle": "~2.9",

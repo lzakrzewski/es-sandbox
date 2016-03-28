@@ -12,6 +12,9 @@ class EsSandboxAppExtension extends Extension
     /** {@inheritdoc} */
     public function load(array $config, ContainerBuilder $container)
     {
+        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader->load('guzzle_http.yml');
+
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config/Common'));
         $loader->load('command_bus.yml');
         $loader->load('event_store.yml');

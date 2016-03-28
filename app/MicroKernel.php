@@ -15,10 +15,10 @@ class MicroKernel extends Kernel
     {
         return [
             new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
-            new \Symfony\Bundle\MonologBundle\MonologBundle(),
+            new Symfony\Bundle\MonologBundle\MonologBundle(),
             new SimpleBus\SymfonyBridge\SimpleBusCommandBusBundle(),
             new SimpleBus\SymfonyBridge\SimpleBusEventBusBundle(),
-            new \EsSandbox\Bundle\AppBundle\AppBundle(),
+            new EsSandbox\Bundle\AppBundle\AppBundle(),
         ];
     }
 

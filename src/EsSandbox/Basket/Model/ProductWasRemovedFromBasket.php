@@ -37,4 +37,23 @@ final class ProductWasRemovedFromBasket implements Event
     {
         return $this->productId;
     }
+
+    /** {@inheritdoc} */
+    public function __toString()
+    {
+        return (string) json_encode(
+            [
+                'basketId'  => (string) $this->basketId,
+                'productId' => (string) $this->productId,
+            ]
+        );
+    }
+
+    /** {@inheritdoc} */
+    public function fromString($contents)
+    {
+        $contents = json_decode($contents);
+
+        return new self(BasketId::fromString($contents->basketId), ProductId::fromString($contents->productId));
+    }
 }

@@ -50,4 +50,24 @@ final class ProductWasAddedToBasket implements Event
     {
         return $this->name;
     }
+
+    /** {@inheritdoc} */
+    public function __toString()
+    {
+        return (string) json_encode(
+            [
+                'basketId'  => (string) $this->basketId,
+                'productId' => (string) $this->productId,
+                'name'      => $this->name,
+            ]
+        );
+    }
+
+    /** {@inheritdoc} */
+    public function fromString($contents)
+    {
+        $contents = json_decode($contents);
+
+        return new self(BasketId::fromString($contents->basketId), ProductId::fromString($contents->productId), $contents->name);
+    }
 }

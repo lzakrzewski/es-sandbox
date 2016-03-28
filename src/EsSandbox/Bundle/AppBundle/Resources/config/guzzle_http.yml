@@ -1,0 +1,3 @@
+services:
+    guzzle_http.client:
+        class: GuzzleHttp\Client

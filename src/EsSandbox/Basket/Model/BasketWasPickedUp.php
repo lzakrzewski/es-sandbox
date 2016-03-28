@@ -22,4 +22,16 @@ final class BasketWasPickedUp implements Event
     {
         return $this->basketId;
     }
+
+    /** {@inheritdoc} */
+    public function __toString()
+    {
+        return (string) json_encode(['basketId' => (string) $this->basketId]);
+    }
+
+    /** {@inheritdoc} */
+    public function fromString($contents)
+    {
+        return new self(BasketId::fromString(json_decode($contents)->basketId));
+    }
 }

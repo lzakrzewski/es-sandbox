@@ -7,7 +7,8 @@ use EsSandbox\Common\Infrastructure\CommandBus\LogEventMiddleware;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Psr\Log\LoggerInterface;
-use tests\unit\EsSandbox\Common\Infrastructure\CommandBus\Fixtures\FakeEvent;
+use tests\fixtures\FakeEvent;
+use tests\fixtures\FakeId;
 
 /**
  * @mixin LogEventMiddleware
@@ -21,7 +22,7 @@ class LogEventMiddlewareSpec extends ObjectBehavior
 
     public function it_logs_message_when_it_is_event(LoggerInterface $logger)
     {
-        $event = new FakeEvent();
+        $event = new FakeEvent(FakeId::generate());
         $logger->info(Argument::cetera())->shouldBeCalled();
 
         $this->handle($event, $this->dummyCallable());

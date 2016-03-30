@@ -31,11 +31,6 @@ class GuzzleGetEventStore implements EventStore
     /** {@inheritdoc} */
     public function commit(Event $event)
     {
-        $this->request($event);
-    }
-
-    private function request(Event $event)
-    {
         $this->writeStream($this->streamUri($event->id()), $this->serialize($event));
     }
 

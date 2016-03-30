@@ -2,7 +2,6 @@
 
 namespace tests\integration\EsSandbox\Basket\Infrastructure\Projection;
 
-use EsSandbox\Basket\Application\Projection\ProductView;
 use EsSandbox\Basket\Infrastructure\Projection\GuzzleGetEventStoreBasketProjection;
 use EsSandbox\Basket\Model\BasketId;
 use EsSandbox\Basket\Model\ProductId;
@@ -32,10 +31,7 @@ class GuzzleGetEventStoreBasketProjectionTest extends IntegrationTestCase
 
         $products = $this->projection->get($basketId->raw());
 
-        $this->assertEquals([
-            new ProductView((string) $productId1, 'Teapot'),
-            new ProductView((string) $productId2, 'Iron'),
-        ], $products);
+        $this->assertEquals(4, $products);
     }
 
     public function it_can_get_empty_basket_when_no_products()

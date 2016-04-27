@@ -30,7 +30,7 @@ final class BasketWasPickedUp implements Event
     }
 
     /** {@inheritdoc} */
-    public function fromString($contents)
+    public static function fromString($contents)
     {
         return new self(BasketId::fromString(json_decode($contents)->basketId));
     }

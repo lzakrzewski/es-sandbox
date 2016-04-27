@@ -31,7 +31,7 @@ final class FakeEvent2 implements Event
     }
 
     /** {@inheritdoc} */
-    public function fromString($contents)
+    public static function fromString($contents)
     {
         return new self(FakeId::fromString(json_decode($contents)->id));
     }

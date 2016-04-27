@@ -19,5 +19,5 @@ interface Event
      *
      * @return Event
      */
-    public function fromString($contents);
+    public static function fromString($contents);
 }

@@ -50,7 +50,7 @@ final class ProductWasRemovedFromBasket implements Event
     }
 
     /** {@inheritdoc} */
-    public function fromString($contents)
+    public static function fromString($contents)
     {
         $contents = json_decode($contents);
 

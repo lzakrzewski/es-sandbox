@@ -2,6 +2,7 @@
 
 namespace EsSandbox\Common\Model;
 
+//Todo: Commit multiple events
 interface EventStore
 {
     /**

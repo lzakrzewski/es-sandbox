@@ -3,16 +3,18 @@
 namespace EsSandbox\Basket\Model;
 
 use EsSandbox\Common\Model\Event;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
 final class BasketWasPickedUp implements Event
 {
-    /** @var BasketId */
+    /** @var UuidInterface */
     private $basketId;
 
     /**
-     * @param BasketId $basketId
+     * @param UuidInterface $basketId
      */
-    public function __construct(BasketId $basketId)
+    public function __construct(UuidInterface $basketId)
     {
         $this->basketId = $basketId;
     }
@@ -32,6 +34,6 @@ final class BasketWasPickedUp implements Event
     /** {@inheritdoc} */
     public static function fromString($contents)
     {
-        return new self(BasketId::fromString(json_decode($contents)->basketId));
+        return new self(Uuid::fromString(json_decode($contents)->basketId));
     }
 }

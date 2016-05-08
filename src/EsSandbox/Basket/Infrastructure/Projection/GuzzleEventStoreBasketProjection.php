@@ -30,30 +30,38 @@ class GuzzleEventStoreBasketProjection implements BasketProjection
     {
         $this->createProjection($basketId);
 
-        $response = $this->client->request('GET', sprintf('%s/projection/%s/result', $this->uri, $this->projectionName($basketId)), [
-            'headers' => ['Accept' => ['application/json']],
-        ]);
+        $response = $this->client
+            ->request(
+                'GET',
+                sprintf('%s/projection/%s/result', $this->uri, $this->projectionName($basketId)),
+                [
+                    'headers' => [
+                        'Accept' => ['application/json'],
+                    ],
+                ]
+            );
 
         return (array) json_decode($response->getBody()->getContents(), true);
     }
 
-    private function projectionName(UuidInterface $id)
-    {
-        return sprintf('%s_%s', 'BasketId', $id);
-    }
-
     private function createProjection(UuidInterface $basketId)
     {
-        $this->client->request('POST', sprintf('%s/projections/onetime?name=%s&enabled=yes', $this->uri, $this->projectionName($basketId)), [
-            'headers' => ['Content-Type' => ['application/json']],
-            'body'    => $this->projectionFunc($basketId),
-            'auth'    => ['admin', 'changeit'],
-        ]);
+        $this->client->request(
+            'POST',
+            sprintf('%s/projections/onetime?name=%s&enabled=yes', $this->uri, $this->projectionName($basketId)),
+            [
+                'headers' => [
+                    'Content-Type' => ['application/json'],
+                ],
+                'body' => $this->projectionFunc($basketId),
+                'auth' => ['admin', 'changeit'],
+            ]
+        );
     }
 
     private function projectionFunc(UuidInterface $basketId)
     {
-        $name = $this->projectionName($basketId);
+        $name = $this->streamName($basketId);
 
         return <<<STR
 fromStream('$name')
@@ -104,5 +112,15 @@ removeProduct = function(productIdToRemove, state) {
     return state;
 }
 STR;
+    }
+
+    private function projectionName(UuidInterface $id)
+    {
+        return sprintf('%s-%s', 'basket-projection', $id);
+    }
+
+    private function streamName(UuidInterface $basketId)
+    {
+        return $basketId->toString();
     }
 }

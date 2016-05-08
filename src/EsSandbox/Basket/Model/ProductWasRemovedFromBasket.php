@@ -3,27 +3,29 @@
 namespace EsSandbox\Basket\Model;
 
 use EsSandbox\Common\Model\Event;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
 final class ProductWasRemovedFromBasket implements Event
 {
-    /** @var BasketId */
+    /** @var UuidInterface */
     private $basketId;
 
-    /** @var ProductId */
+    /** @var UuidInterface */
     private $productId;
 
     /**
-     * @param BasketId  $basketId
-     * @param ProductId $productId
+     * @param UuidInterface $basketId
+     * @param UuidInterface $productId
      */
-    public function __construct(BasketId $basketId, ProductId $productId)
+    public function __construct(UuidInterface $basketId, UuidInterface $productId)
     {
         $this->basketId  = $basketId;
         $this->productId = $productId;
     }
 
     /**
-     * @return BasketId
+     * @return UuidInterface
      */
     public function id()
     {
@@ -31,7 +33,7 @@ final class ProductWasRemovedFromBasket implements Event
     }
 
     /**
-     * @return ProductId
+     * @return UuidInterface
      */
     public function productId()
     {
@@ -54,6 +56,9 @@ final class ProductWasRemovedFromBasket implements Event
     {
         $contents = json_decode($contents);
 
-        return new self(BasketId::fromString($contents->basketId), ProductId::fromString($contents->productId));
+        return new self(
+            Uuid::fromString($contents->basketId),
+            Uuid::fromString($contents->productId)
+        );
     }
 }

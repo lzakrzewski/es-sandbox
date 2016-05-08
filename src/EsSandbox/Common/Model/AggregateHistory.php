@@ -2,12 +2,8 @@
 
 namespace EsSandbox\Common\Model;
 
-/** @SuppressWarnings(PHPMD.UnusedPrivateField) */
 final class AggregateHistory extends \SplFixedArray
 {
-    /** @var Identifier */
-    private $id;
-
     /**
      * @param Event[] $events
      */
@@ -24,17 +20,13 @@ final class AggregateHistory extends \SplFixedArray
     }
 
     /**
-     * @param Identifier $id
-     * @param array      $events
+     * @param array $events
      *
      * @return AggregateHistory
      */
-    public static function of(Identifier $id, array $events)
+    public static function of(array $events)
     {
-        $self     = new self($events);
-        $self->id = $id;
-
-        return $self;
+        return new self($events);
     }
 
     /** {@inheritdoc} */

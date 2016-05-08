@@ -6,37 +6,37 @@ use Assert\Assertion;
 use EsSandbox\Basket\Application\Command\AddProductToBasket;
 use EsSandbox\Basket\Application\Command\PickUpBasket;
 use EsSandbox\Basket\Application\Command\RemoveProductFromBasket;
-use EsSandbox\Basket\Model\BasketId;
-use EsSandbox\Basket\Model\ProductId;
 use EsSandbox\Common\Application\CommandBus\Command;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
 class ShoppingSimulation
 {
-    /** @var BasketId */
+    /** @var UuidInterface */
     private $basketId;
 
     /** @var Command[] */
     private $commands;
 
-    /** @var ProductId[] */
+    /** @var UuidInterface */
     private $products = [];
 
     /** @var int */
     private $limit;
 
-    private function __construct(BasketId $basketId, $limit)
+    private function __construct(UuidInterface $basketId, $limit)
     {
         $this->basketId = $basketId;
         $this->limit    = $limit;
     }
 
     /**
-     * @param BasketId $basketId
+     * @param UuidInterface $basketId
      * @param $limit
      *
      * @return ShoppingSimulation
      */
-    public static function simulate(BasketId $basketId, $limit)
+    public static function simulate(UuidInterface $basketId, $limit)
     {
         $self = new self($basketId, $limit);
 
@@ -51,11 +51,11 @@ class ShoppingSimulation
         return $this->shopping($this->basketId, $this->limit);
     }
 
-    private function shopping(BasketId $basketId, $limit)
+    private function shopping(UuidInterface $basketId, $limit)
     {
         Assertion::greaterOrEqualThan($limit, 0);
 
-        $this->commands[] = new PickUpBasket($basketId->raw());
+        $this->commands[] = new PickUpBasket($basketId);
 
         while (count($this->products) < $limit) {
             $this->commands[] = $this->randomCommand($basketId);
@@ -64,7 +64,7 @@ class ShoppingSimulation
         return $this->commands;
     }
 
-    private function randomCommand(BasketId $basketId)
+    private function randomCommand(UuidInterface $basketId)
     {
         if (!(bool) rand(0, 3) && count($this->products) > 1) {
             return $this->removeProduct($basketId);
@@ -91,21 +91,21 @@ class ShoppingSimulation
         return $names[array_rand($names)];
     }
 
-    private function removeProduct(BasketId $basketId)
+    private function removeProduct(UuidInterface $basketId)
     {
         $productToRemove = array_rand($this->products);
-        $command         = new RemoveProductFromBasket($basketId->raw(), $this->products[$productToRemove]->raw());
+        $command         = new RemoveProductFromBasket($basketId, $this->products[$productToRemove]);
         unset($this->products[$productToRemove]);
 
         return $command;
     }
 
-    private function addProduct(BasketId $basketId)
+    private function addProduct(UuidInterface $basketId)
     {
-        $productId = ProductId::generate();
+        $productId = Uuid::uuid4();
 
         $this->products[] = $productId;
 
-        return new AddProductToBasket($basketId->raw(), $productId->raw(), $this->randomProductName());
+        return new AddProductToBasket($basketId, $productId, $this->randomProductName());
     }
 }

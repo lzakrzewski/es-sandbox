@@ -2,13 +2,11 @@
 
 namespace EsSandbox\Bundle\AppBundle\Command;
 
-use EsSandbox\Basket\Model\Basket;
-use EsSandbox\Basket\Model\BasketId;
 use EsSandbox\Basket\Model\BasketWasPickedUp;
-use EsSandbox\Basket\Model\ProductId;
 use EsSandbox\Basket\Model\ProductWasAddedToBasket;
 use EsSandbox\Basket\Model\ProductWasRemovedFromBasket;
-use EsSandbox\Common\Application\CommandBus\Command;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
@@ -65,7 +63,7 @@ class SimulateShoppingCommand extends ContainerAwareCommand
         return 1;
     }
 
-    private function renderRecordedEvents(OutputInterface $output, BasketId $basketId)
+    private function renderRecordedEvents(OutputInterface $output, UuidInterface $basketId)
     {
         $output->writeln('');
         $output->writeln('Facts about your basket:');
@@ -94,13 +92,13 @@ class SimulateShoppingCommand extends ContainerAwareCommand
         $table->render();
     }
 
-    private function renderProjection(OutputInterface $output, BasketId $basketId)
+    private function renderProjection(OutputInterface $output, UuidInterface $basketId)
     {
         $output->writeln('');
         $output->writeln('Your basket contains:');
         $products = $this->getContainer()
             ->get('es_sandbox.projection.basket')
-            ->get($basketId->raw());
+            ->get($basketId);
 
         $table = new Table($output);
         $table
@@ -120,6 +118,6 @@ class SimulateShoppingCommand extends ContainerAwareCommand
 
     private function basketId(InputInterface $input)
     {
-        return ($input->getArgument('basketId') === null) ? BasketId::generate() : BasketId::fromString($input->getArgument('basketId'));
+        return ($input->getArgument('basketId') === null) ? Uuid::uuid4() : Uuid::fromString($input->getArgument('basketId'));
     }
 }

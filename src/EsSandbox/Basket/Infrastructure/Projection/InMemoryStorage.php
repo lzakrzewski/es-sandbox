@@ -2,6 +2,9 @@
 
 namespace EsSandbox\Basket\Infrastructure\Projection;
 
+/**
+ * @deprecated
+ */
 final class InMemoryStorage
 {
     /** @var self */

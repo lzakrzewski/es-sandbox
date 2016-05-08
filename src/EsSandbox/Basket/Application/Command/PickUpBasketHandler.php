@@ -3,7 +3,6 @@
 namespace EsSandbox\Basket\Application\Command;
 
 use EsSandbox\Basket\Model\Basket;
-use EsSandbox\Basket\Model\BasketId;
 use EsSandbox\Common\Application\CommandBus\CommandHandler;
 
 final class PickUpBasketHandler implements CommandHandler
@@ -13,6 +12,6 @@ final class PickUpBasketHandler implements CommandHandler
      */
     public function handle(PickUpBasket $command)
     {
-        Basket::pickUp(BasketId::of($command->id()));
+        Basket::pickUp($command->basketId());
     }
 }

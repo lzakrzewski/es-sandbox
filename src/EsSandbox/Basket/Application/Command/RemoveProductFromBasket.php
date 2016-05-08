@@ -2,11 +2,10 @@
 
 namespace EsSandbox\Basket\Application\Command;
 
-use EsSandbox\Basket\Model\BasketId;
-use EsSandbox\Basket\Model\ProductId;
 use EsSandbox\Common\Application\CommandBus\Command;
 use Ramsey\Uuid\UuidInterface;
 
+//todo: Probably it should be immutable
 final class RemoveProductFromBasket implements Command
 {
     /** @var UuidInterface */
@@ -28,7 +27,7 @@ final class RemoveProductFromBasket implements Command
     /**
      * @return UuidInterface
      */
-    public function id()
+    public function basketId()
     {
         return $this->basketId;
     }

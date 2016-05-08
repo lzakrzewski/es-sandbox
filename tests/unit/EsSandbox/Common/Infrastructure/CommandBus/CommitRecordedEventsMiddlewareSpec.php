@@ -8,8 +8,8 @@ use EsSandbox\Common\Infrastructure\CommandBus\CommitRecordedEventsMiddleware;
 use EsSandbox\Common\Model\EventStore;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use Ramsey\Uuid\Uuid;
 use tests\fixtures\FakeEvent;
-use tests\fixtures\FakeId;
 
 /**
  * @mixin CommitRecordedEventsMiddleware
@@ -23,7 +23,7 @@ class CommitRecordedEventsMiddlewareSpec extends ObjectBehavior
 
     public function it_commits_recorded_events(EventStore $eventStore)
     {
-        $event = new FakeEvent(FakeId::generate());
+        $event = new FakeEvent(Uuid::uuid4());
         RecordedEvents::instance()->record($event);
 
         $this->handle($this->message(), $this->dummyCallable());
@@ -40,7 +40,7 @@ class CommitRecordedEventsMiddlewareSpec extends ObjectBehavior
 
     public function it_does_not_erase_events_after_commit()
     {
-        $event = new FakeEvent(FakeId::generate());
+        $event = new FakeEvent(Uuid::uuid4());
         RecordedEvents::instance()->record($event);
 
         $this->handle($this->message(), $this->dummyCallable());

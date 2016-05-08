@@ -4,10 +4,10 @@ namespace EsSandbox\Common\Infrastructure\EventStore;
 
 use EsSandbox\Common\Model\Event;
 use EsSandbox\Common\Model\EventStore;
-use EsSandbox\Common\Model\Identifier;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
 //Todo:
 // - test for serialization
@@ -45,11 +45,11 @@ class GuzzleEventStore implements EventStore
         ]);
     }
 
-    private function streamUri(Identifier $id)
+    private function streamUri(UuidInterface $id)
     {
-        $shortName = (new \ReflectionClass($id))->getShortName();
+        $streamName = $this->streamName($id);
 
-        return sprintf('%s/streams/%s_%s', $this->uri, $shortName, $id);
+        return sprintf('%s/streams/%s', $this->uri, $streamName, $id);
     }
 
     private function serialize(Event $event)
@@ -68,7 +68,7 @@ class GuzzleEventStore implements EventStore
     }
 
     /** {@inheritdoc} */
-    public function aggregateHistoryFor(Identifier $id)
+    public function aggregateHistoryFor(UuidInterface $id)
     {
         $data   = $this->readStream($this->streamUri($id));
         $events = [];
@@ -100,15 +100,23 @@ class GuzzleEventStore implements EventStore
 
     private function readEvent($eventUri)
     {
-        $response = $this->client->request('GET', $eventUri, [
-            'headers' => ['Accept' => ['application/json']],
-        ]);
+        $response = $this->client
+            ->request(
+                'GET',
+                $eventUri,
+                [
+                    'headers' => [
+                        'Accept' => ['application/json'],
+                    ],
+                ]
+            );
 
         return $response->getBody()->getContents();
     }
 
     private function unserialize($class, $contents)
     {
+        //Todo: deprecated ?
         if ($class == 'FakeEvent') {
             $class = '\tests\fixtures\FakeEvent';
         }
@@ -123,5 +131,10 @@ class GuzzleEventStore implements EventStore
         }
 
         return $contents;
+    }
+
+    private function streamName(UuidInterface $id)
+    {
+        return $id->toString();
     }
 }

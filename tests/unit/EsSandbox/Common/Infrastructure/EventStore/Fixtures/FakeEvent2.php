@@ -3,17 +3,18 @@
 namespace tests\unit\EsSandbox\Common\Infrastructure\EventStore\Fixtures;
 
 use EsSandbox\Common\Model\Event;
-use tests\fixtures\FakeId;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
 final class FakeEvent2 implements Event
 {
-    /** @var FakeId */
+    /** @var UuidInterface */
     private $id;
 
     /**
-     * @param FakeId $id
+     * @param UuidInterface $id
      */
-    public function __construct(FakeId $id)
+    public function __construct(UuidInterface $id)
     {
         $this->id = $id;
     }
@@ -33,6 +34,6 @@ final class FakeEvent2 implements Event
     /** {@inheritdoc} */
     public static function fromString($contents)
     {
-        return new self(FakeId::fromString(json_decode($contents)->id));
+        return new self(Uuid::fromString(json_decode($contents)->id));
     }
 }

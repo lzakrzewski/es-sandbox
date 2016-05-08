@@ -8,19 +8,19 @@ use EsSandbox\Basket\Application\Command\AddProductToBasket;
 use EsSandbox\Basket\Application\Command\PickUpBasket;
 use EsSandbox\Basket\Application\Command\RemoveProductFromBasket;
 use EsSandbox\Basket\Model\Basket;
-use EsSandbox\Basket\Model\BasketId;
 use EsSandbox\Basket\Model\BasketWasPickedUp;
 use EsSandbox\Basket\Model\ProductDoesNotExist;
-use EsSandbox\Basket\Model\ProductId;
 use EsSandbox\Basket\Model\ProductWasAddedToBasket;
 use EsSandbox\Basket\Model\ProductWasRemovedFromBasket;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class BasketContext extends DefaultContext
 {
-    /** @var BasketId */
+    /** @var UuidInterface */
     private $basketId;
 
     /** @AfterScenario */
@@ -39,7 +39,7 @@ class BasketContext extends DefaultContext
     /**
      * @Given I have basket with id :basketId picked up
      */
-    public function iHaveBasketWithIdPickedUp(BasketId $basketId)
+    public function iHaveBasketWithIdPickedUp(UuidInterface $basketId)
     {
         $this->basketId = $basketId;
 
@@ -56,34 +56,34 @@ class BasketContext extends DefaultContext
         array_shift($products);
 
         foreach ($products as $product) {
-            $this->given(new ProductWasAddedToBasket($this->basketId, ProductId::fromString($product[0]), $product[1]));
+            $this->given(new ProductWasAddedToBasket($this->basketId, Uuid::fromString($product[0]), $product[1]));
         }
     }
 
     /**
      * @When I pick up basket with id :basketId
      */
-    public function iPickUpBasketWithId(BasketId $basketId)
+    public function iPickUpBasketWithId(UuidInterface $basketId)
     {
         $this->basketId = $basketId;
 
-        $this->when(new PickUpBasket($basketId->raw()));
+        $this->when(new PickUpBasket($basketId));
     }
 
     /**
      * @When I add product with id :productId and name :name to my basket
      */
-    public function iAddProductWithIdAndNameToMyBasket(ProductId $productId, $name)
+    public function iAddProductWithIdAndNameToMyBasket(UuidInterface $productId, $name)
     {
-        $this->when(new AddProductToBasket($this->basketId->raw(), $productId->raw(), $name));
+        $this->when(new AddProductToBasket($this->basketId, $productId, $name));
     }
 
     /**
      * @When I remove product with id :productId from my basket
      */
-    public function iRemoveProductWithIdFromMyBasket(ProductId $productId)
+    public function iRemoveProductWithIdFromMyBasket(UuidInterface $productId)
     {
-        $this->when(new RemoveProductFromBasket($this->basketId->raw(), $productId->raw()));
+        $this->when(new RemoveProductFromBasket($this->basketId, $productId));
     }
 
     /**

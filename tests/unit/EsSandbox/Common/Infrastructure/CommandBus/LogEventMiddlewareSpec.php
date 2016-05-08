@@ -7,8 +7,8 @@ use EsSandbox\Common\Infrastructure\CommandBus\LogEventMiddleware;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Psr\Log\LoggerInterface;
+use Ramsey\Uuid\Uuid;
 use tests\fixtures\FakeEvent;
-use tests\fixtures\FakeId;
 
 /**
  * @mixin LogEventMiddleware
@@ -22,7 +22,7 @@ class LogEventMiddlewareSpec extends ObjectBehavior
 
     public function it_logs_message_when_it_is_event(LoggerInterface $logger)
     {
-        $event = new FakeEvent(FakeId::generate());
+        $event = new FakeEvent(Uuid::uuid4());
         $logger->info(Argument::cetera())->shouldBeCalled();
 
         $this->handle($event, $this->dummyCallable());

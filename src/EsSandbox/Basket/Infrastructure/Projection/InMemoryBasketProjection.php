@@ -6,6 +6,9 @@ use EsSandbox\Basket\Application\Projection\BasketProjection;
 use EsSandbox\Basket\Application\Projection\ProductView;
 use Ramsey\Uuid\UuidInterface;
 
+/**
+ * @deprecated
+ */
 final class InMemoryBasketProjection implements BasketProjection
 {
     /** @var InMemoryStorage */

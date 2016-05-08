@@ -4,10 +4,10 @@ namespace tests\unit\EsSandbox\Bundle\AppBundle\Command;
 
 use EsSandbox\Basket\Application\Command\AddProductToBasket;
 use EsSandbox\Basket\Application\Command\RemoveProductFromBasket;
-use EsSandbox\Basket\Model\BasketId;
 use EsSandbox\Bundle\AppBundle\Command\ShoppingSimulation;
 use EsSandbox\Common\Application\CommandBus\Command;
 use PhpSpec\ObjectBehavior;
+use Ramsey\Uuid\Uuid;
 
 /**
  * @mixin ShoppingSimulation
@@ -16,7 +16,7 @@ class ShoppingSimulationSpec extends ObjectBehavior
 {
     public function it_simulates_shopping()
     {
-        $basketId = BasketId::generate();
+        $basketId = Uuid::uuid4();
 
         $this->beConstructedThrough('simulate', ['basketId' => $basketId, 'limit' => 10]);
 
@@ -25,7 +25,7 @@ class ShoppingSimulationSpec extends ObjectBehavior
 
     public function it_fails_when_limit_is_invalid()
     {
-        $basketId = BasketId::generate();
+        $basketId = Uuid::uuid4();
 
         $this->beConstructedThrough('simulate', ['basketId' => $basketId, 'limit' => -10]);
 

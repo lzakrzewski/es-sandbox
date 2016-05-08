@@ -3,8 +3,6 @@
 namespace EsSandbox\Basket\Application\Command;
 
 use EsSandbox\Basket\Model\Basket;
-use EsSandbox\Basket\Model\BasketId;
-use EsSandbox\Basket\Model\ProductId;
 use EsSandbox\Common\Application\CommandBus\CommandHandler;
 use EsSandbox\Common\Model\EventStore;
 
@@ -26,9 +24,9 @@ final class AddProductToBasketHandler implements CommandHandler
      */
     public function handle(AddProductToBasket $command)
     {
-        $basketId = BasketId::of($command->id());
+        $basketId = $command->basketId();
 
         $basket = Basket::reconstituteFrom($this->events->aggregateHistoryFor($basketId));
-        $basket->addProduct(ProductId::of($command->productId), $command->name);
+        $basket->addProduct($command->productId, $command->name);
     }
 }

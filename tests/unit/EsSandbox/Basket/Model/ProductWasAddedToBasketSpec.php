@@ -2,10 +2,9 @@
 
 namespace tests\unit\EsSandbox\Basket\Model;
 
-use EsSandbox\Basket\Model\BasketId;
-use EsSandbox\Basket\Model\ProductId;
 use EsSandbox\Basket\Model\ProductWasAddedToBasket;
 use PhpSpec\ObjectBehavior;
+use Ramsey\Uuid\Uuid;
 
 /**
  * @mixin ProductWasAddedToBasket
@@ -15,8 +14,8 @@ class ProductWasAddedToBasketSpec extends ObjectBehavior
     public function it_can_be_string()
     {
         $this->beConstructedWith(
-            BasketId::fromString('44f80bab-a9eb-447a-bea9-4611d09a6bd1'),
-            ProductId::fromString('03a84dc9-5e37-4f9f-a0f0-b8efc5fe523d'),
+            Uuid::fromString('44f80bab-a9eb-447a-bea9-4611d09a6bd1'),
+            Uuid::fromString('03a84dc9-5e37-4f9f-a0f0-b8efc5fe523d'),
             'Teapot'
         );
 
@@ -43,8 +42,8 @@ class ProductWasAddedToBasketSpec extends ObjectBehavior
 
         $this->shouldBeLike(
             new ProductWasAddedToBasket(
-                BasketId::fromString('44f80bab-a9eb-447a-bea9-4611d09a6bd1'),
-                ProductId::fromString('03a84dc9-5e37-4f9f-a0f0-b8efc5fe523d'),
+                Uuid::fromString('44f80bab-a9eb-447a-bea9-4611d09a6bd1'),
+                Uuid::fromString('03a84dc9-5e37-4f9f-a0f0-b8efc5fe523d'),
                 'Teapot'
             )
         );

@@ -5,7 +5,7 @@ namespace EsSandbox\Common\Infrastructure\EventStore;
 use EsSandbox\Common\Model\AggregateHistory;
 use EsSandbox\Common\Model\Event;
 use EsSandbox\Common\Model\EventStore;
-use EsSandbox\Common\Model\Identifier;
+use Ramsey\Uuid\UuidInterface;
 
 /**
  * Todo: Remove this.
@@ -43,13 +43,13 @@ final class InMemoryEventStore implements EventStore
     }
 
     /** {@inheritdoc} */
-    public function aggregateHistoryFor(Identifier $id)
+    public function aggregateHistoryFor(UuidInterface $id)
     {
         if (!$this->has($id)) {
-            return AggregateHistory::of($id, []);
+            return AggregateHistory::of([]);
         }
 
-        return AggregateHistory::of($id, $this->events[(string) $id]);
+        return AggregateHistory::of($this->events[(string) $id]);
     }
 
     public function reset()

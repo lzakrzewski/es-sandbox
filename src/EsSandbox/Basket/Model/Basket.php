@@ -6,6 +6,7 @@ use EsSandbox\Common\Model\AggregateHistory;
 use EsSandbox\Common\Model\AggregateRoot;
 use EsSandbox\Common\Model\ApplyEvents;
 use EsSandbox\Common\Model\RecordsEvents;
+use Ramsey\Uuid\UuidInterface;
 
 //Todo: handle cases when unable to reconstruct
 final class Basket implements AggregateRoot
@@ -13,7 +14,7 @@ final class Basket implements AggregateRoot
     use RecordsEvents;
     use ApplyEvents;
 
-    /** @var BasketId */
+    /** @var UuidInterface */
     private $basketId;
 
     private $products = [];
@@ -23,11 +24,11 @@ final class Basket implements AggregateRoot
     }
 
     /**
-     * @param BasketId $basketId
+     * @param UuidInterface $basketId
      *
      * @return Basket
      */
-    public static function pickUp(BasketId $basketId)
+    public static function pickUp(UuidInterface $basketId)
     {
         $self  = new self();
         $event = new BasketWasPickedUp($basketId);
@@ -40,7 +41,7 @@ final class Basket implements AggregateRoot
     }
 
     /**
-     * @return BasketId
+     * @return UuidInterface
      */
     public function id()
     {
@@ -48,10 +49,10 @@ final class Basket implements AggregateRoot
     }
 
     /**
-     * @param ProductId $productId
+     * @param UuidInterface $productId
      * @param $name
      */
-    public function addProduct(ProductId $productId, $name)
+    public function addProduct(UuidInterface $productId, $name)
     {
         $event = new ProductWasAddedToBasket($this->id(), $productId, $name);
 
@@ -61,9 +62,9 @@ final class Basket implements AggregateRoot
     }
 
     /**
-     * @param ProductId $productId
+     * @param UuidInterface $productId
      */
-    public function removeProduct(ProductId $productId)
+    public function removeProduct(UuidInterface $productId)
     {
         if (!$this->hasProduct($productId)) {
             throw new ProductDoesNotExist(
@@ -124,7 +125,7 @@ final class Basket implements AggregateRoot
         }
     }
 
-    private function hasProduct(ProductId $productId)
+    private function hasProduct(UuidInterface $productId)
     {
         return isset($this->products[(string) $productId]);
     }

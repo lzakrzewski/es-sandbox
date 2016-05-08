@@ -3,6 +3,8 @@
 namespace EsSandbox\Common\Model;
 
 //Todo: Commit multiple events
+use Ramsey\Uuid\UuidInterface;
+
 interface EventStore
 {
     /**
@@ -11,9 +13,9 @@ interface EventStore
     public function commit(Event $event);
 
     /**
-     * @param Identifier $id
+     * @param UuidInterface $id
      *
      * @return AggregateHistory
      */
-    public function aggregateHistoryFor(Identifier $id);
+    public function aggregateHistoryFor(UuidInterface $id);
 }

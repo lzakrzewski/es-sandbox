@@ -3,14 +3,13 @@
 namespace tests\unit\EsSandbox\Basket\Model;
 
 use EsSandbox\Basket\Model\Basket;
-use EsSandbox\Basket\Model\BasketId;
 use EsSandbox\Basket\Model\BasketWasPickedUp;
 use EsSandbox\Basket\Model\ProductDoesNotExist;
-use EsSandbox\Basket\Model\ProductId;
 use EsSandbox\Basket\Model\ProductWasAddedToBasket;
 use EsSandbox\Basket\Model\ProductWasRemovedFromBasket;
 use EsSandbox\Common\Model\AggregateHistory;
 use PhpSpec\ObjectBehavior;
+use Ramsey\Uuid\Uuid;
 
 /**
  * @mixin Basket
@@ -19,7 +18,7 @@ class BasketSpec extends ObjectBehavior
 {
     public function it_can_be_picked_up()
     {
-        $basketId = BasketId::generate();
+        $basketId = Uuid::uuid4();
 
         $this->beConstructedThrough('pickUp', [$basketId]);
 
@@ -28,7 +27,7 @@ class BasketSpec extends ObjectBehavior
 
     public function it_has_id()
     {
-        $basketId = BasketId::generate();
+        $basketId = Uuid::uuid4();
 
         $this->beConstructedThrough('pickUp', [$basketId]);
 
@@ -37,8 +36,8 @@ class BasketSpec extends ObjectBehavior
 
     public function it_can_add_product()
     {
-        $basketId  = BasketId::generate();
-        $productId = ProductId::generate();
+        $basketId  = Uuid::uuid4();
+        $productId = Uuid::uuid4();
 
         $this->beConstructedThrough('pickUp', [$basketId]);
 
@@ -49,8 +48,8 @@ class BasketSpec extends ObjectBehavior
 
     public function it_can_remove_product()
     {
-        $basketId  = BasketId::generate();
-        $productId = ProductId::generate();
+        $basketId  = Uuid::uuid4();
+        $productId = Uuid::uuid4();
 
         $this->beConstructedThrough('pickUp', [$basketId]);
 
@@ -62,8 +61,8 @@ class BasketSpec extends ObjectBehavior
 
     public function it_fails_when_product_to_remove_does_not_exists_within_basket()
     {
-        $basketId  = BasketId::generate();
-        $productId = ProductId::generate();
+        $basketId  = Uuid::uuid4();
+        $productId = Uuid::uuid4();
 
         $this->beConstructedThrough('pickUp', [$basketId]);
 
@@ -72,7 +71,7 @@ class BasketSpec extends ObjectBehavior
 
     public function it_has_count_of_products()
     {
-        $basketId = BasketId::generate();
+        $basketId = Uuid::uuid4();
 
         $this->beConstructedThrough('pickUp', [$basketId]);
 
@@ -81,7 +80,7 @@ class BasketSpec extends ObjectBehavior
 
     public function it_can_be_picked_up_basing_on_history()
     {
-        $basketId = BasketId::generate();
+        $basketId = Uuid::uuid4();
 
         $this->given([
             new BasketWasPickedUp($basketId),
@@ -92,8 +91,8 @@ class BasketSpec extends ObjectBehavior
 
     public function it_can_be_picked_up_with_added_product_basing_on_history()
     {
-        $basketId  = BasketId::generate();
-        $productId = ProductId::generate();
+        $basketId  = Uuid::uuid4();
+        $productId = Uuid::uuid4();
 
         $this->given([
             new BasketWasPickedUp($basketId),
@@ -108,8 +107,8 @@ class BasketSpec extends ObjectBehavior
 
     public function it_can_be_picked_up_with_removed_product_basing_on_history()
     {
-        $basketId  = BasketId::generate();
-        $productId = ProductId::generate();
+        $basketId  = Uuid::uuid4();
+        $productId = Uuid::uuid4();
 
         $this->given([
             new BasketWasPickedUp($basketId),
@@ -125,10 +124,7 @@ class BasketSpec extends ObjectBehavior
         $this->beConstructedThrough(
             'reconstituteFrom',
             [
-                AggregateHistory::of(
-                    $events[0]->id(),
-                    $events
-                ),
+                AggregateHistory::of($events),
             ]
         );
     }

@@ -5,13 +5,15 @@ namespace tests\integration\EsSandbox\Basket\Infrastructure\Projection;
 use EsSandbox\Basket\Application\Projection\ProductView;
 use EsSandbox\Basket\Infrastructure\Projection\InMemoryBasketProjection;
 use EsSandbox\Basket\Infrastructure\Projection\InMemoryStorage;
-use EsSandbox\Basket\Model\BasketId;
-use EsSandbox\Basket\Model\ProductId;
 use EsSandbox\Basket\Model\ProductWasAddedToBasket;
 use EsSandbox\Basket\Model\ProductWasRemovedFromBasket;
 use EsSandbox\Common\Infrastructure\EventStore\InMemoryEventStore;
+use Ramsey\Uuid\Uuid;
 use tests\integration\IntegrationTestCase;
 
+/**
+ * @deprecated
+ */
 class InMemoryBasketProjectionTest extends IntegrationTestCase
 {
     /** @var InMemoryBasketProjection */
@@ -20,10 +22,10 @@ class InMemoryBasketProjectionTest extends IntegrationTestCase
     /** @test */
     public function it_can_get_products_in_basket()
     {
-        $basketId   = BasketId::generate();
-        $productId1 = ProductId::generate();
-        $productId2 = ProductId::generate();
-        $productId3 = ProductId::generate();
+        $basketId   = Uuid::uuid4();
+        $productId1 = Uuid::uuid4();
+        $productId2 = Uuid::uuid4();
+        $productId3 = Uuid::uuid4();
 
         $this->given([
             new ProductWasAddedToBasket($basketId, $productId1, 'Teapot'),
@@ -32,7 +34,7 @@ class InMemoryBasketProjectionTest extends IntegrationTestCase
             new ProductWasRemovedFromBasket($basketId, $productId3),
         ]);
 
-        $products = $this->projection->get($basketId->raw());
+        $products = $this->projection->get($basketId);
 
         $this->assertEquals([
             new ProductView((string) $productId1, 'Teapot'),
@@ -42,9 +44,9 @@ class InMemoryBasketProjectionTest extends IntegrationTestCase
 
     public function it_can_get_empty_basket_when_no_products()
     {
-        $basketId = BasketId::generate();
+        $basketId = Uuid::uuid4();
 
-        $this->assertEmpty($this->projection->get($basketId->raw()));
+        $this->assertEmpty($this->projection->get($basketId));
     }
 
     /** {@inheritdoc} */

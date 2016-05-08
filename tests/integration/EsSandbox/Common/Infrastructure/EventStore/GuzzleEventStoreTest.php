@@ -3,8 +3,8 @@
 namespace tests\integration\EsSandbox\Common\Infrastructure\EventStore;
 
 use EsSandbox\Common\Infrastructure\EventStore\GuzzleEventStore;
+use Ramsey\Uuid\Uuid;
 use tests\fixtures\FakeEvent;
-use tests\fixtures\FakeId;
 use tests\integration\IntegrationTestCase;
 
 class GuzzleEventStoreTest extends IntegrationTestCase
@@ -15,7 +15,7 @@ class GuzzleEventStoreTest extends IntegrationTestCase
     /** @test */
     public function it_can_get_history_of_aggregate()
     {
-        $id = FakeId::generate();
+        $id = Uuid::uuid4();
 
         $this->eventStore->commit(new FakeEvent($id));
         $this->eventStore->commit(new FakeEvent($id));
@@ -26,8 +26,8 @@ class GuzzleEventStoreTest extends IntegrationTestCase
     /** @test */
     public function it_does_not_get_history_of_another_aggregate()
     {
-        $id1 = FakeId::generate();
-        $id2 = FakeId::generate();
+        $id1 = Uuid::uuid4();
+        $id2 = Uuid::uuid4();
 
         $this->eventStore->commit(new FakeEvent($id1));
         $this->eventStore->commit(new FakeEvent($id2));
@@ -38,7 +38,7 @@ class GuzzleEventStoreTest extends IntegrationTestCase
     /** @test */
     public function it_can_get_empty_history_when_no_events()
     {
-        $this->assertEmpty($this->eventStore->aggregateHistoryFor(FakeId::generate()));
+        $this->assertEmpty($this->eventStore->aggregateHistoryFor(Uuid::uuid4()));
     }
 
     /** {@inheritdoc} */

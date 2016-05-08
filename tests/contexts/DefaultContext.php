@@ -7,10 +7,9 @@ use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
 use Behat\Symfony2Extension\Context\KernelDictionary;
 use EsSandbox\Basket\Infrastructure\Projection\InMemoryStorage;
-use EsSandbox\Basket\Model\BasketId;
-use EsSandbox\Basket\Model\ProductId;
 use EsSandbox\Common\Application\CommandBus\Command;
 use EsSandbox\Common\Model\Event;
+use Ramsey\Uuid\Uuid;
 
 class DefaultContext implements KernelAwareContext, SnippetAcceptingContext
 {
@@ -41,7 +40,7 @@ class DefaultContext implements KernelAwareContext, SnippetAcceptingContext
      */
     public function basketId($basketId)
     {
-        return BasketId::fromString($basketId);
+        return Uuid::fromString($basketId);
     }
 
     /**
@@ -49,7 +48,7 @@ class DefaultContext implements KernelAwareContext, SnippetAcceptingContext
      */
     public function productId($productId)
     {
-        return ProductId::fromString($productId);
+        return Uuid::fromString($productId);
     }
 
     protected function given(Event $event)

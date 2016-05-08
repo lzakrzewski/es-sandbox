@@ -3,10 +3,9 @@
 namespace tests\integration\EsSandbox\Basket\Infrastructure\Projection;
 
 use EsSandbox\Basket\Infrastructure\Projection\GuzzleEventStoreBasketProjection;
-use EsSandbox\Basket\Model\BasketId;
-use EsSandbox\Basket\Model\ProductId;
 use EsSandbox\Basket\Model\ProductWasAddedToBasket;
 use EsSandbox\Basket\Model\ProductWasRemovedFromBasket;
+use Ramsey\Uuid\Uuid;
 use tests\integration\IntegrationTestCase;
 
 class GuzzleEventStoreBasketProjectionTest extends IntegrationTestCase
@@ -17,10 +16,10 @@ class GuzzleEventStoreBasketProjectionTest extends IntegrationTestCase
     /** @test */
     public function it_can_get_products_in_basket()
     {
-        $basketId   = BasketId::generate();
-        $productId1 = ProductId::fromString('ddf37fb1-6869-499d-9b9b-c4f10ad32782');
-        $productId2 = ProductId::fromString('4d72292b-67ca-477c-83ea-ec8e0406b251');
-        $productId3 = ProductId::fromString('ec5e512e-3513-43ad-925b-f9496bf816f9');
+        $basketId   = Uuid::uuid4();
+        $productId1 = Uuid::fromString('ddf37fb1-6869-499d-9b9b-c4f10ad32782');
+        $productId2 = Uuid::fromString('4d72292b-67ca-477c-83ea-ec8e0406b251');
+        $productId3 = Uuid::fromString('ec5e512e-3513-43ad-925b-f9496bf816f9');
 
         $this->given([
             new ProductWasAddedToBasket($basketId, $productId1, 'Teapot'),
@@ -29,7 +28,7 @@ class GuzzleEventStoreBasketProjectionTest extends IntegrationTestCase
             new ProductWasRemovedFromBasket($basketId, $productId3),
         ]);
 
-        $basket = $this->projection->get($basketId->raw());
+        $basket = $this->projection->get($basketId);
 
         $this->assertEquals([
             'basket' => [
@@ -50,9 +49,9 @@ class GuzzleEventStoreBasketProjectionTest extends IntegrationTestCase
     /** @test */
     public function it_can_get_empty_basket_when_no_products()
     {
-        $basketId = BasketId::generate();
+        $basketId = Uuid::uuid4();
 
-        $this->assertEmpty($this->projection->get($basketId->raw()));
+        $this->assertEmpty($this->projection->get($basketId));
     }
 
     /** {@inheritdoc} */

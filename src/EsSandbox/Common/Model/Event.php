@@ -2,10 +2,13 @@
 
 namespace EsSandbox\Common\Model;
 
+//Todo: remove toString, add toArray
+use Ramsey\Uuid\UuidInterface;
+
 interface Event
 {
     /**
-     * @return Identifier
+     * @return UuidInterface
      */
     public function id();
 

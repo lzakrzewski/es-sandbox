@@ -23,6 +23,10 @@ class BasketSpec extends ObjectBehavior
         $this->beConstructedThrough('pickUp', [$basketId]);
 
         $this->shouldBeAnInstanceOf(Basket::class);
+        $this->uncommittedEvents()
+            ->shouldBeLike(
+                [new BasketWasPickedUp($basketId)]
+            );
     }
 
     public function it_has_id()
@@ -44,6 +48,12 @@ class BasketSpec extends ObjectBehavior
         $this->addProduct($productId, 'Teapot');
 
         $this->count()->shouldBe(1);
+        $this->uncommittedEvents()->shouldBeLike(
+            [
+                new BasketWasPickedUp($basketId),
+                new ProductWasAddedToBasket($basketId, $productId, 'Teapot'),
+            ]
+        );
     }
 
     public function it_can_remove_product()
@@ -57,6 +67,13 @@ class BasketSpec extends ObjectBehavior
         $this->removeProduct($productId);
 
         $this->count()->shouldBe(0);
+        $this->uncommittedEvents()->shouldBeLike(
+            [
+                new BasketWasPickedUp($basketId),
+                new ProductWasAddedToBasket($basketId, $productId, 'Teapot'),
+                new ProductWasRemovedFromBasket($basketId, $productId),
+            ]
+        );
     }
 
     public function it_fails_when_product_to_remove_does_not_exists_within_basket()
@@ -86,7 +103,9 @@ class BasketSpec extends ObjectBehavior
             new BasketWasPickedUp($basketId),
         ]);
 
-        $this->shouldBeLike(Basket::pickUp($basketId));
+        $this->shouldBeAnInstanceOf(Basket::class);
+        $this->id()->shouldBeLike($basketId);
+        $this->uncommittedEvents()->shouldBeLike([]);
     }
 
     public function it_can_be_picked_up_with_added_product_basing_on_history()
@@ -99,10 +118,10 @@ class BasketSpec extends ObjectBehavior
             new ProductWasAddedToBasket($basketId, $productId, 'Teapot'),
         ]);
 
-        $basket = Basket::pickUp($basketId);
-        $basket->addProduct($productId, 'Teapot');
-
-        $this->shouldBeLike($basket);
+        $this->shouldBeAnInstanceOf(Basket::class);
+        $this->id()->shouldBeLike($basketId);
+        $this->count()->shouldBe(1);
+        $this->uncommittedEvents()->shouldBeLike([]);
     }
 
     public function it_can_be_picked_up_with_removed_product_basing_on_history()
@@ -116,7 +135,10 @@ class BasketSpec extends ObjectBehavior
             new ProductWasRemovedFromBasket($basketId, $productId),
         ]);
 
-        $this->shouldBeLike(Basket::pickUp($basketId));
+        $this->shouldBeAnInstanceOf(Basket::class);
+        $this->id()->shouldBeLike($basketId);
+        $this->count()->shouldBe(0);
+        $this->uncommittedEvents()->shouldBeLike([]);
     }
 
     private function given(array $events)

@@ -9,14 +9,14 @@ use EsSandbox\Common\Model\EventStore;
 final class RemoveProductFromBasketHandler implements CommandHandler
 {
     /** @var EventStore */
-    private $events;
+    private $eventStore;
 
     /**
      * @param EventStore $events
      */
     public function __construct(EventStore $events)
     {
-        $this->events = $events;
+        $this->eventStore = $events;
     }
 
     /**
@@ -25,8 +25,12 @@ final class RemoveProductFromBasketHandler implements CommandHandler
     public function handle(RemoveProductFromBasket $command)
     {
         $basketId = $command->basketId();
+        $basket   = Basket::reconstituteFrom(
+            $this->eventStore->aggregateHistoryFor($basketId)
+        );
 
-        $basket = Basket::reconstituteFrom($this->events->aggregateHistoryFor($basketId));
         $basket->removeProduct($command->productId);
+
+        $this->eventStore->commit($basket->uncommittedEvents());
     }
 }

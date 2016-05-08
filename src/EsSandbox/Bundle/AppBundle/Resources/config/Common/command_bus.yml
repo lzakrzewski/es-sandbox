@@ -44,18 +44,3 @@ services:
           - "@logger"
         tags:
             - { name: command_bus_middleware, priority: 300 }
-
-    es_sandbox.command_bus.recorded_events:
-        class: EsSandbox\Common\Application\CommandBus\RecordedEvents
-        factory: [EsSandbox\Common\Application\CommandBus\RecordedEvents, instance]
-        public: false
-        tags:
-            - { name: event_recorder }
-
-    es_sandbox.command_bus.commit_recorded_events:
-        class: EsSandbox\Common\Infrastructure\CommandBus\CommitRecordedEventsMiddleware
-        arguments:
-          - "@es_sandbox.event_store"
-          - "@es_sandbox.command_bus.recorded_events"
-        tags:
-            - { name: command_bus_middleware, priority: -2000 }

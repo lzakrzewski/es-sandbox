@@ -22,4 +22,9 @@ interface AggregateRoot
      * @return AggregateRoot
      */
     public static function reconstituteFrom(AggregateHistory $history);
+
+    /**
+     * @return Event[]
+     */
+    public function uncommittedEvents();
 }

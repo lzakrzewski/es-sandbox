@@ -10,9 +10,6 @@ use GuzzleHttp\Exception\RequestException;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
-//Todo:
-// - test for serialization
-// - test ???? if all events was added
 class GuzzleEventStore implements EventStore
 {
     /** @var Client */

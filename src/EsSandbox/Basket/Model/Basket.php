@@ -4,18 +4,16 @@ namespace EsSandbox\Basket\Model;
 
 use EsSandbox\Common\Model\AggregateHistory;
 use EsSandbox\Common\Model\AggregateRoot;
-use EsSandbox\Common\Model\ApplyEvents;
-use EsSandbox\Common\Model\RecordsEvents;
+use EsSandbox\Common\Model\Event;
 use Ramsey\Uuid\UuidInterface;
 
-//Todo: handle cases when unable to reconstruct
 final class Basket implements AggregateRoot
 {
-    use RecordsEvents;
-    use ApplyEvents;
-
     /** @var UuidInterface */
     private $basketId;
+
+    /** @var Event[] */
+    private $uncommittedEvents = [];
 
     private $products = [];
 
@@ -38,14 +36,6 @@ final class Basket implements AggregateRoot
         $self->recordThat($event);
 
         return $self;
-    }
-
-    /**
-     * @return UuidInterface
-     */
-    public function id()
-    {
-        return $this->basketId;
     }
 
     /**
@@ -93,10 +83,35 @@ final class Basket implements AggregateRoot
         $self = new self();
 
         foreach ($history as $event) {
-            $self->apply($event);
+            $reflection = new \ReflectionClass($event);
+            $method     = 'apply'.$reflection->getShortName();
+
+            $self->$method($event);
         }
 
         return $self;
+    }
+
+    /** {@inheritdoc} */
+    public function recordThat(Event $event)
+    {
+        $this->uncommittedEvents[] = $event;
+    }
+
+    /** {@inheritdoc} */
+    public function id()
+    {
+        return $this->basketId;
+    }
+
+    /** {@inheritdoc} */
+    public function uncommittedEvents()
+    {
+        $uncommittedEvents = $this->uncommittedEvents;
+
+        $this->uncommittedEvents = [];
+
+        return $uncommittedEvents;
     }
 
     /**

@@ -1,6 +1,8 @@
 services:
     es_sandbox.pick_up_basket:
         class: EsSandbox\Basket\Application\Command\PickUpBasketHandler
+        arguments:
+            - "@es_sandbox.event_store"
         tags:
             - { name: command_handler, handles: EsSandbox\Basket\Application\Command\PickUpBasket }
 

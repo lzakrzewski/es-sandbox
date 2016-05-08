@@ -24,7 +24,7 @@ final class RemoveProductFromBasketHandler implements CommandHandler
      */
     public function handle(RemoveProductFromBasket $command)
     {
-        $basketId = $command->basketId();
+        $basketId = $command->basketId;
         $basket   = Basket::reconstituteFrom(
             $this->eventStore->aggregateHistoryFor($basketId)
         );

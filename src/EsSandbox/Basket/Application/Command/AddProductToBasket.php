@@ -7,10 +7,10 @@ use Ramsey\Uuid\UuidInterface;
 
 final class AddProductToBasket implements Command
 {
-    /** @var UuidInterface @deprecated */
+    /** @var UuidInterface */
     public $basketId;
 
-    /** @var UuidInterface @deprecated */
+    /** @var UuidInterface */
     public $productId;
 
     /** @var string */
@@ -26,11 +26,5 @@ final class AddProductToBasket implements Command
         $this->basketId  = $basketId;
         $this->productId = $productId;
         $this->name      = $name;
-    }
-
-    /** {@inheritdoc} */
-    public function basketId()
-    {
-        return $this->basketId;
     }
 }

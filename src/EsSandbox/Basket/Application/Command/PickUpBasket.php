@@ -17,12 +17,4 @@ final class PickUpBasket implements Command
     {
         $this->basketId = $basketId;
     }
-
-    /**
-     * @return UuidInterface
-     */
-    public function basketId()
-    {
-        return $this->basketId;
-    }
 }

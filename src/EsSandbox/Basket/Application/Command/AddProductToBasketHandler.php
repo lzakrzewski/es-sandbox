@@ -24,7 +24,7 @@ final class AddProductToBasketHandler implements CommandHandler
      */
     public function handle(AddProductToBasket $command)
     {
-        $basketId = $command->basketId();
+        $basketId = $command->basketId;
         $basket   = Basket::reconstituteFrom(
             $this->eventStore->aggregateHistoryFor($basketId)
         );

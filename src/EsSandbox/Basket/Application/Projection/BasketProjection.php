@@ -9,7 +9,7 @@ interface BasketProjection
     /**
      * @param UuidInterface $basketId
      *
-     * @return ProductView[]
+     * @return array
      */
     public function get(UuidInterface $basketId);
 }

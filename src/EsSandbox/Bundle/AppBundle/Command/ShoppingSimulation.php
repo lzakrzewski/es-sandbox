@@ -46,7 +46,7 @@ class ShoppingSimulation
     /**
      * @return Command[]
      */
-    public function get()
+    public function randomCommands()
     {
         return $this->shopping($this->basketId, $this->limit);
     }

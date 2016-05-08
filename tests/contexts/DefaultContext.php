@@ -6,28 +6,26 @@ use Assert\Assertion;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
 use Behat\Symfony2Extension\Context\KernelDictionary;
-use EsSandbox\Basket\Infrastructure\Projection\InMemoryStorage;
 use EsSandbox\Common\Application\CommandBus\Command;
 use EsSandbox\Common\Model\Event;
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
 class DefaultContext implements KernelAwareContext, SnippetAcceptingContext
 {
     use KernelDictionary;
 
+    /** @var UuidInterface */
+    protected $aggregateId;
+
     /** @var \Exception */
     private $exception;
-
-    /** @BeforeScenario */
-    public function beforeScenario()
-    {
-        InMemoryStorage::instance()->clear();
-    }
 
     /** @AfterScenario */
     public function afterScenario()
     {
-        $this->exception = null;
+        $this->aggregateId = null;
+        $this->exception   = null;
     }
 
     protected function container()
@@ -72,7 +70,7 @@ class DefaultContext implements KernelAwareContext, SnippetAcceptingContext
 
     protected function then($expectedEventClass)
     {
-        $events = $this->container()->get('es_sandbox.event_store')->events();
+        $events = $this->container()->get('es_sandbox.event_store')->aggregateHistoryFor($this->aggregateId);
 
         Assertion::notEmpty(array_filter($events, function (Event $event) use ($expectedEventClass) {
             return $event instanceof $expectedEventClass;

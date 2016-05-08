@@ -5,6 +5,7 @@ namespace EsSandbox\Bundle\AppBundle\Command;
 use EsSandbox\Basket\Model\BasketWasPickedUp;
 use EsSandbox\Basket\Model\ProductWasAddedToBasket;
 use EsSandbox\Basket\Model\ProductWasRemovedFromBasket;
+use EsSandbox\Common\Application\CommandBus\Command;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -35,25 +36,24 @@ class SimulateShoppingCommand extends ContainerAwareCommand
         $limit    = $this->limit($input);
         $basketId = $this->basketId($input);
 
+        $commands = ShoppingSimulation::simulate($basketId, $limit)
+            ->randomCommands();
+
         try {
-            $this->handle(
-                ShoppingSimulation::simulate($basketId, $limit)->get()
-            );
+            foreach ($commands as $command) {
+                $this->handleCommand($command);
+            }
 
             $this->renderRecordedEvents($output, $basketId);
-            $this->renderProjection($output, $basketId);
         } catch (\Exception $e) {
             return $this->handleError($output, $e);
         }
     }
 
-    private function handle(array $commands)
+    private function handleCommand(Command $command)
     {
         $commandBus = $this->getContainer()->get('es_sandbox.command_bus');
-
-        foreach ($commands as $command) {
-            $commandBus->handle($command);
-        }
+        $commandBus->handle($command);
     }
 
     private function handleError(OutputInterface $output, \Exception $exception)
@@ -89,25 +89,6 @@ class SimulateShoppingCommand extends ContainerAwareCommand
         }
 
         $table->setStyle('borderless');
-        $table->render();
-    }
-
-    private function renderProjection(OutputInterface $output, UuidInterface $basketId)
-    {
-        $output->writeln('');
-        $output->writeln('Your basket contains:');
-        $products = $this->getContainer()
-            ->get('es_sandbox.projection.basket')
-            ->get($basketId);
-
-        $table = new Table($output);
-        $table
-            ->setHeaders(['productId', 'name']);
-
-        foreach ($products as $product) {
-            $table->addRow([$product->productId, $product->name]);
-        }
-
         $table->render();
     }
 

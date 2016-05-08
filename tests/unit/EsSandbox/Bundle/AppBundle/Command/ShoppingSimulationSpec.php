@@ -20,7 +20,7 @@ class ShoppingSimulationSpec extends ObjectBehavior
 
         $this->beConstructedThrough('simulate', ['basketId' => $basketId, 'limit' => 10]);
 
-        $this->get()->shouldHaveProductsCount(10);
+        $this->randomCommands()->shouldHaveProductsCount(10);
     }
 
     public function it_fails_when_limit_is_invalid()
@@ -29,7 +29,7 @@ class ShoppingSimulationSpec extends ObjectBehavior
 
         $this->beConstructedThrough('simulate', ['basketId' => $basketId, 'limit' => -10]);
 
-        $this->shouldThrow(\InvalidArgumentException::class)->during('get');
+        $this->shouldThrow(\InvalidArgumentException::class)->during('randomCommands');
     }
 
     public function getMatchers()

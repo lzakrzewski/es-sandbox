@@ -2,10 +2,8 @@
 
 namespace tests\integration\EsSandbox\Bundle\AppBundle\Command;
 
-use EsSandbox\Basket\Infrastructure\Projection\InMemoryStorage;
 use EsSandbox\Basket\Model\Basket;
 use EsSandbox\Bundle\AppBundle\Command\SimulateShoppingCommand;
-use EsSandbox\Common\Infrastructure\EventStore\InMemoryEventStore;
 use EsSandbox\Common\Model\AggregateHistory;
 use Ramsey\Uuid\Uuid;
 use tests\integration\CLITestCase;
@@ -21,7 +19,7 @@ class SimulateShoppingCommandTest extends CLITestCase
         $this->executeCommand(new SimulateShoppingCommand(), ['basketId' => (string) $basketId, 'limit' => 10]);
 
         $this->outputShouldStatusCodeIs(0);
-        $this->countProducts(10);
+        $this->countProductsInBasket($basketId, 10);
     }
 
     /** @test */
@@ -40,19 +38,10 @@ class SimulateShoppingCommandTest extends CLITestCase
         $this->outputShouldStatusCodeIs(1);
     }
 
-    private function countProducts($products)
+    private function countProductsInBasket($products)
     {
         $events = $this->container()->get('es_sandbox.event_store')->events();
 
         $this->assertEquals($products, Basket::reconstituteFrom(AggregateHistory::of($events))->count());
-    }
-
-    /** {@inheritdoc} */
-    protected function setUp()
-    {
-        parent::setUp();
-
-        InMemoryStorage::instance()->clear();
-        InMemoryEventStore::instance()->reset();
     }
 }

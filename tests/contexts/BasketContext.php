@@ -20,15 +20,6 @@ use Ramsey\Uuid\UuidInterface;
  */
 class BasketContext extends DefaultContext
 {
-    /** @var UuidInterface */
-    private $basketId;
-
-    /** @AfterScenario */
-    public function afterScenario()
-    {
-        $this->basketId = null;
-    }
-
     /**
      * @Given I don't have basket
      */
@@ -41,9 +32,9 @@ class BasketContext extends DefaultContext
      */
     public function iHaveBasketWithIdPickedUp(UuidInterface $basketId)
     {
-        $this->basketId = $basketId;
+        $this->aggregateId = $basketId;
 
-        $this->given([new BasketWasPickedUp($this->basketId)]);
+        $this->given([new BasketWasPickedUp($this->aggregateId)]);
     }
 
     /**
@@ -57,7 +48,7 @@ class BasketContext extends DefaultContext
 
         $this->given(array_map(function (array $productData) {
             return new ProductWasAddedToBasket(
-                $this->basketId,
+                $this->aggregateId,
                 Uuid::fromString($productData[0]),
                 $productData[1]
             );
@@ -69,7 +60,7 @@ class BasketContext extends DefaultContext
      */
     public function iPickUpBasketWithId(UuidInterface $basketId)
     {
-        $this->basketId = $basketId;
+        $this->aggregateId = $basketId;
 
         $this->when(new PickUpBasket($basketId));
     }
@@ -79,7 +70,7 @@ class BasketContext extends DefaultContext
      */
     public function iAddProductWithIdAndNameToMyBasket(UuidInterface $productId, $name)
     {
-        $this->when(new AddProductToBasket($this->basketId, $productId, $name));
+        $this->when(new AddProductToBasket($this->aggregateId, $productId, $name));
     }
 
     /**
@@ -87,7 +78,7 @@ class BasketContext extends DefaultContext
      */
     public function iRemoveProductWithIdFromMyBasket(UuidInterface $productId)
     {
-        $this->when(new RemoveProductFromBasket($this->basketId, $productId));
+        $this->when(new RemoveProductFromBasket($this->aggregateId, $productId));
     }
 
     /**
@@ -128,7 +119,9 @@ class BasketContext extends DefaultContext
     public function myBasketShouldContainProducts($count)
     {
         $basket = Basket::reconstituteFrom(
-            $this->container()->get('es_sandbox.event_store')->aggregateHistoryFor($this->basketId)
+            $this->container()
+                ->get('es_sandbox.event_store')
+                ->aggregateHistoryFor($this->aggregateId)
         );
 
         Assertion::eq($count, $basket->count());

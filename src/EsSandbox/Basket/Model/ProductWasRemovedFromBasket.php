@@ -24,6 +24,15 @@ final class ProductWasRemovedFromBasket implements Event
         $this->productId = $productId;
     }
 
+    /** {@inheritdoc} */
+    public static function fromArray(array $contents)
+    {
+        return new self(
+            Uuid::fromString($contents['basketId']),
+            Uuid::fromString($contents['productId'])
+        );
+    }
+
     /**
      * @return UuidInterface
      */
@@ -41,24 +50,11 @@ final class ProductWasRemovedFromBasket implements Event
     }
 
     /** {@inheritdoc} */
-    public function __toString()
+    public function toArray()
     {
-        return (string) json_encode(
-            [
-                'basketId'  => (string) $this->basketId,
-                'productId' => (string) $this->productId,
-            ]
-        );
-    }
-
-    /** {@inheritdoc} */
-    public static function fromString($contents)
-    {
-        $contents = json_decode($contents);
-
-        return new self(
-            Uuid::fromString($contents->basketId),
-            Uuid::fromString($contents->productId)
-        );
+        return [
+            'basketId'  => (string) $this->basketId,
+            'productId' => (string) $this->productId,
+        ];
     }
 }

@@ -15,12 +15,25 @@ class BasketWasPickedUpSpec extends ObjectBehavior
     {
         $this->beConstructedWith(Uuid::fromString('44f80bab-a9eb-447a-bea9-4611d09a6bd1'));
 
-        $this->__toString()->shouldBe(json_encode(['basketId' => '44f80bab-a9eb-447a-bea9-4611d09a6bd1']));
+        $this
+            ->toArray()
+            ->shouldBe(
+                [
+                    'basketId' => '44f80bab-a9eb-447a-bea9-4611d09a6bd1',
+                ]
+            );
     }
 
     public function it_can_be_created_from_string()
     {
-        $this->beConstructedThrough('fromString', [json_encode(['basketId' => '44f80bab-a9eb-447a-bea9-4611d09a6bd1'])]);
+        $this->beConstructedThrough(
+            'fromArray',
+            [
+                [
+                    'basketId' => '44f80bab-a9eb-447a-bea9-4611d09a6bd1',
+                ],
+            ]
+        );
 
         $this->shouldBeLike(new BasketWasPickedUp(Uuid::fromString('44f80bab-a9eb-447a-bea9-4611d09a6bd1')));
     }

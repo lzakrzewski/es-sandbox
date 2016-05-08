@@ -2,7 +2,6 @@
 
 namespace EsSandbox\Common\Model;
 
-//Todo: remove toString, add toArray
 use Ramsey\Uuid\UuidInterface;
 
 interface Event
@@ -13,14 +12,14 @@ interface Event
     public function id();
 
     /**
-     * @return Event
+     * @return array
      */
-    public function __toString();
+    public function toArray();
 
     /**
-     * @param $contents
+     * @param array $contents
      *
      * @return Event
      */
-    public static function fromString($contents);
+    public static function fromArray(array $contents);
 }

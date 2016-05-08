@@ -67,7 +67,7 @@ class GuzzleEventStore implements EventStore
                 [
                     'eventId'   => Uuid::uuid4()->toString(),
                     'eventType' => $reflection->getShortName(),
-                    'data'      => (array) json_decode((string) $event),
+                    'data'      => $event->toArray(),
                 ],
             ]
         );
@@ -124,16 +124,12 @@ class GuzzleEventStore implements EventStore
     {
         $fqn = $this->mapper->get($class);
 
-        return $fqn::fromString($this->clear($contents));
+        return $fqn::fromArray($this->clear($contents));
     }
 
     private function clear($contents)
     {
-        if (is_string(json_decode($contents))) {
-            return json_decode($contents);
-        }
-
-        return $contents;
+        return (array) json_decode($contents, true);
     }
 
     private function streamName(UuidInterface $id)

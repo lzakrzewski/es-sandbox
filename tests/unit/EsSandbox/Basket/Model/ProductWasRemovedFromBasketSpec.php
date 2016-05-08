@@ -18,23 +18,23 @@ class ProductWasRemovedFromBasketSpec extends ObjectBehavior
             Uuid::fromString('03a84dc9-5e37-4f9f-a0f0-b8efc5fe523d')
         );
 
-        $this->__toString()->shouldBe(
-            json_encode(
+        $this
+            ->toArray()
+            ->shouldBe(
                 [
                     'basketId'  => '44f80bab-a9eb-447a-bea9-4611d09a6bd1',
                     'productId' => '03a84dc9-5e37-4f9f-a0f0-b8efc5fe523d',
                 ]
-            )
-        );
+            );
     }
 
     public function it_can_be_created_from_string()
     {
-        $this->beConstructedThrough('fromString', [
-            json_encode([
+        $this->beConstructedThrough('fromArray', [
+            [
                 'basketId'  => '44f80bab-a9eb-447a-bea9-4611d09a6bd1',
                 'productId' => '03a84dc9-5e37-4f9f-a0f0-b8efc5fe523d',
-            ]),
+            ],
         ]);
 
         $this->shouldBeLike(

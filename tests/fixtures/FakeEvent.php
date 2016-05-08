@@ -26,14 +26,14 @@ final class FakeEvent implements Event
     }
 
     /** {@inheritdoc} */
-    public function __toString()
+    public function toArray()
     {
-        return (string) json_encode(['id' => (string) $this->id]);
+        return ['id' => (string) $this->id];
     }
 
     /** {@inheritdoc} */
-    public static function fromString($contents)
+    public static function fromArray(array $contents)
     {
-        return new self(Uuid::fromString(json_decode($contents)->id));
+        return new self(Uuid::fromString($contents['id']));
     }
 }

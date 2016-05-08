@@ -9,6 +9,9 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Ramsey\Uuid\Uuid;
 
+//Todo:
+// - test for serialization
+// - test ???? if all events was added
 class GuzzleGetEventStore implements EventStore
 {
     /** @var Client */
@@ -51,12 +54,14 @@ class GuzzleGetEventStore implements EventStore
 
     private function serialize(Event $event)
     {
+        $reflection = new \ReflectionClass($event);
+
         return json_encode(
             [
                 [
                     'eventId'   => Uuid::uuid4()->toString(),
-                    'eventType' => get_class($event),
-                    'data'      => (string) $event,
+                    'eventType' => $reflection->getShortName(),
+                    'data'      => (array) json_decode((string) $event),
                 ],
             ]
         );
@@ -104,6 +109,10 @@ class GuzzleGetEventStore implements EventStore
 
     private function unserialize($class, $contents)
     {
+        if ($class == 'FakeEvent') {
+            $class = '\tests\fixtures\FakeEvent';
+        }
+
         return $class::fromString($this->clear($contents));
     }
 

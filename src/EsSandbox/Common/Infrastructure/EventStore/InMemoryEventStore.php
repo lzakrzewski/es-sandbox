@@ -7,6 +7,7 @@ use EsSandbox\Common\Model\Event;
 use EsSandbox\Common\Model\EventStore;
 use EsSandbox\Common\Model\Identifier;
 
+//Todo: Remove this
 final class InMemoryEventStore implements EventStore
 {
     /** @var self */

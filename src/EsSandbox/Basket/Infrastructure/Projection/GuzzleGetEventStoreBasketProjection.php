@@ -34,7 +34,7 @@ class GuzzleGetEventStoreBasketProjection implements BasketProjection
             'headers' => ['Accept' => ['application/json']],
         ]);
 
-        return json_decode($response->getBody()->getContents())->count;
+        return (array) json_decode($response->getBody()->getContents(), true);
     }
 
     private function projectionName(UuidInterface $id)
@@ -56,12 +56,53 @@ class GuzzleGetEventStoreBasketProjection implements BasketProjection
         $name = $this->projectionName($basketId);
 
         return <<<STR
-fromStream('$name').
-    when({
-       \$init : function(s,e) {return {count : 0}},
-       \$any  : function(s,e) {return {count : s.count +1}}
-    })
-;
+fromStream('$name')
+    .when({
+        \$init: function(state, event) {
+            return {
+                basket: {
+                    products: []
+                }
+            }
+        },
+        \$any: function(state, event) {
+            if (event.eventType == "ProductWasAddedToBasket") {
+                return addProduct(event.body, state);
+            }
+
+            if (event.eventType == "ProductWasRemovedFromBasket") {
+                return removeProduct(event.body.productId, state);
+            }
+
+            return state;
+        }
+    });
+
+addProduct = function(product, state) {
+    state.basket.products.push({
+        name: product.name,
+        productId: product.productId
+    });
+
+    return state;
+}
+
+removeProduct = function(productIdToRemove, state) {
+    state.basket.products = function() {
+        var idx,
+            products = [];
+
+        for (idx in state.basket.products) {
+            if (state.basket.products[idx].productId !== productIdToRemove) {
+                products.push(state.basket.products[idx]);
+            }
+        }
+
+        return products;
+    }();
+
+    return state;
+}
 STR;
     }
 }

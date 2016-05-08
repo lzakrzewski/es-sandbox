@@ -2,6 +2,7 @@
 
 namespace EsSandbox\Common\Model;
 
+//Todo: remove this trait
 trait ApplyEvents
 {
     /**

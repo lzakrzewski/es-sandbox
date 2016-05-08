@@ -40,41 +40,16 @@ class GuzzleEventStore implements EventStore
     /** {@inheritdoc} */
     public function commit(array $events)
     {
-        // Todo: Write multiple events in one api call
-
-        foreach ($events as $event) {
-            $this->writeStream($this->streamUri($event->id()), $this->serialize($event));
+        if (empty($events)) {
+            return;
         }
-    }
 
-    private function writeStream($streamUri, $content)
-    {
-        $this->client->request('POST', $streamUri, [
-            'headers' => ['Content-Type' => ['application/vnd.eventstore.events+json']],
-            'body'    => $content,
-        ]);
-    }
-
-    private function streamUri(UuidInterface $id)
-    {
-        $streamName = $this->streamName($id);
-
-        return sprintf('%s/streams/%s', $this->uri, $streamName, $id);
-    }
-
-    private function serialize(Event $event)
-    {
-        $reflection = new \ReflectionClass($event);
-
-        return json_encode(
-            [
-                [
-                    'eventId'   => Uuid::uuid4()->toString(),
-                    'eventType' => $reflection->getShortName(),
-                    'data'      => $event->toArray(),
-                ],
-            ]
-        );
+        foreach ($this->segregateEventsByStreamId($events) as $streamId => $stream) {
+            $this->writeStream(
+                $this->streamUri(Uuid::fromString($streamId)),
+                $this->serialize($stream)
+            );
+        }
     }
 
     /** {@inheritdoc} */
@@ -93,6 +68,37 @@ class GuzzleEventStore implements EventStore
         }
 
         return $events;
+    }
+
+    private function writeStream($streamUri, $content)
+    {
+        $this->client->request('POST', $streamUri, [
+            'headers' => ['Content-Type' => ['application/vnd.eventstore.events+json']],
+            'body'    => $content,
+        ]);
+    }
+
+    private function streamUri(UuidInterface $id)
+    {
+        $streamName = $this->streamName($id);
+
+        return sprintf('%s/streams/%s', $this->uri, $streamName, $id);
+    }
+
+    private function serialize(array $events)
+    {
+        $data = [];
+
+        foreach ($events as $event) {
+            $reflection = new \ReflectionClass($event);
+            $data[]     = [
+                'eventId'   => $event->id()->toString(),
+                'eventType' => $reflection->getShortName(),
+                'data'      => $event->toArray(),
+            ];
+        }
+
+        return json_encode($data);
     }
 
     private function readStream($streamUri)
@@ -139,5 +145,24 @@ class GuzzleEventStore implements EventStore
     private function streamName(UuidInterface $id)
     {
         return $id->toString();
+    }
+
+    private function segregateEventsByStreamId(array $events)
+    {
+        $streams = [];
+
+        foreach ($events as $event) {
+            $streamId = $event->id();
+
+            if (isset($streams[(string) $streamId])) {
+                continue;
+            }
+
+            $streams[(string) $streamId] = array_filter($events, function (Event $event) use ($streamId) {
+                return $streamId->equals($event->id());
+            });
+        }
+
+        return $streams;
     }
 }

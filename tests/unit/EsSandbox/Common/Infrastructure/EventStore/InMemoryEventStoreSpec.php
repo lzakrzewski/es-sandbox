@@ -29,8 +29,7 @@ class InMemoryEventStoreSpec extends ObjectBehavior
     {
         $id = Uuid::uuid4();
 
-        $this->commit(new FakeEvent($id));
-        $this->commit(new FakeEvent($id));
+        $this->commit([new FakeEvent($id), new FakeEvent($id)]);
 
         $this->aggregateHistoryFor($id)
             ->shouldBeLike(AggregateHistory::of([new FakeEvent($id), new FakeEvent($id)]));
@@ -41,8 +40,7 @@ class InMemoryEventStoreSpec extends ObjectBehavior
         $id1 = Uuid::uuid4();
         $id2 = Uuid::uuid4();
 
-        $this->commit(new FakeEvent($id1));
-        $this->commit(new FakeEvent($id2));
+        $this->commit([new FakeEvent($id1), new FakeEvent($id2)]);
 
         $this->aggregateHistoryFor($id1)
             ->shouldBeLike(AggregateHistory::of([new FakeEvent($id1)]));
@@ -60,8 +58,7 @@ class InMemoryEventStoreSpec extends ObjectBehavior
     {
         $id = Uuid::uuid4();
 
-        $this->commit(new FakeEvent($id));
-        $this->commit(new FakeEvent($id));
+        $this->commit([new FakeEvent($id), new FakeEvent($id)]);
 
         $this->reset();
 

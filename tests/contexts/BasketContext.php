@@ -43,7 +43,7 @@ class BasketContext extends DefaultContext
     {
         $this->basketId = $basketId;
 
-        $this->given(new BasketWasPickedUp($this->basketId));
+        $this->given([new BasketWasPickedUp($this->basketId)]);
     }
 
     /**
@@ -55,9 +55,13 @@ class BasketContext extends DefaultContext
 
         array_shift($products);
 
-        foreach ($products as $product) {
-            $this->given(new ProductWasAddedToBasket($this->basketId, Uuid::fromString($product[0]), $product[1]));
-        }
+        $this->given(array_map(function (array $productData) {
+            return new ProductWasAddedToBasket(
+                $this->basketId,
+                Uuid::fromString($productData[0]),
+                $productData[1]
+            );
+        }, $products));
     }
 
     /**

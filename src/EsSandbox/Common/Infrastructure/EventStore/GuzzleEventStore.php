@@ -38,9 +38,13 @@ class GuzzleEventStore implements EventStore
     }
 
     /** {@inheritdoc} */
-    public function commit(Event $event)
+    public function commit(array $events)
     {
-        $this->writeStream($this->streamUri($event->id()), $this->serialize($event));
+        // Todo: Write multiple events in one api call
+
+        foreach ($events as $event) {
+            $this->writeStream($this->streamUri($event->id()), $this->serialize($event));
+        }
     }
 
     private function writeStream($streamUri, $content)

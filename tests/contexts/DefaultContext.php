@@ -51,9 +51,9 @@ class DefaultContext implements KernelAwareContext, SnippetAcceptingContext
         return Uuid::fromString($productId);
     }
 
-    protected function given(Event $event)
+    protected function given(array $events)
     {
-        $this->container()->get('es_sandbox.event_store')->commit($event);
+        $this->container()->get('es_sandbox.event_store')->commit($events);
     }
 
     protected function when(Command $command)

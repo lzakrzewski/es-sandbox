@@ -28,7 +28,7 @@ class CommitRecordedEventsMiddlewareSpec extends ObjectBehavior
 
         $this->handle($this->message(), $this->dummyCallable());
 
-        $eventStore->commit($event)->shouldBeCalled();
+        $eventStore->commit([$event])->shouldBeCalled();
     }
 
     public function it_does_not_commit_events_when_no_recorded_events(EventStore $eventStore)

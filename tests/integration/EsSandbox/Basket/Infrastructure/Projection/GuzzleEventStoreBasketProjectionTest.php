@@ -72,8 +72,9 @@ class GuzzleEventStoreBasketProjectionTest extends IntegrationTestCase
 
     private function given(array $events)
     {
-        foreach ($events as $event) {
-            $this->container()->get('es_sandbox.event_store.guzzle_eventstore')->commit($event);
-        }
+        $this
+            ->container()
+            ->get('es_sandbox.event_store.guzzle_eventstore')
+            ->commit($events);
     }
 }

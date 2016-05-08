@@ -17,8 +17,7 @@ class GuzzleEventStoreTest extends IntegrationTestCase
     {
         $id = Uuid::uuid4();
 
-        $this->eventStore->commit(new FakeEvent($id));
-        $this->eventStore->commit(new FakeEvent($id));
+        $this->eventStore->commit([new FakeEvent($id), new FakeEvent($id)]);
 
         $this->assertEquals([new FakeEvent($id), new FakeEvent($id)], $this->eventStore->aggregateHistoryFor($id));
     }
@@ -29,8 +28,7 @@ class GuzzleEventStoreTest extends IntegrationTestCase
         $id1 = Uuid::uuid4();
         $id2 = Uuid::uuid4();
 
-        $this->eventStore->commit(new FakeEvent($id1));
-        $this->eventStore->commit(new FakeEvent($id2));
+        $this->eventStore->commit([new FakeEvent($id1), new FakeEvent($id2)]);
 
         $this->assertEquals([new FakeEvent($id1)], $this->eventStore->aggregateHistoryFor($id1));
     }

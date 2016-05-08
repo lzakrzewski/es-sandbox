@@ -3,7 +3,6 @@
 namespace EsSandbox\Common\Infrastructure\EventStore;
 
 use EsSandbox\Common\Model\AggregateHistory;
-use EsSandbox\Common\Model\Event;
 use EsSandbox\Common\Model\EventStore;
 use Ramsey\Uuid\UuidInterface;
 
@@ -37,9 +36,11 @@ final class InMemoryEventStore implements EventStore
     }
 
     /** {@inheritdoc} */
-    public function commit(Event $event)
+    public function commit(array $events)
     {
-        $this->events[(string) $event->id()][] = $event;
+        foreach ($events as $event) {
+            $this->events[(string) $event->id()][] = $event;
+        }
     }
 
     /** {@inheritdoc} */

@@ -5,6 +5,9 @@ namespace EsSandbox\Common\Application\CommandBus;
 use EsSandbox\Common\Model\Event;
 use SimpleBus\Message\Recorder\ContainsRecordedMessages;
 
+/**
+ * @deprecated
+ */
 final class RecordedEvents implements ContainsRecordedMessages
 {
     /** @var RecordedEvents */

@@ -2,15 +2,14 @@
 
 namespace EsSandbox\Common\Model;
 
-//Todo: Commit multiple events
 use Ramsey\Uuid\UuidInterface;
 
 interface EventStore
 {
     /**
-     * @param Event $event
+     * @param Event[] $events
      */
-    public function commit(Event $event);
+    public function commit(array $events);
 
     /**
      * @param UuidInterface $id

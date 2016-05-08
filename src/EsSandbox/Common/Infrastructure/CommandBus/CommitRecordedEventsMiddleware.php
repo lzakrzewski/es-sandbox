@@ -6,6 +6,9 @@ use EsSandbox\Common\Application\CommandBus\RecordedEvents;
 use EsSandbox\Common\Model\EventStore;
 use SimpleBus\Message\Bus\Middleware\MessageBusMiddleware;
 
+/**
+ * @deprecated
+ */
 class CommitRecordedEventsMiddleware implements MessageBusMiddleware
 {
     /** @var EventStore */
@@ -27,8 +30,12 @@ class CommitRecordedEventsMiddleware implements MessageBusMiddleware
     /** {@inheritdoc} */
     public function handle($message, callable $next)
     {
-        foreach ($this->recordedEvents->recordedMessages() as $event) {
-            $this->eventStore->commit($event);
+        $events = $this->recordedEvents->recordedMessages();
+
+        if (empty($events)) {
+            return;
         }
+
+        $this->eventStore->commit($events);
     }
 }

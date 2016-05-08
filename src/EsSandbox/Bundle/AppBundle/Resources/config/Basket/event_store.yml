@@ -1,0 +1,7 @@
+services:
+    es_sandbox.short_name_to_fqn: "@es_sandbox.basket_short_name_to_fqn"
+
+    es_sandbox.basket_short_name_to_fqn:
+        class: EsSandbox\Basket\Infrastructure\EventStore\Mapper\BasketShortNameToFQN
+
+#todo: prefix services with domain context

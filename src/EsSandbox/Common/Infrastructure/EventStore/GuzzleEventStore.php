@@ -2,6 +2,7 @@
 
 namespace EsSandbox\Common\Infrastructure\EventStore;
 
+use EsSandbox\Common\Infrastructure\EventStore\Mapper\ShortNameToFQN;
 use EsSandbox\Common\Model\Event;
 use EsSandbox\Common\Model\EventStore;
 use GuzzleHttp\Client;
@@ -17,17 +18,22 @@ class GuzzleEventStore implements EventStore
     /** @var Client */
     private $client;
 
+    /** @var ShortNameToFQN */
+    private $mapper;
+
     /** @var string */
     private $uri;
 
     /**
-     * @param Client $client
-     * @param string $host
-     * @param string $port
+     * @param Client         $client
+     * @param ShortNameToFQN $mapper
+     * @param string         $host
+     * @param string         $port
      */
-    public function __construct(Client $client, $host, $port)
+    public function __construct(Client $client, ShortNameToFQN $mapper, $host, $port)
     {
         $this->client = $client;
+        $this->mapper = $mapper;
         $this->uri    = sprintf('%s:%s', $host, $port);
     }
 
@@ -116,12 +122,9 @@ class GuzzleEventStore implements EventStore
 
     private function unserialize($class, $contents)
     {
-        //Todo: deprecated ?
-        if ($class == 'FakeEvent') {
-            $class = '\tests\fixtures\FakeEvent';
-        }
+        $fqn = $this->mapper->get($class);
 
-        return $class::fromString($this->clear($contents));
+        return $fqn::fromString($this->clear($contents));
     }
 
     private function clear($contents)

@@ -5,3 +5,9 @@ framework:
     test: ~
     session:
         storage_id: session.storage.mock_file
+
+services:
+    es_sandbox.short_name_to_fqn: "@es_sandbox.fake_short_name_to_fqn"
+
+    es_sandbox.fake_short_name_to_fqn:
+        class: tests\EsSandbox\FakeShortNameToFQN

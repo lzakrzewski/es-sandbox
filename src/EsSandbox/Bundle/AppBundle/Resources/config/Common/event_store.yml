@@ -7,5 +7,6 @@ services:
         class: EsSandbox\Common\Infrastructure\EventStore\GuzzleEventStore
         arguments:
             - "@guzzle_http.client"
+            - "@es_sandbox.short_name_to_fqn"
             - "http://127.0.0.1"
             - "2113"

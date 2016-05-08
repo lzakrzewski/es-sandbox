@@ -2,14 +2,14 @@
 
 namespace tests\integration\EsSandbox\Common\Infrastructure\EventStore;
 
-use EsSandbox\Common\Infrastructure\EventStore\GuzzleGetEventStore;
+use EsSandbox\Common\Infrastructure\EventStore\GuzzleEventStore;
 use tests\fixtures\FakeEvent;
 use tests\fixtures\FakeId;
 use tests\integration\IntegrationTestCase;
 
-class GuzzleGetEventStoreTest extends IntegrationTestCase
+class GuzzleEventStoreTest extends IntegrationTestCase
 {
-    /** @var GuzzleGetEventStore */
+    /** @var GuzzleEventStore */
     private $eventStore;
 
     /** @test */
@@ -46,7 +46,7 @@ class GuzzleGetEventStoreTest extends IntegrationTestCase
     {
         parent::setUp();
 
-        $this->eventStore = $this->container()->get('es_sandbox.event_store.guzzle_geteventstore');
+        $this->eventStore = $this->container()->get('es_sandbox.event_store.guzzle_eventstore');
     }
 
     /** {@inheritdoc} */

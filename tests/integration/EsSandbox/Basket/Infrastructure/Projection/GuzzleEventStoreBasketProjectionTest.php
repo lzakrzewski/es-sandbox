@@ -2,16 +2,16 @@
 
 namespace tests\integration\EsSandbox\Basket\Infrastructure\Projection;
 
-use EsSandbox\Basket\Infrastructure\Projection\GuzzleGetEventStoreBasketProjection;
+use EsSandbox\Basket\Infrastructure\Projection\GuzzleEventStoreBasketProjection;
 use EsSandbox\Basket\Model\BasketId;
 use EsSandbox\Basket\Model\ProductId;
 use EsSandbox\Basket\Model\ProductWasAddedToBasket;
 use EsSandbox\Basket\Model\ProductWasRemovedFromBasket;
 use tests\integration\IntegrationTestCase;
 
-class GuzzleGetEventStoreBasketProjectionTest extends IntegrationTestCase
+class GuzzleEventStoreBasketProjectionTest extends IntegrationTestCase
 {
-    /** @var GuzzleGetEventStoreBasketProjection */
+    /** @var GuzzleEventStoreBasketProjection */
     private $projection;
 
     /** @test */
@@ -60,7 +60,7 @@ class GuzzleGetEventStoreBasketProjectionTest extends IntegrationTestCase
     {
         parent::setUp();
 
-        $this->projection = $this->container()->get('es_sandbox.projection.basket.guzzle_geteventstore');
+        $this->projection = $this->container()->get('es_sandbox.projection.basket.guzzle_eventstore');
     }
 
     /** {@inheritdoc} */
@@ -74,7 +74,7 @@ class GuzzleGetEventStoreBasketProjectionTest extends IntegrationTestCase
     private function given(array $events)
     {
         foreach ($events as $event) {
-            $this->container()->get('es_sandbox.event_store.guzzle_geteventstore')->commit($event);
+            $this->container()->get('es_sandbox.event_store.guzzle_eventstore')->commit($event);
         }
     }
 }

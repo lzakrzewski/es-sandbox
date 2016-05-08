@@ -3,8 +3,8 @@ services:
         class: EsSandbox\Common\Infrastructure\EventStore\InMemoryEventStore
         factory: [EsSandbox\Common\Infrastructure\EventStore\InMemoryEventStore, instance]
 
-    es_sandbox.event_store.guzzle_geteventstore:
-        class: EsSandbox\Common\Infrastructure\EventStore\GuzzleGetEventStore
+    es_sandbox.event_store.guzzle_eventstore:
+        class: EsSandbox\Common\Infrastructure\EventStore\GuzzleEventStore
         arguments:
             - "@guzzle_http.client"
             - "http://127.0.0.1"

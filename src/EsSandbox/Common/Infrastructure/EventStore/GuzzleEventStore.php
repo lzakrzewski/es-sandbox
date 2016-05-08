@@ -12,7 +12,7 @@ use Ramsey\Uuid\Uuid;
 //Todo:
 // - test for serialization
 // - test ???? if all events was added
-class GuzzleGetEventStore implements EventStore
+class GuzzleEventStore implements EventStore
 {
     /** @var Client */
     private $client;

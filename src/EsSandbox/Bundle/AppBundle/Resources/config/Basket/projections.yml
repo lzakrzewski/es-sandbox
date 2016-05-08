@@ -16,8 +16,8 @@ services:
         arguments:
             - "@es_sandbox.projection.storage"
 
-    es_sandbox.projection.basket.guzzle_geteventstore:
-        class: EsSandbox\Basket\Infrastructure\Projection\GuzzleGetEventStoreBasketProjection
+    es_sandbox.projection.basket.guzzle_eventstore:
+        class: EsSandbox\Basket\Infrastructure\Projection\GuzzleEventStoreBasketProjection
         arguments:
             - "@guzzle_http.client"
             - "http://127.0.0.1"

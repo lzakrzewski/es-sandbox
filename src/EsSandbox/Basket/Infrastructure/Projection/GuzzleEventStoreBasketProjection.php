@@ -6,7 +6,7 @@ use EsSandbox\Basket\Application\Projection\BasketProjection;
 use GuzzleHttp\Client;
 use Ramsey\Uuid\UuidInterface;
 
-class GuzzleGetEventStoreBasketProjection implements BasketProjection
+class GuzzleEventStoreBasketProjection implements BasketProjection
 {
     /** @var Client */
     private $client;

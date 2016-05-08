@@ -5,7 +5,7 @@
 This sandbox has the target to test integration between given components: 
 - [Symfony framework](http://symfony.com/)
 - [SimpleBus](http://simplebus.github.io/)
-- [GetEventStore](https://geteventstore.com/)
+- [EventStore](https://geteventstore.com/)
 
 ## Installation
 
@@ -67,6 +67,6 @@ Your basket contains:
 ```
  
 ## Todo
-- [ ] Prepare Dockerfile for `geteventstore`
-- [ ] Create adapter for `geteventstore`
+- [ ] Prepare Dockerfile for `eventstore`
+- [ ] Create adapter for `eventstore`
 

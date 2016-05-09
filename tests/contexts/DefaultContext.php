@@ -28,25 +28,17 @@ class DefaultContext implements KernelAwareContext, SnippetAcceptingContext
         $this->exception   = null;
     }
 
-    protected function container()
-    {
-        return $this->getContainer();
-    }
-
-    /**
-     * @Transform :basketId
-     */
-    public function basketId($basketId)
-    {
-        return Uuid::fromString($basketId);
-    }
-
     /**
      * @Transform :productId
      */
     public function productId($productId)
     {
         return Uuid::fromString($productId);
+    }
+
+    protected function container()
+    {
+        return $this->getContainer();
     }
 
     protected function given(array $events)
@@ -70,10 +62,10 @@ class DefaultContext implements KernelAwareContext, SnippetAcceptingContext
 
     protected function then($expectedEventClass)
     {
-        $events = $this->container()->get('es_sandbox.event_store')->aggregateHistoryFor($this->aggregateId);
+        $history = $this->container()->get('es_sandbox.event_store')->aggregateHistoryFor($this->aggregateId);
 
-        Assertion::notEmpty(array_filter($events, function (Event $event) use ($expectedEventClass) {
+        Assertion::notEmpty(array_filter($history->toArray(), function (Event $event) use ($expectedEventClass) {
             return $event instanceof $expectedEventClass;
-        }));
+        }), sprintf('There is no recorded expected event "%s" on aggregate "%s".', $expectedEventClass, $this->aggregateId));
     }
 }

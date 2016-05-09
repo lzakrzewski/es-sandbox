@@ -36,10 +36,10 @@ class SimulateShoppingCommand extends ContainerAwareCommand
         $limit    = $this->limit($input);
         $basketId = $this->basketId($input);
 
-        $commands = ShoppingSimulation::simulate($basketId, $limit)
-            ->randomCommands();
-
         try {
+            $commands = ShoppingSimulation::simulate($basketId, $limit)
+                ->randomCommands();
+
             foreach ($commands as $command) {
                 $this->handleCommand($command);
             }

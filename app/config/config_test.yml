@@ -11,3 +11,5 @@ services:
 
     es_sandbox.fake_short_name_to_fqn:
         class: tests\EsSandbox\FakeShortNameToFQN
+        arguments:
+            - "@es_sandbox.basket_short_name_to_fqn"

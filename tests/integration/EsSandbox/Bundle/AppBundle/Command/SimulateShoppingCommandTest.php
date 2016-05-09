@@ -4,11 +4,9 @@ namespace tests\integration\EsSandbox\Bundle\AppBundle\Command;
 
 use EsSandbox\Basket\Model\Basket;
 use EsSandbox\Bundle\AppBundle\Command\SimulateShoppingCommand;
-use EsSandbox\Common\Model\AggregateHistory;
 use Ramsey\Uuid\Uuid;
 use tests\integration\CLITestCase;
 
-//Todo: better asserts
 class SimulateShoppingCommandTest extends CLITestCase
 {
     /** @test */
@@ -38,10 +36,10 @@ class SimulateShoppingCommandTest extends CLITestCase
         $this->outputShouldStatusCodeIs(1);
     }
 
-    private function countProductsInBasket($products)
+    private function countProductsInBasket($basketId, $expectedProductsCount)
     {
-        $events = $this->container()->get('es_sandbox.event_store')->events();
+        $history = $this->container()->get('es_sandbox.event_store')->aggregateHistoryFor($basketId);
 
-        $this->assertEquals($products, Basket::reconstituteFrom(AggregateHistory::of($events))->count());
+        $this->assertEquals($expectedProductsCount, Basket::reconstituteFrom($history)->count());
     }
 }

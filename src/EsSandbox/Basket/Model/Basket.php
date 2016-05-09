@@ -44,6 +44,8 @@ final class Basket implements AggregateRoot
      */
     public function addProduct(UuidInterface $productId, $name)
     {
+        //var_dump($this->id());die;
+
         $event = new ProductWasAddedToBasket($this->id(), $productId, $name);
 
         $this->applyProductWasAddedToBasket($event);

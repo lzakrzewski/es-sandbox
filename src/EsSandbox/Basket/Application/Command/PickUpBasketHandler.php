@@ -26,6 +26,8 @@ final class PickUpBasketHandler implements CommandHandler
     {
         $basket = Basket::pickUp($command->basketId);
 
+        //var_dump($basket->uncommittedEvents());die;
+
         $this->eventStore->commit($basket->uncommittedEvents());
     }
 }

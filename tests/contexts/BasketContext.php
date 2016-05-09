@@ -28,11 +28,21 @@ class BasketContext extends DefaultContext
     }
 
     /**
-     * @Given I have basket with id :basketId picked up
+     * @Given I have basket picked up
      */
-    public function iHaveBasketWithIdPickedUp(UuidInterface $basketId)
+    public function iHaveBasketPickedUp()
     {
-        $this->aggregateId = $basketId;
+        $this->aggregateId = Uuid::uuid4();
+
+        $this->when(new PickUpBasket($this->aggregateId));
+    }
+
+    /**
+     * @When I pick up basket
+     */
+    public function iPickUpBasket()
+    {
+        $this->aggregateId = Uuid::uuid4();
 
         $this->given([new BasketWasPickedUp($this->aggregateId)]);
     }
@@ -53,16 +63,6 @@ class BasketContext extends DefaultContext
                 $productData[1]
             );
         }, $products));
-    }
-
-    /**
-     * @When I pick up basket with id :basketId
-     */
-    public function iPickUpBasketWithId(UuidInterface $basketId)
-    {
-        $this->aggregateId = $basketId;
-
-        $this->when(new PickUpBasket($basketId));
     }
 
     /**

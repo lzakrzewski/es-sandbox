@@ -18,7 +18,7 @@ class ShoppingSimulation
     /** @var Command[] */
     private $commands;
 
-    /** @var UuidInterface */
+    /** @var UuidInterface[] */
     private $products = [];
 
     /** @var int */

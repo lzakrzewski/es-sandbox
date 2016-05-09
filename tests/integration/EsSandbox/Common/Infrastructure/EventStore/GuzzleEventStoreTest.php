@@ -3,6 +3,7 @@
 namespace tests\integration\EsSandbox\Common\Infrastructure\EventStore;
 
 use EsSandbox\Common\Infrastructure\EventStore\GuzzleEventStore;
+use EsSandbox\Common\Model\AggregateHistory;
 use Ramsey\Uuid\Uuid;
 use tests\fixtures\FakeEvent;
 use tests\integration\IntegrationTestCase;
@@ -19,7 +20,10 @@ class GuzzleEventStoreTest extends IntegrationTestCase
 
         $this->eventStore->commit([new FakeEvent($id), new FakeEvent($id)]);
 
-        $this->assertEquals([new FakeEvent($id), new FakeEvent($id)], $this->eventStore->aggregateHistoryFor($id));
+        $this->assertEquals(
+            AggregateHistory::of([new FakeEvent($id), new FakeEvent($id)]),
+            $this->eventStore->aggregateHistoryFor($id)
+        );
     }
 
     /** @test */
@@ -30,7 +34,10 @@ class GuzzleEventStoreTest extends IntegrationTestCase
 
         $this->eventStore->commit([new FakeEvent($id1), new FakeEvent($id2)]);
 
-        $this->assertEquals([new FakeEvent($id1)], $this->eventStore->aggregateHistoryFor($id1));
+        $this->assertEquals(
+            AggregateHistory::of([new FakeEvent($id1)]),
+            $this->eventStore->aggregateHistoryFor($id1)
+        );
     }
 
     /** @test */

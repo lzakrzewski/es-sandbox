@@ -3,6 +3,7 @@
 namespace EsSandbox\Common\Infrastructure\EventStore;
 
 use EsSandbox\Common\Infrastructure\EventStore\Mapper\ShortNameToFQN;
+use EsSandbox\Common\Model\AggregateHistory;
 use EsSandbox\Common\Model\Event;
 use EsSandbox\Common\Model\EventStore;
 use GuzzleHttp\Client;
@@ -56,15 +57,15 @@ class GuzzleEventStore implements EventStore
         $events = [];
 
         if (empty($data) || !isset($data['entries'])) {
-            return [];
+            return AggregateHistory::of([]);
         }
 
-        foreach ($data['entries'] as $eventData) {
+        foreach (array_reverse($data['entries']) as $eventData) {
             $contents = $this->readEvent($eventData['id']);
             $events[] = $this->unserialize($eventData['summary'], $contents);
         }
 
-        return $events;
+        return AggregateHistory::of($events);
     }
 
     private function writeStream($streamUri, $content)
@@ -89,7 +90,7 @@ class GuzzleEventStore implements EventStore
         foreach ($events as $event) {
             $reflection = new \ReflectionClass($event);
             $data[]     = [
-                'eventId'   => $event->id()->toString(),
+                'eventId'   => Uuid::uuid4()->toString(),
                 'eventType' => $reflection->getShortName(),
                 'data'      => $event->toArray(),
             ];

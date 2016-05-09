@@ -22,6 +22,7 @@ class EsSandboxAppExtension extends Extension
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config/Basket'));
         $loader->load('command_handlers.yml');
         $loader->load('projections.yml');
+        $loader->load('event_store.yml');
 
         $configuration = new Configuration();
         $this->processConfiguration($configuration, $config);

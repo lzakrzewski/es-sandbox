@@ -3,6 +3,7 @@
 namespace EsSandbox\Basket\Infrastructure\Projection;
 
 use EsSandbox\Basket\Application\Projection\BasketProjection;
+use EsSandbox\Basket\Application\Projection\ProductView;
 use GuzzleHttp\Client;
 use Ramsey\Uuid\UuidInterface;
 
@@ -41,7 +42,13 @@ class GuzzleEventStoreBasketProjection implements BasketProjection
                 ]
             );
 
-        return (array) json_decode($response->getBody()->getContents(), true);
+        $result = (array) json_decode($response->getBody()->getContents(), true);
+
+        if (empty($result)) {
+            return [];
+        }
+
+        return $this->mapToProjectViews($result);
     }
 
     private function createProjection(UuidInterface $basketId)
@@ -122,5 +129,20 @@ STR;
     private function streamName(UuidInterface $basketId)
     {
         return $basketId->toString();
+    }
+
+    private function mapToProjectViews(array $result)
+    {
+        if (isset($result['basket']) && isset($result['basket']['products'])) {
+            $views = [];
+
+            foreach ($result['basket']['products'] as $productData) {
+                $views[] = new ProductView($productData['productId'], $productData['name']);
+            }
+
+            return $views;
+        }
+
+        return [];
     }
 }

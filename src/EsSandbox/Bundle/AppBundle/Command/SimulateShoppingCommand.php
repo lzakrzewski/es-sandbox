@@ -8,7 +8,6 @@ use EsSandbox\Basket\Model\ProductWasRemovedFromBasket;
 use EsSandbox\Common\Application\CommandBus\Command;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,17 +16,18 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class SimulateShoppingCommand extends ContainerAwareCommand
+class SimulateShoppingCommand extends ConsoleCommand
 {
     const DEFAULT_LIMIT_OF_PRODUCTS = 10;
 
+    /** {@inheritdoc} */
     protected function configure()
     {
         $this
             ->setName('es_sandbox:basket:simulate-shopping')
             ->addArgument('basketId', InputArgument::OPTIONAL, 'Id of basket')
             ->addArgument('limit', InputArgument::OPTIONAL, 'Limit of products')
-            ->setDescription('Example command for simulate shopping');
+            ->setDescription('Shopping simulation');
     }
 
     /** {@inheritdoc} */
@@ -54,13 +54,6 @@ class SimulateShoppingCommand extends ContainerAwareCommand
     {
         $commandBus = $this->getContainer()->get('es_sandbox.command_bus');
         $commandBus->handle($command);
-    }
-
-    private function handleError(OutputInterface $output, \Exception $exception)
-    {
-        $output->writeln('<error>'.$exception->getMessage().'</error>');
-
-        return 1;
     }
 
     private function renderRecordedEvents(OutputInterface $output, UuidInterface $basketId)

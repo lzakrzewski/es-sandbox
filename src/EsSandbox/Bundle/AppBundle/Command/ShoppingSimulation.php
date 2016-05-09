@@ -6,6 +6,7 @@ use Assert\Assertion;
 use EsSandbox\Basket\Application\Command\AddProductToBasket;
 use EsSandbox\Basket\Application\Command\PickUpBasket;
 use EsSandbox\Basket\Application\Command\RemoveProductFromBasket;
+use EsSandbox\Basket\Model\ProductWasAddedToBasket;
 use EsSandbox\Common\Application\CommandBus\Command;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -58,19 +59,23 @@ class ShoppingSimulation
         $this->commands[] = new PickUpBasket($basketId);
 
         while (count($this->products) < $limit) {
-            $this->commands[] = $this->randomCommand($basketId);
+            $this->commands[] = $this->addProduct($basketId);
         }
+
+        $this->applyRemoveProductCommands($basketId);
 
         return $this->commands;
     }
 
-    private function randomCommand(UuidInterface $basketId)
+    private function applyRemoveProductCommands(UuidInterface $basketId)
     {
-        if (!(bool) rand(0, 3) && count($this->products) > 1) {
-            return $this->removeProduct($basketId);
+        foreach ($this->commands as $key => $command) {
+            if ($command instanceof ProductWasAddedToBasket && $previousCommand = $this->commands[$key - 1] instanceof ProductWasAddedToBasket) {
+                if (!(bool) rand(0, 3)) {
+                    $this->commands[$key] = $this->removeProduct($basketId, $previousCommand->productId);
+                }
+            }
         }
-
-        return $this->addProduct($basketId);
     }
 
     private function randomProductName()
@@ -91,13 +96,9 @@ class ShoppingSimulation
         return $names[array_rand($names)];
     }
 
-    private function removeProduct(UuidInterface $basketId)
+    private function removeProduct(UuidInterface $basketId, UuidInterface $productId)
     {
-        $productToRemove = array_rand($this->products);
-        $command         = new RemoveProductFromBasket($basketId, $this->products[$productToRemove]);
-        unset($this->products[$productToRemove]);
-
-        return $command;
+        return new RemoveProductFromBasket($basketId, $productId);
     }
 
     private function addProduct(UuidInterface $basketId)

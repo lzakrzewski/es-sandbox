@@ -44,7 +44,7 @@ final class Basket implements AggregateRoot
      */
     public function addProduct(UuidInterface $productId, $name)
     {
-        //var_dump($this->id());die;
+        // var_dump((string) $this->id());
 
         $event = new ProductWasAddedToBasket($this->id(), $productId, $name);
 
@@ -83,6 +83,8 @@ final class Basket implements AggregateRoot
     public static function reconstituteFrom(AggregateHistory $history)
     {
         $self = new self();
+
+        //var_dump($history->toArray());
 
         foreach ($history as $event) {
             $reflection = new \ReflectionClass($event);

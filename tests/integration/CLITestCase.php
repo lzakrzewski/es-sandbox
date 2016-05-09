@@ -42,4 +42,9 @@ abstract class CLITestCase extends IntegrationTestCase
     {
         $this->assertEquals($expectedStatus, $this->tester->getStatusCode());
     }
+
+    protected function given(array $events)
+    {
+        $this->container()->get('es_sandbox.event_store')->commit($events);
+    }
 }

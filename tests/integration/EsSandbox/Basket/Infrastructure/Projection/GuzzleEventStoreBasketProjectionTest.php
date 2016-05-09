@@ -2,6 +2,7 @@
 
 namespace tests\integration\EsSandbox\Basket\Infrastructure\Projection;
 
+use EsSandbox\Basket\Application\Projection\ProductView;
 use EsSandbox\Basket\Infrastructure\Projection\GuzzleEventStoreBasketProjection;
 use EsSandbox\Basket\Model\ProductWasAddedToBasket;
 use EsSandbox\Basket\Model\ProductWasRemovedFromBasket;
@@ -31,18 +32,8 @@ class GuzzleEventStoreBasketProjectionTest extends IntegrationTestCase
         $basket = $this->projection->get($basketId);
 
         $this->assertEquals([
-            'basket' => [
-                'products' => [
-                    [
-                        'name'      => 'Teapot',
-                        'productId' => 'ddf37fb1-6869-499d-9b9b-c4f10ad32782',
-                    ],
-                    [
-                        'name'      => 'Iron',
-                        'productId' => '4d72292b-67ca-477c-83ea-ec8e0406b251',
-                    ],
-                ],
-            ],
+            new ProductView('ddf37fb1-6869-499d-9b9b-c4f10ad32782', 'Teapot'),
+            new ProductView('4d72292b-67ca-477c-83ea-ec8e0406b251', 'Iron'),
         ], $basket);
     }
 

@@ -9,7 +9,7 @@ services:
 
 before_install:
   - composer self-update
-  - composer install
+  - composer install -n
   - bin/setup-eventstore
 
 script:

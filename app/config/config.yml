@@ -13,3 +13,7 @@ framework:
     session:
         # handler_id set to null will use default session handler from php.ini
         handler_id:  ~
+
+es_sandbox:
+    event_store_address: "%event_store_address%"
+    basket_projection:   "%basket_projection%"

@@ -11,7 +11,13 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $treeBuilder->root('EsSandbox');
+        $root        = $treeBuilder->root('es_sandbox');
+
+        $root
+            ->children()
+                ->scalarNode('event_store_address')->isRequired()->end()
+                ->scalarNode('basket_projection')->isRequired()->end()
+            ->end();
 
         return $treeBuilder;
     }

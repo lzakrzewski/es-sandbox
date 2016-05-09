@@ -25,14 +25,13 @@ class GuzzleEventStore implements EventStore
     /**
      * @param Client         $client
      * @param ShortNameToFQN $mapper
-     * @param string         $host
-     * @param string         $port
+     * @param string         $uri
      */
-    public function __construct(Client $client, ShortNameToFQN $mapper, $host, $port)
+    public function __construct(Client $client, ShortNameToFQN $mapper, $uri)
     {
         $this->client = $client;
         $this->mapper = $mapper;
-        $this->uri    = sprintf('%s:%s', $host, $port);
+        $this->uri    = $uri;
     }
 
     /** {@inheritdoc} */

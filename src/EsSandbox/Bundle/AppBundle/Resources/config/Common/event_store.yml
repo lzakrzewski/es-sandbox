@@ -6,5 +6,4 @@ services:
         arguments:
             - "@guzzle_http.client"
             - "@es_sandbox.short_name_to_fqn"
-            - "http://127.0.0.1"
-            - "2113"
+            - "%es_sandbox.event_store_address%"

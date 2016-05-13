@@ -10,7 +10,7 @@ services:
 before_install:
   - composer self-update
   - composer install -n
-  - bin/setup-eventstore
+  - make setup-es-sandbox
 
 script:
-  - bin/script test-ci
+  - composer test-ci

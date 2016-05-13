@@ -25,11 +25,9 @@ class EsSandboxAppExtension extends Extension
         $loader->load('event_store.yml');
 
         $configuration = new Configuration();
-
-        $config = $this->processConfiguration($configuration, $config);
+        $config        = $this->processConfiguration($configuration, $config);
 
         $container->setParameter('es_sandbox.event_store_address', $config['event_store_address']);
-        $container->setParameter('es_sandbox.basket_projection', $config['basket_projection']);
     }
 
     /** {@inheritdoc} */

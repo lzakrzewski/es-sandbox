@@ -1,2 +1,3 @@
 parameters:
-    secret:            ThisTokenIsNotSoSecretChangeIt
+    secret:              ThisTokenIsNotSoSecretChangeIt
+    event_store_address: 127.0.0.1:2113

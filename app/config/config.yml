@@ -16,4 +16,3 @@ framework:
 
 es_sandbox:
     event_store_address: "%event_store_address%"
-    basket_projection:   "%basket_projection%"

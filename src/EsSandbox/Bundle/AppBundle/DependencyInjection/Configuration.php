@@ -16,7 +16,6 @@ class Configuration implements ConfigurationInterface
         $root
             ->children()
                 ->scalarNode('event_store_address')->isRequired()->end()
-                ->scalarNode('basket_projection')->isRequired()->end()
             ->end();
 
         return $treeBuilder;

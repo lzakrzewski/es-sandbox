@@ -13,3 +13,8 @@ services:
         class: tests\EsSandbox\FakeShortNameToFQN
         arguments:
             - "@es_sandbox.basket_short_name_to_fqn"
+
+    es_sandbox.test.doctrine_database_backup:
+        class: Lzakrzewski\DoctrineDatabaseBackup\DoctrineDatabaseBackup
+        arguments:
+            - "@doctrine.orm.default_entity_manager"

@@ -1,8 +1,12 @@
 parameters:
-    secret:              ThisTokenIsNotSoSecretChangeIt
-    event_store_address: 127.0.0.1:2113
-    database_host:       127.0.0.1
-    database_port:       13306
-    database_name:       es-sandbox
-    database_user:       root
-    database_password:   changeit
+    secret:               ThisTokenIsNotSoSecretChangeIt
+    event_store_host:     127.0.0.1
+    event_store_port:     2113
+    event_store_user:     admin
+    event_store_password: changeit
+
+    database_host:        127.0.0.1
+    database_port:        13306
+    database_name:        es-sandbox
+    database_user:        root
+    database_password:    changeit

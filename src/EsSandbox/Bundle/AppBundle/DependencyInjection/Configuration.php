@@ -15,7 +15,10 @@ class Configuration implements ConfigurationInterface
 
         $root
             ->children()
-                ->scalarNode('event_store_address')->isRequired()->end()
+                ->scalarNode('event_store_host')->isRequired()->end()
+                ->scalarNode('event_store_port')->isRequired()->end()
+                ->scalarNode('event_store_user')->defaultValue('default')->end()
+                ->scalarNode('event_store_password')->defaultValue('default')->end()
             ->end();
 
         return $treeBuilder;

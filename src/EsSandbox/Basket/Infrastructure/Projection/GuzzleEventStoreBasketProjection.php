@@ -17,14 +17,19 @@ class GuzzleEventStoreBasketProjection implements BasketProjection
     /** @var string */
     private $uri;
 
+    /** @var array */
+    private $auth;
+
     /**
      * @param Client $client
      * @param string $uri
+     * @param array  $auth
      */
-    public function __construct(Client $client, $uri)
+    public function __construct(Client $client, $uri, array $auth)
     {
         $this->client = $client;
         $this->uri    = $uri;
+        $this->auth   = $auth;
     }
 
     /** {@inheritdoc} */

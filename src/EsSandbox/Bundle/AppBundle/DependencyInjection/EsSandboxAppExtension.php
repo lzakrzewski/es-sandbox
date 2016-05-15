@@ -27,12 +27,23 @@ class EsSandboxAppExtension extends Extension
         $configuration = new Configuration();
         $config        = $this->processConfiguration($configuration, $config);
 
-        $container->setParameter('es_sandbox.event_store_address', $config['event_store_address']);
+        $container->setParameter('es_sandbox.event_store.uri', $this->uri($config));
+        $container->setParameter('es_sandbox.event_store.auth', $this->auth($config));
     }
 
     /** {@inheritdoc} */
     public function getAlias()
     {
         return 'es_sandbox';
+    }
+
+    private function uri(array $config)
+    {
+        return sprintf('%s:%s', $config['event_store_host'], $config['event_store_port']);
+    }
+
+    private function auth(array $config)
+    {
+        return [$config['event_store_user'], $config['event_store_password']];
     }
 }

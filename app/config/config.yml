@@ -33,4 +33,7 @@ doctrine:
                 dir: "%kernel.root_dir%/../src/EsSandbox/Basket/Application/Projection"
                 prefix: EsSandbox\Basket\Application\Projection
 es_sandbox:
-    event_store_address: "%event_store_address%"
+    event_store_host: "%event_store_host%"
+    event_store_port: "%event_store_port%"
+    event_store_user: "%event_store_user%"
+    event_store_password: "%event_store_password%"

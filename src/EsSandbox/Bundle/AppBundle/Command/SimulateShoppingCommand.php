@@ -5,6 +5,7 @@ namespace EsSandbox\Bundle\AppBundle\Command;
 use EsSandbox\Basket\Model\BasketWasPickedUp;
 use EsSandbox\Basket\Model\ProductWasAddedToBasket;
 use EsSandbox\Basket\Model\ProductWasRemovedFromBasket;
+use EsSandbox\Bundle\AppBundle\Command\Component\ShoppingSimulation;
 use EsSandbox\Common\Application\CommandBus\Command;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;

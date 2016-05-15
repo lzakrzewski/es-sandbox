@@ -1,10 +1,10 @@
 <?php
 
-namespace tests\unit\EsSandbox\Bundle\AppBundle\Command;
+namespace tests\unit\EsSandbox\Bundle\AppBundle\Command\Component;
 
 use EsSandbox\Basket\Application\Command\AddProductToBasket;
 use EsSandbox\Basket\Application\Command\RemoveProductFromBasket;
-use EsSandbox\Bundle\AppBundle\Command\ShoppingSimulation;
+use EsSandbox\Bundle\AppBundle\Command\Component\ShoppingSimulation;
 use EsSandbox\Common\Application\CommandBus\Command;
 use PhpSpec\ObjectBehavior;
 use Ramsey\Uuid\Uuid;
@@ -14,22 +14,41 @@ use Ramsey\Uuid\Uuid;
  */
 class ShoppingSimulationSpec extends ObjectBehavior
 {
+    public function let()
+    {
+        $this->beAnInstanceOf(ShoppingSimulation::class);
+    }
+
     public function it_simulates_shopping()
     {
         $basketId = Uuid::uuid4();
 
-        $this->beConstructedThrough('simulate', ['basketId' => $basketId, 'limit' => 10]);
+        $this->simulate($basketId, 10)
+            ->shouldHaveProductsCount(10);
+    }
 
-        $this->randomCommands()->shouldHaveProductsCount(10);
+    public function it_simulates_shopping_with_wide_limit()
+    {
+        $basketId = Uuid::uuid4();
+
+        $this->simulate($basketId, 1000)
+            ->shouldHaveProductsCount(1000);
+    }
+
+    public function it_simulates_shopping_with_zero_limit()
+    {
+        $basketId = Uuid::uuid4();
+
+        $this->simulate($basketId, 0)
+            ->shouldHaveProductsCount(0);
     }
 
     public function it_fails_when_limit_is_invalid()
     {
         $basketId = Uuid::uuid4();
 
-        $this->beConstructedThrough('simulate', ['basketId' => $basketId, 'limit' => -10]);
-
-        $this->shouldThrow(\InvalidArgumentException::class)->during('randomCommands');
+        $this->shouldThrow(\InvalidArgumentException::class)
+            ->during('simulate', ['basketId' => $basketId, 'limit' => -10]);
     }
 
     public function getMatchers()

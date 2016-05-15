@@ -2,12 +2,27 @@
 
 namespace EsSandbox\Basket\Application\Projection;
 
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="products")
+ */
 final class ProductView
 {
-    /** @var string */
+    /**
+     * @ORM\Id
+     * @ORM\Column(type="guid")
+     *
+     * @var string
+     */
     public $productId;
 
-    /** @var string */
+    /**
+     * @ORM\Column
+     *
+     * @var string
+     */
     public $name;
 
     /**

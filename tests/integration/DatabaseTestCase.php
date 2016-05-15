@@ -8,7 +8,7 @@ abstract class DatabaseTestCase extends IntegrationTestCase
     protected function setUp()
     {
         parent::setUp();
-        
+
         $this->container()
             ->get('es_sandbox.test.doctrine_database_backup')
             ->restore();

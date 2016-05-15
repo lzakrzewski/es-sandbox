@@ -11,6 +11,8 @@ before_install:
   - composer self-update
   - composer install -n
   - make setup-es-sandbox
+  - composer cache-clear-test
+  - composer setup-database-test
 
 script:
   - composer test-ci

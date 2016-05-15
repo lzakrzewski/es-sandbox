@@ -1,9 +1,13 @@
 services:
+    #todo: deprecated alias
     es_sandbox.projection.basket: "@es_sandbox.projection.basket.guzzle_eventstore"
 
-    es_sandbox.projector.basket:
-        class: EsSandbox\Basket\Infrastructure\Projection\InMemoryBasketProjector
+    es_sandbox.projector.basket.mysql:
+        class: EsSandbox\Basket\Infrastructure\Projection\MysqlBasketProjector
+        arguments:
+            - "@doctrine.orm.default_entity_manager"
         tags:
+            - { name: event_subscriber, subscribes_to: EsSandbox\Basket\Model\BasketWasPickedUp, method: applyBasketWasPickedUp }
             - { name: event_subscriber, subscribes_to: EsSandbox\Basket\Model\ProductWasAddedToBasket, method: applyProductWasAddedToBasket }
             - { name: event_subscriber, subscribes_to: EsSandbox\Basket\Model\ProductWasRemovedFromBasket, method: applyProductWasRemovedFromBasket }
 

@@ -7,6 +7,7 @@ use EsSandbox\Basket\Application\Projection\ProductView;
 use GuzzleHttp\Client;
 use Ramsey\Uuid\UuidInterface;
 
+//Todo: change name to EventStoreBasketProjection ?
 class GuzzleEventStoreBasketProjection implements BasketProjection
 {
     /** @var Client */

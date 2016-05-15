@@ -1,0 +1,10 @@
+services:
+    es_sandbox.bundle.command.component.shopping_simpulation:
+        class: EsSandbox\Bundle\AppBundle\Command\Component\ShoppingSimulation
+
+    es_sandbox.bundle.command.component.basket_events_renderer:
+        class: EsSandbox\Bundle\AppBundle\Command\Component\BasketHistoryRenderer
+
+
+    es_sandbox.bundle.command.component.basket_projection_renderer:
+        class: EsSandbox\Bundle\AppBundle\Command\Component\BasketProjectionRenderer

@@ -2,14 +2,9 @@
 
 namespace EsSandbox\Bundle\AppBundle\Command;
 
-use EsSandbox\Basket\Model\BasketWasPickedUp;
-use EsSandbox\Basket\Model\ProductWasAddedToBasket;
-use EsSandbox\Basket\Model\ProductWasRemovedFromBasket;
-use EsSandbox\Bundle\AppBundle\Command\Component\ShoppingSimulation;
 use EsSandbox\Common\Application\CommandBus\Command;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
-use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -38,8 +33,9 @@ class SimulateShoppingCommand extends ConsoleCommand
         $basketId = $this->basketId($input);
 
         try {
-            $commands = ShoppingSimulation::simulate($basketId, $limit)
-                ->randomCommands();
+            $commands = $this->getContainer()
+                ->get('es_sandbox.bundle.command.component.shopping_simpulation')
+                ->simulate($basketId, $limit);
 
             foreach ($commands as $command) {
                 $this->handleCommand($command);
@@ -59,31 +55,14 @@ class SimulateShoppingCommand extends ConsoleCommand
 
     private function renderRecordedEvents(OutputInterface $output, UuidInterface $basketId)
     {
-        $output->writeln('');
-        $output->writeln('Facts about your basket:');
-
         $events = $this->getContainer()
             ->get('es_sandbox.event_store')
             ->aggregateHistoryFor($basketId);
 
-        $table = new Table($output);
-
-        foreach ($events as $event) {
-            if ($event instanceof BasketWasPickedUp) {
-                $table->addRow(['Basket with id: ', (string) $event->id(), 'was <info>picked up</info>.']);
-            }
-
-            if ($event instanceof ProductWasAddedToBasket) {
-                $table->addRow(['Product with id: ', (string) $event->productId(), 'was <info>added</info> to basket.']);
-            }
-
-            if ($event instanceof ProductWasRemovedFromBasket) {
-                $table->addRow(['Product with id: ', (string) $event->productId(), 'was <comment>removed</comment> from basket.']);
-            }
-        }
-
-        $table->setStyle('borderless');
-        $table->render();
+        $this
+            ->getContainer()
+            ->get('es_sandbox.bundle.command.component.basket_events_renderer')
+            ->render($output, $events);
     }
 
     private function limit(InputInterface $input)

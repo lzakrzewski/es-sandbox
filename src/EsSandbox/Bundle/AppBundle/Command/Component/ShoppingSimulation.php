@@ -1,6 +1,6 @@
 <?php
 
-namespace EsSandbox\Bundle\AppBundle\Command;
+namespace EsSandbox\Bundle\AppBundle\Command\Component;
 
 use Assert\Assertion;
 use EsSandbox\Basket\Application\Command\AddProductToBasket;
@@ -13,47 +13,27 @@ use Ramsey\Uuid\UuidInterface;
 
 class ShoppingSimulation
 {
-    /** @var UuidInterface */
-    private $basketId;
-
     /** @var Command[] */
-    private $commands;
+    private $commands = [];
 
     /** @var UuidInterface[] */
     private $products = [];
 
-    /** @var int */
-    private $limit;
-
-    private function __construct(UuidInterface $basketId, $limit)
-    {
-        $this->basketId = $basketId;
-        $this->limit    = $limit;
-    }
-
     /**
      * @param UuidInterface $basketId
-     * @param $limit
+     * @param int           $limit
      *
-     * @return ShoppingSimulation
-     */
-    public static function simulate(UuidInterface $basketId, $limit)
-    {
-        $self = new self($basketId, $limit);
-
-        return $self;
-    }
-
-    /**
      * @return Command[]
      */
-    public function randomCommands()
+    public function simulate(UuidInterface $basketId, $limit)
     {
-        return $this->shopping($this->basketId, $this->limit);
+        return $this->shopping($basketId, $limit);
     }
 
     private function shopping(UuidInterface $basketId, $limit)
     {
+        $this->reset();
+
         Assertion::greaterOrEqualThan($limit, 0);
 
         $this->commands[] = new PickUpBasket($basketId);
@@ -108,5 +88,11 @@ class ShoppingSimulation
         $this->products[] = $productId;
 
         return new AddProductToBasket($basketId, $productId, $this->randomProductName());
+    }
+
+    private function reset()
+    {
+        $this->commands = [];
+        $this->products = [];
     }
 }

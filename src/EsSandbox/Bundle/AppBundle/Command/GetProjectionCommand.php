@@ -33,13 +33,17 @@ class GetProjectionCommand extends ConsoleCommand
         $output->writeln('');
         $output->writeln('Your basket contains:');
 
-        $products = $this->getContainer()->get('es_sandbox.projection.basket')->get($basketId);
+        $basketView = $this->getContainer()->get('es_sandbox.projection.basket')->get($basketId);
+
+        if (null === $basketView) {
+            return;
+        }
 
         $table = new Table($output);
         $table
             ->setHeaders(['productId', 'name']);
 
-        foreach ($products as $product) {
+        foreach ($basketView->products as $product) {
             $table->addRow([$product->productId, $product->name]);
         }
 

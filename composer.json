@@ -31,7 +31,10 @@
         "symfony/monolog-bundle": "~2.9",
 
         "simple-bus/message-bus": "^2.2",
-        "simple-bus/symfony-bridge": "^4.1"
+        "simple-bus/symfony-bridge": "^4.1",
+
+        "doctrine/orm": "~2.5",
+        "doctrine/doctrine-bundle": "~1.5"
     },
     "require-dev": {
         "fabpot/php-cs-fixer": "~1.6",
@@ -42,7 +45,8 @@
         "phpunit/phpunit": "~5.0",
         "phpspec/phpspec": "~2.3",
         "behat/behat": "~3.0-RC",
-        "behat/symfony2-extension": "~2.1"
+        "behat/symfony2-extension": "~2.1",
+        "lzakrzewski/doctrine-database-backup": "~1.2"
     },
     "config": {
         "bin-dir": "bin"
@@ -63,7 +67,7 @@
             "./bin/phpspec run"
         ],
         "integration-test": "./bin/phpunit --testsuite integration",
-        "cache-clear-test": "./bin/console cache:clear --env=test -vvv",
+        "cache-clear-test": "./bin/console cache:clear --env=test",
         "behat": "./bin/behat --format=progress --out=std",
         "test": [
             "@static-analysis",
@@ -78,7 +82,8 @@
             "@behat"
         ],
         "setup-database-test": [
-            "./bin/console doctrine:database:drop --force --env=test",
+            "./bin/console doctrine:database:drop --force --env=test || true",
+            "./bin/console doctrine:database:create --env=test",
             "./bin/console doctrine:schema:create --env=test"
         ],
         "post-install-cmd": [

@@ -18,6 +18,7 @@ class MicroKernel extends Kernel
             new Symfony\Bundle\MonologBundle\MonologBundle(),
             new SimpleBus\SymfonyBridge\SimpleBusCommandBusBundle(),
             new SimpleBus\SymfonyBridge\SimpleBusEventBusBundle(),
+            new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new EsSandbox\Bundle\AppBundle\AppBundle(),
         ];
     }

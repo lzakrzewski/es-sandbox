@@ -29,6 +29,7 @@ class EsSandboxAppExtension extends Extension
 
         $container->setParameter('es_sandbox.event_store.uri', $this->uri($config));
         $container->setParameter('es_sandbox.event_store.auth', $this->auth($config));
+        $container->setParameter('es_sandbox.basket.projector.is_enabled', $config['basket']['projector']['is_enabled']);
     }
 
     /** {@inheritdoc} */

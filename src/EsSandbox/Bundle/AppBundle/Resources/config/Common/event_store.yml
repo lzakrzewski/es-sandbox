@@ -1,8 +1,8 @@
 services:
-    es_sandbox.event_store: "@es_sandbox.event_store.guzzle_eventstore"
+    es_sandbox.event_store: "@es_sandbox.event_store.http"
 
-    es_sandbox.event_store.guzzle_eventstore:
-        class: EsSandbox\Common\Infrastructure\EventStore\GuzzleEventStore
+    es_sandbox.event_store.http:
+        class: EsSandbox\Common\Infrastructure\EventStore\HttpEventStore
         arguments:
             - "@guzzle_http.client"
             - "@es_sandbox.short_name_to_fqn"

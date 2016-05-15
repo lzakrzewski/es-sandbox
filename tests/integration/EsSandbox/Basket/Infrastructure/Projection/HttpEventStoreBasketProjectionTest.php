@@ -4,7 +4,7 @@ namespace tests\integration\EsSandbox\Basket\Infrastructure\Projection;
 
 use EsSandbox\Basket\Application\Projection\BasketView;
 use EsSandbox\Basket\Application\Projection\ProductView;
-use EsSandbox\Basket\Infrastructure\Projection\GuzzleEventStoreBasketProjection;
+use EsSandbox\Basket\Infrastructure\Projection\HttpEventStoreBasketProjection;
 use EsSandbox\Basket\Model\BasketWasPickedUp;
 use EsSandbox\Basket\Model\ProductWasAddedToBasket;
 use EsSandbox\Basket\Model\ProductWasRemovedFromBasket;
@@ -13,14 +13,14 @@ use Ramsey\Uuid\Uuid;
 use tests\integration\EsSandbox\Basket\Infrastructure\Projection\Dictionary\BasketProjectionDictionary;
 use tests\integration\IntegrationTestCase;
 
-class GuzzleEventStoreBasketProjectionTest extends IntegrationTestCase
+class HttpEventStoreBasketProjectionTest extends IntegrationTestCase
 {
     use BasketProjectionDictionary;
 
     /** @var EventStore */
     private $eventStore;
 
-    /** @var GuzzleEventStoreBasketProjection */
+    /** @var HttpEventStoreBasketProjection */
     private $projection;
 
     /** @test */
@@ -83,8 +83,8 @@ class GuzzleEventStoreBasketProjectionTest extends IntegrationTestCase
     {
         parent::setUp();
 
-        $this->eventStore = $this->container()->get('es_sandbox.event_store.guzzle_eventstore');
-        $this->projection = $this->container()->get('es_sandbox.projection.basket.guzzle_eventstore');
+        $this->eventStore = $this->container()->get('es_sandbox.event_store');
+        $this->projection = $this->container()->get('es_sandbox.projection.basket.event_store');
     }
 
     /** {@inheritdoc} */

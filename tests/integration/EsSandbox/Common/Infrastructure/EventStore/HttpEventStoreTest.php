@@ -2,15 +2,15 @@
 
 namespace tests\integration\EsSandbox\Common\Infrastructure\EventStore;
 
-use EsSandbox\Common\Infrastructure\EventStore\GuzzleEventStore;
+use EsSandbox\Common\Infrastructure\EventStore\HttpEventStore;
 use EsSandbox\Common\Model\AggregateHistory;
 use Ramsey\Uuid\Uuid;
 use tests\fixtures\FakeEvent;
 use tests\integration\IntegrationTestCase;
 
-class GuzzleEventStoreTest extends IntegrationTestCase
+class HttpEventStoreTest extends IntegrationTestCase
 {
-    /** @var GuzzleEventStore */
+    /** @var HttpEventStore */
     private $eventStore;
 
     /** @test */
@@ -51,7 +51,7 @@ class GuzzleEventStoreTest extends IntegrationTestCase
     {
         parent::setUp();
 
-        $this->eventStore = $this->container()->get('es_sandbox.event_store.guzzle_eventstore');
+        $this->eventStore = $this->container()->get('es_sandbox.event_store.http');
     }
 
     /** {@inheritdoc} */

@@ -35,7 +35,7 @@ class GetProjectionCommand extends ConsoleCommand
         $output->writeln('');
         $output->writeln('Your basket contains:');
 
-        $basketView = $this->getContainer()->get('es_sandbox.projection.basket')->get($basketId);
+        $basketView = $this->getContainer()->get('es_sandbox.projection.basket.mysql')->get($basketId);
 
         if (null === $basketView) {
             return;

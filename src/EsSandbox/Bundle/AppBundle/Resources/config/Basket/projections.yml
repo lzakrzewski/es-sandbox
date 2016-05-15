@@ -1,7 +1,4 @@
 services:
-    #todo: deprecated alias
-    es_sandbox.projection.basket: "@es_sandbox.projection.basket.guzzle_eventstore"
-
     es_sandbox.projector.basket.mysql:
         class: EsSandbox\Basket\Infrastructure\Projection\MysqlBasketProjector
         arguments:
@@ -16,8 +13,8 @@ services:
         arguments:
             - "@doctrine.orm.default_entity_manager"
 
-    es_sandbox.projection.basket.guzzle_eventstore:
-        class: EsSandbox\Basket\Infrastructure\Projection\GuzzleEventStoreBasketProjection
+    es_sandbox.projection.basket.event_store:
+        class: EsSandbox\Basket\Infrastructure\Projection\HttpEventStoreBasketProjection
         arguments:
             - "@guzzle_http.client"
             - "%es_sandbox.event_store.uri%"

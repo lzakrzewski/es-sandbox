@@ -11,7 +11,7 @@ use GuzzleHttp\Exception\RequestException;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
-class GuzzleEventStore implements EventStore
+class HttpEventStore implements EventStore
 {
     /** @var Client */
     private $client;

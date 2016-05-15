@@ -11,6 +11,11 @@ services:
             - { name: event_subscriber, subscribes_to: EsSandbox\Basket\Model\ProductWasAddedToBasket, method: applyProductWasAddedToBasket }
             - { name: event_subscriber, subscribes_to: EsSandbox\Basket\Model\ProductWasRemovedFromBasket, method: applyProductWasRemovedFromBasket }
 
+    es_sandbox.projection.basket.mysql:
+        class: EsSandbox\Basket\Infrastructure\Projection\MysqlBasketProjection
+        arguments:
+            - "@doctrine.orm.default_entity_manager"
+
     es_sandbox.projection.basket.guzzle_eventstore:
         class: EsSandbox\Basket\Infrastructure\Projection\GuzzleEventStoreBasketProjection
         arguments:

@@ -64,6 +64,8 @@ class MysqlBasketProjector implements BasketProjector
 
     private function basketView(Event $event)
     {
-        return $this->entityManager->find(BasketView::class, $event->id()->toString());
+        return $this->entityManager
+            ->getRepository(BasketView::class)
+            ->findOneBy(['basketId' => $event->id()->toString()]);
     }
 }

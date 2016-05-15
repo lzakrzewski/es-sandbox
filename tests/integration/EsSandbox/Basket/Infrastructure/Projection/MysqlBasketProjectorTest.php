@@ -42,6 +42,17 @@ class MysqlBasketProjectorTest extends DatabaseTestCase
     }
 
     /** @test */
+    public function it_does_not_applies_that_product_was_added_to_basket_when_basket_was_not_picked_up()
+    {
+        $basketId = Uuid::uuid4();
+        $this->given([
+            new ProductWasAddedToBasket($basketId, Uuid::uuid4(), 'Iron'),
+        ]);
+
+        $this->assertThatProjectionWasNotCreated($basketId);
+    }
+
+    /** @test */
     public function it_applies_that_product_was_removed_from_basket()
     {
         $basketId  = Uuid::uuid4();
@@ -53,6 +64,19 @@ class MysqlBasketProjectorTest extends DatabaseTestCase
         ]);
 
         $this->assertThatBasketProjectionHasProducts(0, $basketId);
+    }
+
+    /** @test */
+    public function it_does_not_applies_that_product_was_removed_from_basket_when_basket_was_not_picked_up()
+    {
+        $basketId  = Uuid::uuid4();
+        $productId = Uuid::uuid4();
+        $this->given([
+            new ProductWasAddedToBasket($basketId, $productId, 'Iron'),
+            new ProductWasRemovedFromBasket($basketId, $productId),
+        ]);
+
+        $this->assertThatProjectionWasNotCreated($basketId);
     }
 
     /** {@inheritdoc} */
@@ -78,6 +102,11 @@ class MysqlBasketProjectorTest extends DatabaseTestCase
         $this->assertNotNull($this->basketView($basketId));
     }
 
+    private function assertThatProjectionWasNotCreated(UuidInterface $basketId)
+    {
+        $this->assertNull($this->basketView($basketId));
+    }
+
     private function assertThatBasketProjectionHasProducts($expectedProductsCount, UuidInterface $basketId)
     {
         $this->assertCount($expectedProductsCount, $this->basketView($basketId)->products);
@@ -92,6 +121,8 @@ class MysqlBasketProjectorTest extends DatabaseTestCase
 
     private function basketView(UuidInterface $basketId)
     {
-        return $this->entityManager->find(BasketView::class, $basketId->toString());
+        return $this->entityManager
+            ->getRepository(BasketView::class)
+            ->findOneBy(['basketId' => $basketId->toString()]);
     }
 }

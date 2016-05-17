@@ -4,7 +4,7 @@ namespace EsSandbox\Common\Model;
 
 use Ramsey\Uuid\UuidInterface;
 
-interface AggregateRoot
+interface EventSourcedAggregate
 {
     /**
      * @return UuidInterface
@@ -19,7 +19,7 @@ interface AggregateRoot
     /**
      * @param AggregateHistory $history
      *
-     * @return AggregateRoot
+     * @return EventSourcedAggregate
      */
     public static function reconstituteFrom(AggregateHistory $history);
 

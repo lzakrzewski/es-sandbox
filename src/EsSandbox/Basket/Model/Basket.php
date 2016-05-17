@@ -3,11 +3,11 @@
 namespace EsSandbox\Basket\Model;
 
 use EsSandbox\Common\Model\AggregateHistory;
-use EsSandbox\Common\Model\AggregateRoot;
 use EsSandbox\Common\Model\Event;
+use EsSandbox\Common\Model\EventSourcedAggregate;
 use Ramsey\Uuid\UuidInterface;
 
-final class Basket implements AggregateRoot
+final class Basket implements EventSourcedAggregate
 {
     /** @var UuidInterface */
     private $basketId;

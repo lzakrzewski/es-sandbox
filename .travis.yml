@@ -6,7 +6,6 @@ services:
 before_install:
   - make setup-es-sandbox
   - make prepare-ci
-  - make test-ci
 
 script:
-  - composer test-ci
+  - make test-ci

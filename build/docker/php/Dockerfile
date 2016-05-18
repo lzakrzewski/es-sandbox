@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y \
 
 RUN apt-get update && apt-get install -y \
     zlib1g-dev \
+    mysql-client \
     --no-install-recommends && rm -r /var/lib/apt/lists/*
 
 RUN docker-php-ext-install mbstring zip pdo pdo_mysql

@@ -15,8 +15,18 @@ tear-down-es-sandbox: \
 	tear-down-mysql \
 	tear-down-php \
 
+clear-cache-test:
+	-@docker exec -it $(PHP_IMAGE) composer cache-clear-test
+
+clear-cache-dev:
+	-@docker exec -it $(PHP_IMAGE) composer cache-clear-dev
+
 test:
 	@docker exec -it $(PHP_IMAGE) composer test
 
+prepare-ci: \
+	clear-cache-test
+	@docker exec -it $(PHP_IMAGE) composer setup-database-test
+
 test-ci:
-	@docker exec -it $(PHP_IMAGE) composer test-ci
+	-@docker exec -it $(PHP_IMAGE) composer test-ci

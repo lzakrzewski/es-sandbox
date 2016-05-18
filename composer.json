@@ -67,6 +67,7 @@
             "./bin/phpspec run"
         ],
         "integration-test": "./bin/phpunit --testsuite integration",
+        "cache-clear-dev": "./bin/console cache:clear --env=dev",
         "cache-clear-test": "./bin/console cache:clear --env=test",
         "behat": "./bin/behat --format=progress --out=std",
         "test": [
@@ -100,7 +101,14 @@
         "symfony-web-dir": "web",
         "symfony-assets-install": "relative",
         "incenteev-parameters": {
-            "file": "app/config/parameters.yml"
+            "file": "app/config/parameters.yml",
+            "env-map": {
+                "event_store_host": "EVENT_STORE_PORT_1113_TCP_ADDR",
+                "event_store_port": "EVENT_STORE_PORT_2113_TCP_PORT",
+                "database_host": "MYSQL_PORT_3306_TCP_ADDR",
+                "database_port": "MYSQL_PORT_3306_TCP_PORT",
+                "database_password": "MYSQL_ENV_MYSQL_ROOT_PASSWORD"
+            }
         }
     }
 }

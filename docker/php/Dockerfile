@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y \
     zlib1g-dev \
     --no-install-recommends && rm -r /var/lib/apt/lists/*
 
-RUN docker-php-ext-install mbstring zip
+RUN docker-php-ext-install mbstring zip pdo pdo_mysql
 
 RUN mkdir --parent /usr/src/composer && \
     cd /usr/src/composer && \

@@ -4,7 +4,7 @@ EVENT_STORE_IMAGE      = event-store
 
 ROOT_DIR ?= $(PWD)
 CONTAINER_WORK_DIR     = /var/www/es-sandbox
-CONTAINER_HOME      = /root
+CONTAINER_HOME         = /root
 
 setup-es-sandbox: \
 	setup-event-store \
@@ -29,7 +29,7 @@ event-store:
 
 setup-mysql: \
 	tear-down-mysql
-	@docker run --name $(MYSQL_IMAGE) -e MYSQL_ROOT_PASSWORD=changeit -d -p 13306:3306 mysql:5.7
+	@docker run -tid --name $(MYSQL_IMAGE) -e MYSQL_ROOT_PASSWORD=changeit -p 13306:3306 mysql:5.7 /bin/bash
 
 tear-down-mysql:
 	-@docker kill $(MYSQL_IMAGE) > /dev/null
@@ -42,6 +42,7 @@ setup-php: \
 	tear-down-php
 	@docker build -t $(PHP_IMAGE) docker/php
 	@docker run \
+	        --link $(MYSQL_IMAGE):$(MYSQL_IMAGE) \
 	    	-tid \
 	    	-v $(ROOT_DIR):$(CONTAINER_WORK_DIR) \
 		    -v $(HOME)/.composer:$(CONTAINER_HOME)/.composer \
@@ -56,3 +57,9 @@ tear-down-php:
 
 php:
 	@docker exec -it $(PHP_IMAGE) /bin/bash
+
+test:
+	@docker exec -it $(PHP_IMAGE) composer test
+
+test-ci:
+	@docker exec -it $(PHP_IMAGE) composer test-ci

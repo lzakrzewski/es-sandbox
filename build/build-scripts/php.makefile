@@ -23,10 +23,10 @@ run-php:
                 /bin/bash
 
 setup-database:
-	-@docker exec -it $(PHP_IMAGE) composer setup-database
+	-@docker exec -i $(PHP_IMAGE) composer setup-database
 
 install-composer-deps:
-	-@docker exec -it $(PHP_IMAGE) composer install -n
+	-@docker exec -i $(PHP_IMAGE) composer install -n
 
 php:
 	@docker exec -it $(PHP_IMAGE) /bin/bash

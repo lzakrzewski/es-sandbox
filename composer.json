@@ -53,14 +53,14 @@
     },
     "scripts": {
         "static-analysis": [
-            "./bin/php-cs-fixer fix --config-file=build/.php_cs",
-            "./bin/phpcs --standard=./build/phpcs.xml --extensions=php src tests",
-            "./bin/phpmd src,tests text ./build/phpmd.xml"
+            "./bin/php-cs-fixer fix --config-file=build/static-analysis/.php_cs",
+            "./bin/phpcs --standard=./build/static-analysis/phpcs.xml --extensions=php src tests",
+            "./bin/phpmd src,tests text ./build/static-analysis/phpmd.xml"
         ],
         "static-analysis-ci": [
-            "./bin/php-cs-fixer fix --dry-run --config-file=build/.php_cs",
-            "./bin/phpcs --standard=./build/phpcs.xml --extensions=php src tests",
-            "./bin/phpmd src,tests text ./build/phpmd.xml"
+            "./bin/php-cs-fixer fix --dry-run --config-file=build/static-analysis/.php_cs",
+            "./bin/phpcs --standard=./build/static-analysis/phpcs.xml --extensions=php src tests",
+            "./bin/phpmd src,tests text ./build/static-analysis/phpmd.xml"
         ],
         "unit-test": [
             "./bin/phpunit --testsuite unit ",

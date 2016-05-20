@@ -12,8 +12,8 @@ setup-es-sandbox-dev: \
     setup-database-dev
 
 setup-containers: \
-	setup-event-store \
 	setup-mysql \
+	setup-event-store \
 	setup-php \
 
 tear-down-es-sandbox: \

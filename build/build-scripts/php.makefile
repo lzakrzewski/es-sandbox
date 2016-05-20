@@ -24,26 +24,25 @@ run-php:
                 $(PHP_IMAGE) \
                 /bin/bash
 
-setup-database-dev:
-	-@docker exec -i $(PHP_IMAGE) composer setup-database-dev
+wait-for-mysql:
+	docker exec -i $(PHP_IMAGE) ./build/build-scripts/wait-for-mysql.sh
 
-setup-database-test:
-	-@docker exec -i $(PHP_IMAGE) composer setup-database-dev
+setup-database-dev: \
+    wait-for-mysql
+	@docker exec -i $(PHP_IMAGE) composer setup-database-dev
+
+setup-database-test: \
+    wait-for-mysql
+	@docker exec -i $(PHP_IMAGE) composer setup-database-dev
 
 install-composer-deps:
-	-@docker exec -i $(PHP_IMAGE) composer install -n
+	@docker exec -i $(PHP_IMAGE) composer install -n
 
 clear-cache-test:
-	-@docker exec -i $(PHP_IMAGE) composer cache-clear-test
+	@docker exec -i $(PHP_IMAGE) composer cache-clear-test
 
 clear-cache-dev:
-	-@docker exec -i $(PHP_IMAGE) composer cache-clear-dev
-
-print-env-vars:
-	docker exec -i $(PHP_IMAGE) printenv
-
-print-parameters:
-	docker exec -i $(PHP_IMAGE) cat app/config/parameters.yml
+	@docker exec -i $(PHP_IMAGE) composer cache-clear-dev
 
 php:
 	@docker exec -it $(PHP_IMAGE) /bin/bash

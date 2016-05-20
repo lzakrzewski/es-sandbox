@@ -1,5 +1,10 @@
 PHP_IMAGE              = php7
 
+ifeq (php, $(firstword $(MAKECMDGOALS)))
+	ARGV := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+  $(eval $(ARGV):;@:)
+endif
+
 setup-php: \
 	tear-down-php \
 	build-php \
@@ -22,7 +27,7 @@ run-php:
                 -v $(HOME)/.composer:$(CONTAINER_HOME)/.composer \
                 --name $(PHP_IMAGE) \
                 $(PHP_IMAGE) \
-                /bin/bash
+                $(BASH_BIN)
 
 wait-for-mysql:
 	docker exec -i $(PHP_IMAGE) ./build/build-scripts/wait-for-mysql.sh
@@ -45,4 +50,4 @@ clear-cache-dev:
 	@docker exec -i $(PHP_IMAGE) composer cache-clear-dev
 
 php:
-	@docker exec -it $(PHP_IMAGE) /bin/bash
+	@docker exec -it $(PHP_IMAGE) $(BASH_BIN) -c '$(ARGV)'

@@ -82,6 +82,11 @@
             "@integration-test",
             "@behat"
         ],
+        "setup-database-dev": [
+            "./bin/console doctrine:database:drop --force --env=dev -vvv|| true",
+            "./bin/console doctrine:database:create --env=dev -vvv",
+            "./bin/console doctrine:schema:create --env=dev -vvv"
+        ],
         "setup-database-test": [
             "./bin/console doctrine:database:drop --force --env=test || true",
             "./bin/console doctrine:database:create --env=test",

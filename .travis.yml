@@ -4,8 +4,7 @@ services:
   - docker
 
 before_install:
-  - make setup-es-sandbox
-  - make prepare-ci
+  - make setup-es-sandbox-test
 
 script:
   - make test-ci

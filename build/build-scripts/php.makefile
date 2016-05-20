@@ -1,3 +1,5 @@
+PHP_IMAGE              = php7
+
 setup-php: \
 	tear-down-php \
 	build-php \
@@ -22,11 +24,26 @@ run-php:
                 $(PHP_IMAGE) \
                 /bin/bash
 
-setup-database:
-	-@docker exec -i $(PHP_IMAGE) composer setup-database
+setup-database-dev:
+	-@docker exec -i $(PHP_IMAGE) composer setup-database-dev
+
+setup-database-test:
+	-@docker exec -i $(PHP_IMAGE) composer setup-database-dev
 
 install-composer-deps:
 	-@docker exec -i $(PHP_IMAGE) composer install -n
+
+clear-cache-test:
+	-@docker exec -i $(PHP_IMAGE) composer cache-clear-test
+
+clear-cache-dev:
+	-@docker exec -i $(PHP_IMAGE) composer cache-clear-dev
+
+print-env-vars:
+	docker exec -i $(PHP_IMAGE) printenv
+
+print-parameters:
+	docker exec -i $(PHP_IMAGE) cat app/config/parameters.yml
 
 php:
 	@docker exec -it $(PHP_IMAGE) /bin/bash

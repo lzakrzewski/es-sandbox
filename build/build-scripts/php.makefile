@@ -15,8 +15,7 @@ setup-php: \
 	install-composer-deps \
 
 tear-down-php:
-	-@docker kill $(PHP_IMAGE) > /dev/null
-	-@docker rm $(PHP_IMAGE) > /dev/null
+	-@docker rm -f $(PHP_IMAGE) > /dev/null
 
 build-php:
 	@docker build -t $(PHP_IMAGE) build/docker/php

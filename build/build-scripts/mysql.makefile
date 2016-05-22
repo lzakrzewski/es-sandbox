@@ -16,8 +16,7 @@ run-mysql:
 	@docker run --name $(MYSQL_IMAGE) -e MYSQL_ROOT_PASSWORD=changeit -i -d -p $(MYSQL_EXPOSED_PORT):$(MYSQL_CONTAINER_PORT) mysql:5.7
 
 tear-down-mysql:
-	-@docker kill $(MYSQL_IMAGE) > /dev/null
-	-@docker rm $(MYSQL_IMAGE) > /dev/null
+	-@docker rm -f $(MYSQL_IMAGE) > /dev/null
 
 create-user-mysql:
 	@docker exec -i $(MYSQL_IMAGE) $(BASH_BIN) -c '$(CREATE_USER)'

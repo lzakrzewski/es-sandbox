@@ -13,8 +13,7 @@ setup-event-store: \
 	create-user-event-store \
 
 tear-down-event-store:
-	-@docker kill $(EVENT_STORE_IMAGE) > /dev/null
-	-@docker rm $(EVENT_STORE_IMAGE) > /dev/null
+	-@docker rm -f $(EVENT_STORE_IMAGE) > /dev/null
 
 run-event-store:
 	@docker run --name $(EVENT_STORE_IMAGE) -d -p $(EVENT_STORE_EXPOSED_PORT):$(EVENT_STORE_CONTAINER_PORT) adbrowne/eventstore

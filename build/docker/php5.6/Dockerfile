@@ -19,6 +19,8 @@ RUN mkdir --parent /usr/src/composer && \
     php -r "unlink('composer-setup.php');" &&\
     mv composer.phar /usr/bin/composer
 
+RUN echo date.timezone = "UTC" >> /usr/local/etc/php/php.ini
+
 WORKDIR /var/www/es-sandbox
 
 CMD ["php", "--version"]

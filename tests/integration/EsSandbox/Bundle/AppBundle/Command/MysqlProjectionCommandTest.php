@@ -1,7 +1,5 @@
 <?php
 
-declare (strict_types = 1);
-
 namespace tests\integration\EsSandbox\Bundle\AppBundle\Command;
 
 use EsSandbox\Basket\Model\BasketWasPickedUp;

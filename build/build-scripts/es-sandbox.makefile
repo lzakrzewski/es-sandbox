@@ -41,9 +41,3 @@ tear-down-es-sandbox: \
 	tear-down-event-store \
 	tear-down-mysql \
 	tear-down-php
-
-test:
-	@docker exec -i $(PHP_IMAGE) composer test
-
-test-ci:
-	@docker exec -i $(PHP_IMAGE) composer test-ci

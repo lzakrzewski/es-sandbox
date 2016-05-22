@@ -1,7 +1,5 @@
 <?php
 
-declare (strict_types = 1);
-
 namespace EsSandbox\Bundle\AppBundle\Command;
 
 use EsSandbox\Basket\Application\Projection\BasketProjection;

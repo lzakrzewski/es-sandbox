@@ -8,12 +8,19 @@ ifeq (mysql, $(firstword $(MAKECMDGOALS)))
 endif
 
 setup-mysql: \
-	tear-down-mysql
+	tear-down-mysql \
+	run-mysql \
+	create-user-mysql
+
+run-mysql:
 	@docker run --name $(MYSQL_IMAGE) -e MYSQL_ROOT_PASSWORD=changeit -i -d -p $(MYSQL_EXPOSED_PORT):$(MYSQL_CONTAINER_PORT) mysql:5.7
 
 tear-down-mysql:
 	-@docker kill $(MYSQL_IMAGE) > /dev/null
 	-@docker rm $(MYSQL_IMAGE) > /dev/null
 
+create-user-mysql:
+	@docker exec -i $(MYSQL_IMAGE) $(BASH_BIN) -c '$(CREATE_USER)'
+
 mysql:
-	@docker exec -it $(MYSQL_IMAGE) $(BASH_BIN) -c '$(ARGV)'
+	@docker exec -it -u $(USER_ID) $(MYSQL_IMAGE) $(BASH_BIN) -c '$(ARGV)'

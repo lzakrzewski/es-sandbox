@@ -5,10 +5,13 @@ ifeq (php, $(firstword $(MAKECMDGOALS)))
   $(eval $(ARGV):;@:)
 endif
 
+PHP_DOCKER_EXEC = @docker exec -u $(USER_ID) -i $(PHP_IMAGE)
+
 setup-php: \
 	tear-down-php \
 	build-php \
 	run-php \
+	create-user-php \
 	install-composer-deps \
 
 tear-down-php:
@@ -30,24 +33,27 @@ run-php:
                 $(BASH_BIN)
 
 wait-for-mysql:
-	docker exec -i $(PHP_IMAGE) ./build/build-scripts/wait-for-mysql.sh
+	$(PHP_DOCKER_EXEC) ./build/build-scripts/wait-for-mysql.sh
 
 setup-database-dev: \
     wait-for-mysql
-	@docker exec -i $(PHP_IMAGE) composer setup-database-dev
+	$(PHP_DOCKER_EXEC) composer setup-database-dev
 
 setup-database-test: \
     wait-for-mysql
-	@docker exec -i $(PHP_IMAGE) composer setup-database-dev
+	$(PHP_DOCKER_EXEC) composer setup-database-dev
 
 install-composer-deps:
-	@docker exec -i $(PHP_IMAGE) composer install -n
+	$(PHP_DOCKER_EXEC) composer install -n
 
 clear-cache-test:
-	@docker exec -i $(PHP_IMAGE) composer cache-clear-test
+	$(PHP_DOCKER_EXEC) composer cache-clear-test
 
 clear-cache-dev:
-	@docker exec -i $(PHP_IMAGE) composer cache-clear-dev
+	$(PHP_DOCKER_EXEC) composer cache-clear-dev
+
+create-user-php:
+	@docker exec -i $(PHP_IMAGE) $(BASH_BIN) -c '$(CREATE_USER)'
 
 php:
-	@docker exec -it $(PHP_IMAGE) $(BASH_BIN) -c '$(ARGV)'
+	@docker exec -u $(USER_ID) -it $(PHP_IMAGE) $(BASH_BIN) -c '$(ARGV)'

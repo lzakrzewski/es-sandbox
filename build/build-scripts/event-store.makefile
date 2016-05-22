@@ -8,12 +8,19 @@ ifeq (event-store, $(firstword $(MAKECMDGOALS)))
 endif
 
 setup-event-store: \
-	tear-down-event-store
-	@docker run --name $(EVENT_STORE_IMAGE) -d -p $(EVENT_STORE_EXPOSED_PORT):$(EVENT_STORE_CONTAINER_PORT) adbrowne/eventstore
+	tear-down-event-store \
+	run-event-store \
+	create-user-event-store \
 
 tear-down-event-store:
 	-@docker kill $(EVENT_STORE_IMAGE) > /dev/null
 	-@docker rm $(EVENT_STORE_IMAGE) > /dev/null
 
+run-event-store:
+	@docker run --name $(EVENT_STORE_IMAGE) -d -p $(EVENT_STORE_EXPOSED_PORT):$(EVENT_STORE_CONTAINER_PORT) adbrowne/eventstore
+
+create-user-event-store:
+	@docker exec -i $(EVENT_STORE_IMAGE) $(BASH_BIN) -c '$(CREATE_USER)'
+
 event-store:
-	@docker exec -it $(EVENT_STORE_IMAGE) $(BASH_BIN) -c '$(ARGV)'
+	@docker exec -it -u $(USER_ID) $(EVENT_STORE_IMAGE) $(BASH_BIN) -c '$(ARGV)'

@@ -1,8 +1,12 @@
 services:
   - docker
 
+env:
+  - PHP_VERSION=5.6
+  - PHP_VERSION=7
+
 before_install:
-  - make setup-es-sandbox-test
+  - make setup-es-sandbox-test $PHP_VERSION
 
 script:
   - make test-ci

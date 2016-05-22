@@ -1,4 +1,10 @@
-PHP_IMAGE              = php7
+PHP_IMAGE = php
+
+ifeq ($(PHP_VERSION), 5.6)
+    PHP_DOCKER_DIR = build/docker/php5.6
+else
+	PHP_DOCKER_DIR = build/docker/php7
+endif
 
 ifeq (php, $(firstword $(MAKECMDGOALS)))
 	ARGV := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
@@ -13,12 +19,16 @@ setup-php: \
 	run-php \
 	create-user-php \
 	install-composer-deps \
+	show-php-img2 \
+
+show-php-img2:
+	@echo $(PHP_IMAGE)
 
 tear-down-php:
 	-@docker rm -f $(PHP_IMAGE) > /dev/null
 
 build-php:
-	@docker build -t $(PHP_IMAGE) build/docker/php
+	@docker build -t $(PHP_IMAGE) $(PHP_DOCKER_DIR)
 
 run-php:
 	@docker run \

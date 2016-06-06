@@ -17,3 +17,5 @@ If basket id is `91e65f32-4fd6-4527-8995-8d76fbbe52a0` which is also name of str
 then you should be able to view your stream on [http://127.0.0.1:2113/web/index.html#/streams/91e65f32-4fd6-4527-8995-8d76fbbe52a0](http://127.0.0.1:2113/web/index.html#/streams/91e65f32-4fd6-4527-8995-8d76fbbe52a0)
 
 More about writing streams: [http://docs.geteventstore.com/http-api/3.6.0/writing-to-a-stream/](http://docs.geteventstore.com/http-api/3.6.0/writing-to-a-stream/)
+
+Todo: separate info about EventStoreUI and missing info about randomize

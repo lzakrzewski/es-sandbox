@@ -6,7 +6,10 @@ use EsSandbox\Basket\Model\BasketWasPickedUp;
 use EsSandbox\Basket\Model\ProductWasAddedToBasket;
 use EsSandbox\Basket\Model\ProductWasRemovedFromBasket;
 use EsSandbox\Common\Model\AggregateHistory;
+use EsSandbox\Common\Model\Event;
 use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Helper\TableCell;
+use Symfony\Component\Console\Helper\TableSeparator;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class BasketHistoryRenderer
@@ -17,10 +20,6 @@ class BasketHistoryRenderer
      */
     public function render(OutputInterface $output, AggregateHistory $events)
     {
-        $output->writeln('Facts about your basket:');
-
-        $table = new Table($output);
-
         if ($this->hasNotBeenPickedUp($events)) {
             $output->writeln('Your basket has not been picked up.');
 
@@ -33,22 +32,7 @@ class BasketHistoryRenderer
             return;
         }
 
-        foreach ($events as $event) {
-            if ($event instanceof BasketWasPickedUp) {
-                $table->addRow(['Basket with id: ', (string) $event->id(), 'was <info>picked up</info>.']);
-            }
-
-            if ($event instanceof ProductWasAddedToBasket) {
-                $table->addRow(['Product with id: ', (string) $event->productId(), 'was <info>added</info> to basket.']);
-            }
-
-            if ($event instanceof ProductWasRemovedFromBasket) {
-                $table->addRow(['Product with id: ', (string) $event->productId(), 'was <comment>removed</comment> from basket.']);
-            }
-        }
-
-        $table->setStyle('borderless');
-        $table->render();
+        $this->renderHistory($output, $events);
     }
 
     private function hasNotBeenPickedUp(AggregateHistory $events)
@@ -59,5 +43,54 @@ class BasketHistoryRenderer
     private function isEmpty(AggregateHistory $events)
     {
         return 1 === $events->count() && $events[0] instanceof BasketWasPickedUp;
+    }
+
+    private function renderHistory(OutputInterface $output, AggregateHistory $events)
+    {
+        $output->writeln('History of events recorded on your basket:');
+
+        $table = new Table($output);
+        $table->setHeaders(['eventType', 'payload']);
+
+        foreach ($events as $key => $event) {
+            $table->addRow([$this->renderType($event), $this->renderPayload($event)]);
+            if ($key < count($events) - 1) {
+                $table->addRow([new TableSeparator(['colspan' => 2])]);
+            }
+        }
+
+        $table->render();
+    }
+
+    private function renderType(Event $event)
+    {
+        $type = $event->type();
+
+        if ($event instanceof ProductWasAddedToBasket) {
+            return '<info>'.$type.'</info>';
+        }
+
+        if ($event instanceof ProductWasRemovedFromBasket) {
+            return '<comment>'.$type.'</comment>';
+        }
+
+        return $type;
+    }
+
+    private function renderPayload(Event $event)
+    {
+        $basketId = $event->id()->toString();
+        $content  = 'basketId:  '.$basketId."\n";
+
+        if ($event instanceof ProductWasAddedToBasket) {
+            $content .= 'productId: '.$event->productId()->toString()."\n";
+            $content .= 'name:      '.$event->name();
+        }
+
+        if ($event instanceof ProductWasRemovedFromBasket) {
+            $content .= 'productId: '.$event->productId()->toString()."\n";
+        }
+
+        return new TableCell($content);
     }
 }

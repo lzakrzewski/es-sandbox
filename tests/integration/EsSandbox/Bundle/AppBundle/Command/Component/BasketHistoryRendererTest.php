@@ -32,11 +32,11 @@ class BasketHistoryRendererTest extends RendererTestCase
 
         $this->renderer->render($this->output(), $history);
 
-        $this->assertThatDisplayContains('picked up');
+        $this->assertThatDisplayContains('BasketWasPickedUp');
         $this->assertThatDisplayContains((string) $productId1);
-        $this->assertThatDisplayContains('added');
+        $this->assertThatDisplayContains('ProductWasAddedToBasket');
         $this->assertThatDisplayContains((string) $productId2);
-        $this->assertThatDisplayContains('removed');
+        $this->assertThatDisplayContains('ProductWasRemovedFromBasket');
     }
 
     /** @test */

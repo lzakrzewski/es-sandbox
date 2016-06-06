@@ -184,7 +184,7 @@ final class Basket implements EventSourcedAggregate
 ```
 
 ## Domain events
-| Event name                  | Payload                   |
+| Event type                  | Payload                   |
 | ----------------------------|---------------------------| 
 | BasketWasPickedUp           | basketId                  | 
 | ProductWasAddedToBasket     | basketId, productId, name |

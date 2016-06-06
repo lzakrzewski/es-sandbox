@@ -21,8 +21,8 @@ class SimulateShoppingCommand extends ConsoleCommand
     {
         $this
             ->setName('es_sandbox:basket:simulate-shopping')
-            ->addArgument('basketId', InputArgument::OPTIONAL, 'Id of basket')
             ->addArgument('limit', InputArgument::OPTIONAL, 'Limit of products')
+            ->addArgument('basketId', InputArgument::OPTIONAL, 'Id of basket')
             ->setDescription('Shopping simulation');
     }
 

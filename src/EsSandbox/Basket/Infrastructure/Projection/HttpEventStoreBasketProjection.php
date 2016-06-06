@@ -5,30 +5,20 @@ namespace EsSandbox\Basket\Infrastructure\Projection;
 use EsSandbox\Basket\Application\Projection\BasketProjection;
 use EsSandbox\Basket\Application\Projection\BasketView;
 use EsSandbox\Basket\Application\Projection\ProductView;
-use GuzzleHttp\Client;
+use HttpEventStore\Projection as EventStoreProjectionClient;
 use Ramsey\Uuid\UuidInterface;
 
 class HttpEventStoreBasketProjection implements BasketProjection
 {
-    /** @var Client */
+    /** @var EventStoreProjectionClient */
     private $client;
 
-    /** @var string */
-    private $uri;
-
-    /** @var array */
-    private $auth;
-
     /**
-     * @param Client $client
-     * @param string $uri
-     * @param array  $auth
+     * @param EventStoreProjectionClient $client
      */
-    public function __construct(Client $client, $uri, array $auth)
+    public function __construct(EventStoreProjectionClient $client)
     {
         $this->client = $client;
-        $this->uri    = $uri;
-        $this->auth   = $auth;
     }
 
     /** {@inheritdoc} */
@@ -36,18 +26,9 @@ class HttpEventStoreBasketProjection implements BasketProjection
     {
         $this->createProjection($basketId);
 
-        $response = $this->client
-            ->request(
-                'GET',
-                sprintf('%s/projection/%s/result', $this->uri, $this->projectionName($basketId)),
-                [
-                    'headers' => [
-                        'Accept' => ['application/json'],
-                    ],
-                ]
-            );
-
-        $result = (array) json_decode($response->getBody()->getContents(), true);
+        $result = $this
+            ->client
+            ->readProjection($this->projectionName($basketId));
 
         if (empty($result)) {
             return;
@@ -58,20 +39,15 @@ class HttpEventStoreBasketProjection implements BasketProjection
 
     private function createProjection(UuidInterface $basketId)
     {
-        $this->client->request(
-            'POST',
-            sprintf('%s/projections/onetime?name=%s&enabled=yes', $this->uri, $this->projectionName($basketId)),
-            [
-                'headers' => [
-                    'Content-Type' => ['application/json'],
-                ],
-                'body' => $this->projectionFunc($basketId),
-                'auth' => ['admin', 'changeit'],
-            ]
-        );
+        $this
+            ->client
+            ->createProjection(
+                $this->projectionName($basketId),
+                $this->projectionQuery($basketId)
+            );
     }
 
-    private function projectionFunc(UuidInterface $basketId)
+    private function projectionQuery(UuidInterface $basketId)
     {
         $name = $this->streamName($basketId);
 

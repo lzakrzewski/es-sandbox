@@ -2,9 +2,10 @@
 
 namespace EsSandbox\Common\Model;
 
+use HttpEventStore\WritableToStream;
 use Ramsey\Uuid\UuidInterface;
 
-interface Event
+interface Event extends WritableToStream
 {
     /**
      * @return UuidInterface
@@ -12,14 +13,19 @@ interface Event
     public function id();
 
     /**
-     * @return array
+     * @return string
      */
-    public function toArray();
+    public function type();
 
     /**
-     * @param array $contents
+     * @return array
+     */
+    public function data();
+
+    /**
+     * @param array $data
      *
      * @return Event
      */
-    public static function fromArray(array $contents);
+    public static function fromData(array $data);
 }

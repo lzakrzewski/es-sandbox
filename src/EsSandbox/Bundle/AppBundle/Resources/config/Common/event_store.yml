@@ -1,9 +1,30 @@
 services:
+    guzzle_http.client:
+        class: GuzzleHttp\Client
+
+    lzakrzewski.http_client:
+        class: HttpEventStore\Http\HttpClient
+        arguments:
+            - "@guzzle_http.client"
+            - "%es_sandbox.event_store.host%"
+            - "%es_sandbox.event_store.port%"
+            - "%es_sandbox.event_store.user%"
+            - "%es_sandbox.event_store.password%"
+
+    lzakrzewski.http_event_store:
+        class: HttpEventStore\Http\HttpEventStore
+        arguments:
+            - "@lzakrzewski.http_client"
+
+    lzakrzewski.http_projection:
+        class: HttpEventStore\Http\HttpProjection
+        arguments:
+            - "@lzakrzewski.http_client"
+
     es_sandbox.event_store: "@es_sandbox.event_store.http"
 
     es_sandbox.event_store.http:
         class: EsSandbox\Common\Infrastructure\EventStore\HttpEventStore
         arguments:
-            - "@guzzle_http.client"
+            - "@lzakrzewski.http_event_store"
             - "@es_sandbox.short_name_to_fqn"
-            - "%es_sandbox.event_store.uri%"

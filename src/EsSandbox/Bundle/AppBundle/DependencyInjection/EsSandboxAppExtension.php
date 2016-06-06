@@ -14,7 +14,6 @@ class EsSandboxAppExtension extends Extension
     {
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('command_components.yml');
-        $loader->load('guzzle_http.yml');
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config/Common'));
         $loader->load('command_bus.yml');
@@ -28,24 +27,15 @@ class EsSandboxAppExtension extends Extension
         $configuration = new Configuration();
         $config        = $this->processConfiguration($configuration, $config);
 
-        $container->setParameter('es_sandbox.event_store.uri', $this->uri($config));
-        $container->setParameter('es_sandbox.event_store.auth', $this->auth($config));
-        $container->setParameter('es_sandbox.basket.projector.is_enabled', $config['basket']['projector']['is_enabled']);
+        $container->setParameter('es_sandbox.event_store.host', $config['event_store_host']);
+        $container->setParameter('es_sandbox.event_store.port', $config['event_store_port']);
+        $container->setParameter('es_sandbox.event_store.user', $config['event_store_user']);
+        $container->setParameter('es_sandbox.event_store.password', $config['event_store_password']);
     }
 
     /** {@inheritdoc} */
     public function getAlias()
     {
         return 'es_sandbox';
-    }
-
-    private function uri(array $config)
-    {
-        return sprintf('%s:%s', $config['event_store_host'], $config['event_store_port']);
-    }
-
-    private function auth(array $config)
-    {
-        return [$config['event_store_user'], $config['event_store_password']];
     }
 }

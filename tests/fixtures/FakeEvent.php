@@ -3,11 +3,14 @@
 namespace tests\fixtures;
 
 use EsSandbox\Common\Model\Event;
+use EsSandbox\Common\Model\EventWithShortNameAsType;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 final class FakeEvent implements Event
 {
+    use EventWithShortNameAsType;
+
     /** @var UuidInterface */
     private $id;
 
@@ -26,14 +29,14 @@ final class FakeEvent implements Event
     }
 
     /** {@inheritdoc} */
-    public function toArray()
+    public function data()
     {
         return ['id' => (string) $this->id];
     }
 
     /** {@inheritdoc} */
-    public static function fromArray(array $contents)
+    public static function fromData(array $data)
     {
-        return new self(Uuid::fromString($contents['id']));
+        return new self(Uuid::fromString($data['id']));
     }
 }

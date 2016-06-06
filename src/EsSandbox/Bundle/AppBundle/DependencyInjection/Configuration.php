@@ -26,8 +26,8 @@ class Configuration implements ConfigurationInterface
             ->children()
                 ->scalarNode('event_store_host')->isRequired()->end()
                 ->scalarNode('event_store_port')->isRequired()->end()
-                ->scalarNode('event_store_user')->defaultValue('default')->end()
-                ->scalarNode('event_store_password')->defaultValue('default')->end()
+                ->scalarNode('event_store_user')->isRequired()->end()
+                ->scalarNode('event_store_password')->isRequired()->end()
             ->end()
         ;
     }

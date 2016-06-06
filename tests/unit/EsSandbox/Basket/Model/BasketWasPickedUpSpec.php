@@ -11,12 +11,36 @@ use Ramsey\Uuid\Uuid;
  */
 class BasketWasPickedUpSpec extends ObjectBehavior
 {
-    public function it_can_be_string()
+    public function it_has_id()
     {
-        $this->beConstructedWith(Uuid::fromString('44f80bab-a9eb-447a-bea9-4611d09a6bd1'));
+        $this->beConstructedWith(
+            Uuid::fromString('44f80bab-a9eb-447a-bea9-4611d09a6bd1')
+        );
 
         $this
-            ->toArray()
+            ->id()
+            ->shouldBeLike(Uuid::fromString('44f80bab-a9eb-447a-bea9-4611d09a6bd1'));
+    }
+
+    public function it_has_type()
+    {
+        $this->beConstructedWith(
+            Uuid::fromString('44f80bab-a9eb-447a-bea9-4611d09a6bd1')
+        );
+
+        $this
+            ->type()
+            ->shouldBe('BasketWasPickedUp');
+    }
+
+    public function it_has_data()
+    {
+        $this->beConstructedWith(
+            Uuid::fromString('44f80bab-a9eb-447a-bea9-4611d09a6bd1')
+        );
+
+        $this
+            ->data()
             ->shouldBe(
                 [
                     'basketId' => '44f80bab-a9eb-447a-bea9-4611d09a6bd1',
@@ -24,10 +48,10 @@ class BasketWasPickedUpSpec extends ObjectBehavior
             );
     }
 
-    public function it_can_be_created_from_string()
+    public function it_can_be_created_from_data()
     {
         $this->beConstructedThrough(
-            'fromArray',
+            'fromData',
             [
                 [
                     'basketId' => '44f80bab-a9eb-447a-bea9-4611d09a6bd1',

@@ -6,32 +6,26 @@ use EsSandbox\Common\Infrastructure\EventStore\Mapper\ShortNameToFQN;
 use EsSandbox\Common\Model\AggregateHistory;
 use EsSandbox\Common\Model\Event;
 use EsSandbox\Common\Model\EventStore;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
-use Ramsey\Uuid\Uuid;
+use HttpEventStore\EventStore as EventStoreClient;
+use HttpEventStore\Exception\StreamDoesNotExist;
 use Ramsey\Uuid\UuidInterface;
 
 class HttpEventStore implements EventStore
 {
-    /** @var Client */
+    /** @var EventStoreClient */
     private $client;
 
     /** @var ShortNameToFQN */
     private $mapper;
 
-    /** @var string */
-    private $uri;
-
     /**
-     * @param Client         $client
-     * @param ShortNameToFQN $mapper
-     * @param string         $uri
+     * @param EventStoreClient $client
+     * @param ShortNameToFQN   $mapper
      */
-    public function __construct(Client $client, ShortNameToFQN $mapper, $uri)
+    public function __construct(EventStoreClient $client, ShortNameToFQN $mapper)
     {
         $this->client = $client;
         $this->mapper = $mapper;
-        $this->uri    = $uri;
     }
 
     /** {@inheritdoc} */
@@ -41,105 +35,24 @@ class HttpEventStore implements EventStore
             return;
         }
 
-        foreach ($this->segregateEventsByStreamId($events) as $streamId => $stream) {
-            $this->writeStream(
-                $this->streamUri(Uuid::fromString($streamId)),
-                $this->serialize($stream)
-            );
+        foreach ($this->segregateEventsByStreamId($events) as $streamId => $streamEvents) {
+            $this->client->writeStream($streamId, $streamEvents);
         }
     }
 
     /** {@inheritdoc} */
     public function aggregateHistoryFor(UuidInterface $id)
     {
-        $data   = $this->readStream($this->streamUri($id));
-        $events = [];
-
-        if (empty($data) || !isset($data['entries'])) {
+        try {
+            $eventStoreEvents = $this->client->readStream($this->streamId($id));
+        } catch (StreamDoesNotExist $e) {
             return AggregateHistory::of([]);
         }
 
-        foreach (array_reverse($data['entries']) as $eventData) {
-            $contents = $this->readEvent($eventData['id']);
-            $events[] = $this->unserialize($eventData['summary'], $contents);
-        }
-
-        return AggregateHistory::of($events);
+        return AggregateHistory::of($this->mapToDomainEvents($eventStoreEvents));
     }
 
-    private function writeStream($streamUri, $content)
-    {
-        $this->client->request('POST', $streamUri, [
-            'headers' => ['Content-Type' => ['application/vnd.eventstore.events+json']],
-            'body'    => $content,
-        ]);
-    }
-
-    private function streamUri(UuidInterface $id)
-    {
-        $streamName = $this->streamName($id);
-
-        return sprintf('%s/streams/%s', $this->uri, $streamName, $id);
-    }
-
-    private function serialize(array $events)
-    {
-        $data = [];
-
-        foreach ($events as $event) {
-            $reflection = new \ReflectionClass($event);
-            $data[]     = [
-                'eventId'   => Uuid::uuid4()->toString(),
-                'eventType' => $reflection->getShortName(),
-                'data'      => $event->toArray(),
-            ];
-        }
-
-        return json_encode($data);
-    }
-
-    private function readStream($streamUri)
-    {
-        try {
-            $response = $this->client->request('GET', $streamUri, [
-                'headers' => ['Accept' => ['application/vnd.eventstore.events+json']],
-            ]);
-
-            return json_decode($response->getBody()->getContents(), true);
-        } catch (RequestException $e) {
-            return [];
-        }
-    }
-
-    private function readEvent($eventUri)
-    {
-        $response = $this->client
-            ->request(
-                'GET',
-                $eventUri,
-                [
-                    'headers' => [
-                        'Accept' => ['application/json'],
-                    ],
-                ]
-            );
-
-        return $response->getBody()->getContents();
-    }
-
-    private function unserialize($class, $contents)
-    {
-        $fqn = $this->mapper->get($class);
-
-        return $fqn::fromArray($this->clear($contents));
-    }
-
-    private function clear($contents)
-    {
-        return (array) json_decode($contents, true);
-    }
-
-    private function streamName(UuidInterface $id)
+    private function streamId(UuidInterface $id)
     {
         return $id->toString();
     }
@@ -161,5 +74,17 @@ class HttpEventStore implements EventStore
         }
 
         return $streams;
+    }
+
+    private function mapToDomainEvents(array $eventStoreEvents)
+    {
+        $domainEvents = [];
+
+        foreach ($eventStoreEvents as $eventStoreEvent) {
+            $fqn            = $this->mapper->get($eventStoreEvent->type());
+            $domainEvents[] = $fqn::fromData($eventStoreEvent->data());
+        }
+
+        return $domainEvents;
     }
 }

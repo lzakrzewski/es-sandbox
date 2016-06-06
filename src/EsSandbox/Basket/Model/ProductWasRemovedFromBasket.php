@@ -3,11 +3,14 @@
 namespace EsSandbox\Basket\Model;
 
 use EsSandbox\Common\Model\Event;
+use EsSandbox\Common\Model\EventWithShortNameAsType;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 final class ProductWasRemovedFromBasket implements Event
 {
+    use EventWithShortNameAsType;
+
     /** @var UuidInterface */
     private $basketId;
 
@@ -25,11 +28,11 @@ final class ProductWasRemovedFromBasket implements Event
     }
 
     /** {@inheritdoc} */
-    public static function fromArray(array $contents)
+    public static function fromData(array $data)
     {
         return new self(
-            Uuid::fromString($contents['basketId']),
-            Uuid::fromString($contents['productId'])
+            Uuid::fromString($data['basketId']),
+            Uuid::fromString($data['productId'])
         );
     }
 
@@ -50,7 +53,7 @@ final class ProductWasRemovedFromBasket implements Event
     }
 
     /** {@inheritdoc} */
-    public function toArray()
+    public function data()
     {
         return [
             'basketId'  => (string) $this->basketId,

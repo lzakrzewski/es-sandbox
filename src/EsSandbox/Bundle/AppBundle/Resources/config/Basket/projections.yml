@@ -16,6 +16,4 @@ services:
     es_sandbox.projection.basket.event_store:
         class: EsSandbox\Basket\Infrastructure\Projection\HttpEventStoreBasketProjection
         arguments:
-            - "@guzzle_http.client"
-            - "%es_sandbox.event_store.uri%"
-            - "%es_sandbox.event_store.auth%"
+            - "@lzakrzewski.http_projection"

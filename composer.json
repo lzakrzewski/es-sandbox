@@ -26,6 +26,7 @@
         "ramsey/uuid": "~3.0",
         "incenteev/composer-parameter-handler": "~2.0",
         "guzzlehttp/guzzle": "~6.0",
+        "lzakrzewski/http-event-store": "0.0.*",
 
         "symfony/symfony": "~3.0",
         "symfony/monolog-bundle": "~2.9",
@@ -116,5 +117,7 @@
                 "database_password": "MYSQL_ENV_MYSQL_ROOT_PASSWORD"
             }
         }
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }

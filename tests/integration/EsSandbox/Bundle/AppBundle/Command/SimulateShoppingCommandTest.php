@@ -31,8 +31,6 @@ class SimulateShoppingCommandTest extends CLITestCase
     /** @test */
     public function it_simulates_shopping_with_custom_limit()
     {
-        $this->markTestIncomplete();
-
         $this->executeCommand(new SimulateShoppingCommand(), ['limit' => 27]);
 
         $this->outputShouldStatusCodeIs(0);
@@ -41,8 +39,6 @@ class SimulateShoppingCommandTest extends CLITestCase
     /** @test */
     public function it_simulates_shopping_with_custom_basket_id()
     {
-        $this->markTestIncomplete();
-
         $basketId = Uuid::uuid4();
 
         $this->executeCommand(new SimulateShoppingCommand(), ['basketId' => (string) $basketId]);
@@ -51,7 +47,7 @@ class SimulateShoppingCommandTest extends CLITestCase
     }
 
     /** @test */
-    public function it_fails_when_unexpected_error_occures()
+    public function it_fails_when_limit_is_invalid()
     {
         $this->executeCommand(new SimulateShoppingCommand(), ['limit' => -1]);
 

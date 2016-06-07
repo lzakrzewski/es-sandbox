@@ -8,6 +8,7 @@ use EsSandbox\Basket\Model\ProductDoesNotExist;
 use EsSandbox\Basket\Model\ProductWasAddedToBasket;
 use EsSandbox\Basket\Model\ProductWasRemovedFromBasket;
 use EsSandbox\Common\Model\AggregateHistory;
+use EsSandbox\Common\Model\UnableToReconstitute;
 use PhpSpec\ObjectBehavior;
 use Ramsey\Uuid\Uuid;
 
@@ -139,6 +140,26 @@ class BasketSpec extends ObjectBehavior
         $this->id()->shouldBeLike($basketId);
         $this->count()->shouldBe(0);
         $this->uncommittedEvents()->shouldBeLike([]);
+    }
+
+    public function it_can_not_be_reconstitute_from_empty_history()
+    {
+        $this->given([]);
+
+        $this->shouldThrow(UnableToReconstitute::class)->duringInstantiation();
+    }
+
+    public function it_can_not_be_reconstitute_from_history_without_event_that_basket_was_picked_up()
+    {
+        $basketId  = Uuid::uuid4();
+        $productId = Uuid::uuid4();
+
+        $this->given([
+            new ProductWasAddedToBasket($basketId, $productId, 'Teapot'),
+            new ProductWasRemovedFromBasket($basketId, $productId),
+        ]);
+
+        $this->shouldThrow(UnableToReconstitute::class)->duringInstantiation();
     }
 
     private function given(array $events)

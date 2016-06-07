@@ -19,6 +19,8 @@ interface EventSourcedAggregate
     /**
      * @param AggregateHistory $history
      *
+     * @throws UnableToReconstitute
+     *
      * @return EventSourcedAggregate
      */
     public static function reconstituteFrom(AggregateHistory $history);

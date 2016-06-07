@@ -29,8 +29,6 @@ final class AddProductToBasketHandler implements CommandHandler
             $this->eventStore->aggregateHistoryFor($basketId)
         );
 
-        //var_dump($command);
-
         $basket->addProduct($command->productId, $command->name);
 
         $this->eventStore->commit($basket->uncommittedEvents());

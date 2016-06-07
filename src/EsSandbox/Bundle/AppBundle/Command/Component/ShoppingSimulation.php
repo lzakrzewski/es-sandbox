@@ -6,7 +6,6 @@ use Assert\Assertion;
 use EsSandbox\Basket\Application\Command\AddProductToBasket;
 use EsSandbox\Basket\Application\Command\PickUpBasket;
 use EsSandbox\Basket\Application\Command\RemoveProductFromBasket;
-use EsSandbox\Basket\Model\ProductWasAddedToBasket;
 use EsSandbox\Common\Application\CommandBus\Command;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -42,20 +41,33 @@ class ShoppingSimulation
             $this->commands[] = $this->addProduct($basketId);
         }
 
-        $this->applyRemoveProductCommands($basketId);
+        $this->applyRemoveProductCommands($basketId, $limit);
 
         return $this->commands;
     }
 
-    private function applyRemoveProductCommands(UuidInterface $basketId)
+    private function applyRemoveProductCommands(UuidInterface $basketId, $limit)
     {
+        $expectedCountOfRemovedProducts = (int) $limit * 0.3;
+        $removeProductCommandsIdx       = 0;
+
+        $commands = [];
+
         foreach ($this->commands as $key => $command) {
-            if ($command instanceof ProductWasAddedToBasket && $previousCommand = $this->commands[$key - 1] instanceof ProductWasAddedToBasket) {
-                if (!(bool) rand(0, 3)) {
-                    $this->commands[$key] = $this->removeProduct($basketId, $previousCommand->productId);
+            if (isset($this->commands[$key - 1]) && $command instanceof AddProductToBasket) {
+                $previousCommand = $this->commands[$key - 1];
+                if ($previousCommand instanceof AddProductToBasket) {
+                    ++$removeProductCommandsIdx;
+                    if ($removeProductCommandsIdx <= $expectedCountOfRemovedProducts) {
+                        $this->commands[$key] = $this->removeProduct($basketId, $previousCommand->productId);
+                        $commands[]           = $this->addProduct($basketId);
+                        $commands[]           = $this->addProduct($basketId);
+                    }
                 }
             }
         }
+
+        $this->commands = array_merge($this->commands, $commands);
     }
 
     private function randomProductName()

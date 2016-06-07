@@ -27,6 +27,17 @@ class ShoppingSimulationSpec extends ObjectBehavior
             ->shouldHaveProductsCount(10);
     }
 
+    public function it_has_30_percent_of_removing_product_commands()
+    {
+        $basketId = Uuid::uuid4();
+
+        $commands = $this->simulate($basketId, 10);
+
+        $commands->shouldHaveAddProductCommandsCount(13);
+        $commands->shouldHaveRemoveProductCommandsCount(3);
+        $commands->shouldHaveProductsCount(10);
+    }
+
     public function it_simulates_shopping_with_wide_limit()
     {
         $basketId = Uuid::uuid4();
@@ -55,7 +66,6 @@ class ShoppingSimulationSpec extends ObjectBehavior
     {
         return [
             'haveProductsCount' => function (array $commands, $expectedCount) {
-
                 $addProductCommands = array_filter($commands, function (Command $command) {
                     return $command instanceof AddProductToBasket;
                 });
@@ -65,6 +75,20 @@ class ShoppingSimulationSpec extends ObjectBehavior
                 });
 
                 return (count($addProductCommands) - count($removeProductCommands)) === $expectedCount;
+            },
+            'haveAddProductCommandsCount' => function (array $commands, $expectedCount) {
+                $addProductCommands = array_filter($commands, function (Command $command) {
+                    return $command instanceof AddProductToBasket;
+                });
+
+                return count($addProductCommands) === $expectedCount;
+            },
+            'haveRemoveProductCommandsCount' => function (array $commands, $expectedCount) {
+                $removeProductCommands = array_filter($commands, function (Command $command) {
+                    return $command instanceof RemoveProductFromBasket;
+                });
+
+                return count($removeProductCommands) === $expectedCount;
             },
         ];
     }

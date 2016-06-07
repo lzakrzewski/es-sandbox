@@ -17,9 +17,6 @@ class MysqlBasketProjectorTest extends DatabaseTestCase
     /** @var MessageBus */
     private $eventBus;
 
-    /** @var EntityManager */
-    private $entityManager;
-
     /** @test */
     public function it_applies_that_basket_was_picked_up()
     {
@@ -84,15 +81,13 @@ class MysqlBasketProjectorTest extends DatabaseTestCase
     {
         parent::setUp();
 
-        $this->eventBus      = $this->container()->get('event_bus');
-        $this->entityManager = $this->container()->get('doctrine.orm.default_entity_manager');
+        $this->eventBus = $this->container()->get('event_bus');
     }
 
     /** {@inheritdoc} */
     public function tearDown()
     {
-        $this->eventBus      = null;
-        $this->entityManager = null;
+        $this->eventBus = null;
 
         parent::tearDown();
     }

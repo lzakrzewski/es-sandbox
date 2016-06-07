@@ -2,7 +2,6 @@
 
 namespace tests\integration\EsSandbox\Basket\Infrastructure\Projection;
 
-use Doctrine\ORM\EntityManager;
 use EsSandbox\Basket\Application\Projection\BasketView;
 use EsSandbox\Basket\Application\Projection\ProductView;
 use EsSandbox\Basket\Infrastructure\Projection\MysqlBasketProjection;
@@ -16,9 +15,6 @@ class MysqlBasketProjectionTest extends DatabaseTestCase
 
     /** @var MysqlBasketProjection */
     private $projection;
-
-    /** @var EntityManager */
-    private $entityManager;
 
     /** @test */
     public function it_gets_basket_view()
@@ -81,27 +77,14 @@ class MysqlBasketProjectionTest extends DatabaseTestCase
     {
         parent::setUp();
 
-        $this->projection    = $this->container()->get('es_sandbox.projection.basket.mysql');
-        $this->entityManager = $this->container()->get('doctrine.orm.default_entity_manager');
+        $this->projection = $this->container()->get('es_sandbox.projection.basket.mysql');
     }
 
     /** {@inheritdoc} */
     protected function tearDown()
     {
-        $this->projection    = null;
-        $this->entityManager = null;
+        $this->projection = null;
 
         parent::tearDown();
-    }
-
-    private function add(BasketView $basketView)
-    {
-        $this->entityManager->persist($basketView);
-    }
-
-    private function flushAndClear()
-    {
-        $this->entityManager->flush();
-        $this->entityManager->clear();
     }
 }

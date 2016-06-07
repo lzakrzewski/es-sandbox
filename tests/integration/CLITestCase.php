@@ -46,5 +46,9 @@ abstract class CLITestCase extends IntegrationTestCase
     protected function given(array $events)
     {
         $this->container()->get('es_sandbox.event_store')->commit($events);
+
+        foreach ($events as $event) {
+            $this->container()->get('event_bus')->handle($event);
+        }
     }
 }

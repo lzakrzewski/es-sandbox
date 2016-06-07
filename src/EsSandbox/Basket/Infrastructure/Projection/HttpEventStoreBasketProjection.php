@@ -5,6 +5,7 @@ namespace EsSandbox\Basket\Infrastructure\Projection;
 use EsSandbox\Basket\Application\Projection\BasketProjection;
 use EsSandbox\Basket\Application\Projection\BasketView;
 use EsSandbox\Basket\Application\Projection\ProductView;
+use HttpEventStore\Exception\ProjectionAlreadyExist;
 use HttpEventStore\Projection as EventStoreProjectionClient;
 use Ramsey\Uuid\UuidInterface;
 
@@ -26,7 +27,7 @@ class HttpEventStoreBasketProjection implements BasketProjection
     {
         try {
             $this->createProjection($basketId);
-        } catch (\Exception $e) {
+        } catch (ProjectionAlreadyExist $e) {
         }
 
         $result = $this

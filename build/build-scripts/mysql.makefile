@@ -22,4 +22,4 @@ create-user-mysql:
 	@docker exec -i $(MYSQL_IMAGE) $(BASH_BIN) -c '$(CREATE_USER)'
 
 mysql:
-	@docker exec -it -u $(USER_ID) $(MYSQL_IMAGE) $(BASH_BIN) -c '$(ARGV)'
+	@docker exec -it -u $(USER_ID) $(MYSQL_IMAGE) $(BASH_BIN)

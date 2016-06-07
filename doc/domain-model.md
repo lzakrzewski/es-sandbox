@@ -41,6 +41,7 @@ namespace EsSandbox\Basket\Model;
 use EsSandbox\Common\Model\AggregateHistory;
 use EsSandbox\Common\Model\Event;
 use EsSandbox\Common\Model\EventSourcedAggregate;
+use EsSandbox\Common\Model\UnableToReconstitute;
 use Ramsey\Uuid\UuidInterface;
 
 final class Basket implements EventSourcedAggregate
@@ -118,6 +119,8 @@ final class Basket implements EventSourcedAggregate
     {
         $self = new self();
 
+        $self->validateHistory($history);
+
         foreach ($history as $event) {
             $reflection = new \ReflectionClass($event);
             $method     = 'apply'.$reflection->getShortName();
@@ -180,6 +183,20 @@ final class Basket implements EventSourcedAggregate
     {
         return isset($this->products[(string) $productId]);
     }
+
+    /** @SuppressWarnings(PHPMD.UnusedPrivateMethod) */
+    private function validateHistory(AggregateHistory $history)
+    {
+        if (0 === $history->count()) {
+            throw new UnableToReconstitute('Unable to reconstitute Basket aggregate without any events.');
+        }
+
+        if (!$history[0] instanceof BasketWasPickedUp) {
+            throw new UnableToReconstitute(
+                sprintf('Unable to reconstitute Basket aggregate without initial "%s" event.', BasketWasPickedUp::class)
+            );
+        }
+    }
 }
 ```
 
@@ -190,3 +207,7 @@ final class Basket implements EventSourcedAggregate
 | ProductWasAddedToBasket     | basketId, productId, name |
 | ProductWasRemovedFromBasket | basketId, productId       |
 
+## Commands of [CommandBus](http://simplebus.github.io/MessageBus/doc/command_bus.html)
+- `PickUpBasket`
+- `AddProductToBasket`
+- `RemoveProductFromBasket`

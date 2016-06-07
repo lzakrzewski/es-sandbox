@@ -65,7 +65,7 @@ create-user-php:
 	@docker exec -i $(PHP_IMAGE) $(BASH_BIN) -c '$(CREATE_USER)'
 
 php:
-	@docker exec -u $(USER_ID) -it $(PHP_IMAGE) $(BASH_BIN) -c '$(ARGV)'
+	@docker exec -u $(USER_ID) -it $(PHP_IMAGE) $(BASH_BIN)
 
 test:
 	$(PHP_DOCKER_EXEC) composer test

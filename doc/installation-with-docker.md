@@ -27,3 +27,20 @@ For ensure that necessary containers are running:
 ```
 docker ps
 ```
+
+## Connecting to Docker containers (necessary for executing `es-sandbox` CLI commands)
+```
+make php
+```
+
+or
+
+```
+make mysql
+```
+
+or
+
+```
+make event-store
+```

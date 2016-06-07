@@ -22,4 +22,4 @@ create-user-event-store:
 	@docker exec -i $(EVENT_STORE_IMAGE) $(BASH_BIN) -c '$(CREATE_USER)'
 
 event-store:
-	@docker exec -it -u $(USER_ID) $(EVENT_STORE_IMAGE) $(BASH_BIN) -c '$(ARGV)'
+	@docker exec -it -u $(USER_ID) $(EVENT_STORE_IMAGE) $(BASH_BIN)

@@ -27,4 +27,5 @@ services:
         class: EsSandbox\Common\Infrastructure\EventStore\HttpEventStore
         arguments:
             - "@lzakrzewski.http_event_store"
+            - "@simple_bus.event_bus.public_event_recorder"
             - "@es_sandbox.short_name_to_fqn"

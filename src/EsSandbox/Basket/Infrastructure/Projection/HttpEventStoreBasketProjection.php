@@ -24,7 +24,10 @@ class HttpEventStoreBasketProjection implements BasketProjection
     /** {@inheritdoc} */
     public function get(UuidInterface $basketId)
     {
-        $this->createProjection($basketId);
+        try {
+            $this->createProjection($basketId);
+        } catch (\Exception $e) {
+        }
 
         $result = $this
             ->client

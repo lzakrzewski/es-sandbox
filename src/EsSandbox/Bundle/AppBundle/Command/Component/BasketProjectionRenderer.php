@@ -26,7 +26,7 @@ class BasketProjectionRenderer
             return;
         }
 
-        $output->writeln('Your basket contains:');
+        $output->writeln(sprintf('Your basket with id <comment>%s</comment> contains:', $basketView->basketId));
 
         $table = new Table($output);
         $table

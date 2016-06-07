@@ -24,7 +24,7 @@ class BasketProjectionRendererTest extends RendererTestCase
 
         $this->renderer->render($this->output(), $basketView);
 
-        $this->assertThatDisplayContains('Your basket contains:');
+        $this->assertThatDisplayContains('Your basket with id basket-id contains:');
         $this->assertThatDisplayContains('product-id1');
         $this->assertThatDisplayContains('product-id2');
     }

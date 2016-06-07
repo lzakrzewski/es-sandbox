@@ -16,7 +16,7 @@ class RenderBasketProjectionCommand extends ConsoleCommand
     protected function configure()
     {
         $this
-            ->setName('es_sandbox:basket:render-basket-projection')
+            ->setName('es_sandbox:basket:render-projection')
             ->addArgument('basketId', InputArgument::OPTIONAL, 'Id of basket')
             ->addArgument('engine', InputArgument::OPTIONAL, 'Engine of projection (event-store/mysql).')
             ->setDescription('Renders basket projection');
@@ -57,6 +57,6 @@ class RenderBasketProjectionCommand extends ConsoleCommand
 
     private function lastBasketId()
     {
-        return $this->getContainer()->get('es_sandbox.projection.last_basket_id.mysql')->get();
+        return (null === $lastBasketId = $this->getContainer()->get('es_sandbox.projection.last_basket_id.mysql')->get()) ? Uuid::uuid4() : $lastBasketId;
     }
 }

@@ -9,23 +9,29 @@ use EsSandbox\Common\Model\EventStore;
 use HttpEventStore\EventStore as EventStoreClient;
 use HttpEventStore\Exception\StreamDoesNotExist;
 use Ramsey\Uuid\UuidInterface;
+use SimpleBus\Message\Recorder\RecordsMessages;
 
 class HttpEventStore implements EventStore
 {
     /** @var EventStoreClient */
     private $client;
 
+    /** @var RecordsMessages */
+    private $recorder;
+
     /** @var ShortNameToFQN */
     private $mapper;
 
     /**
      * @param EventStoreClient $client
+     * @param RecordsMessages  $recorder
      * @param ShortNameToFQN   $mapper
      */
-    public function __construct(EventStoreClient $client, ShortNameToFQN $mapper)
+    public function __construct(EventStoreClient $client, RecordsMessages $recorder, ShortNameToFQN $mapper)
     {
-        $this->client = $client;
-        $this->mapper = $mapper;
+        $this->client   = $client;
+        $this->recorder = $recorder;
+        $this->mapper   = $mapper;
     }
 
     /** {@inheritdoc} */
@@ -38,6 +44,8 @@ class HttpEventStore implements EventStore
         foreach ($this->segregateEventsByStreamId($events) as $streamId => $streamEvents) {
             $this->client->writeStream($streamId, $streamEvents);
         }
+
+        $this->recordMessages($events);
     }
 
     /** {@inheritdoc} */
@@ -86,5 +94,12 @@ class HttpEventStore implements EventStore
         }
 
         return $domainEvents;
+    }
+
+    private function recordMessages(array $events)
+    {
+        foreach ($events as $event) {
+            $this->recorder->record($event);
+        }
     }
 }

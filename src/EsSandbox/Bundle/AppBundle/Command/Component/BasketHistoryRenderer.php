@@ -47,7 +47,7 @@ class BasketHistoryRenderer
 
     private function renderHistory(OutputInterface $output, AggregateHistory $events)
     {
-        $output->writeln('History of events recorded on your basket:');
+        $output->writeln(sprintf('History of events recorded on your basket with id <comment>%s</comment>:', (string) $events[0]->id()));
 
         $table = new Table($output);
         $table->setHeaders(['eventType', 'payload']);

@@ -10,6 +10,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class RenderBasketProjectionCommand extends ConsoleCommand
 {
+    const ENGINE_MYSQL = 'mysql';
+
     /** {@inheritdoc} */
     protected function configure()
     {
@@ -26,24 +28,26 @@ class RenderBasketProjectionCommand extends ConsoleCommand
         try {
             $basketId = $this->basketId($input);
 
-            $this->renderProjection($output, $basketId);
+            $this->renderProjection($output, $input, $basketId);
         } catch (\Exception $e) {
             return $this->handleError($output, $e);
         }
     }
 
-    private function renderProjection(OutputInterface $output, UuidInterface $basketId)
+    private function renderProjection(OutputInterface $output, InputInterface $input, UuidInterface $basketId)
     {
-        $basketView = $this->projection()->get($basketId);
+        $basketView = $this->projection($input)->get($basketId);
 
         $this->getContainer()
             ->get('es_sandbox.bundle.command.component.basket_projection_renderer')
             ->render($output, $basketView);
     }
 
-    private function projection()
+    private function projection(InputInterface $input)
     {
-        return $this->getContainer()->get('es_sandbox.projection.basket.event_store');
+        return ($input->getArgument('engine') == self::ENGINE_MYSQL)
+            ? $this->getContainer()->get('es_sandbox.projection.basket.mysql')
+            : $this->getContainer()->get('es_sandbox.projection.basket.event_store');
     }
 
     private function basketId(InputInterface $input)

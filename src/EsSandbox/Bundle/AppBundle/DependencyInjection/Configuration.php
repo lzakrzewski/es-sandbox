@@ -15,7 +15,6 @@ class Configuration implements ConfigurationInterface
         $root        = $treeBuilder->root('es_sandbox');
 
         $this->applyEventStoreConfiguration($root);
-        $this->applyProjectionConfiguration($root);
 
         return $treeBuilder;
     }
@@ -28,25 +27,6 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('event_store_port')->isRequired()->end()
                 ->scalarNode('event_store_user')->isRequired()->end()
                 ->scalarNode('event_store_password')->isRequired()->end()
-            ->end()
-        ;
-    }
-
-    private function applyProjectionConfiguration(ArrayNodeDefinition $node)
-    {
-        $node
-            ->children()
-                ->arrayNode('basket')
-                    ->addDefaultsIfNotSet()
-                    ->children()
-                        ->arrayNode('projector')
-                        ->addDefaultsIfNotSet()
-                            ->children()
-                                ->scalarNode('is_enabled')->defaultTrue()->end()
-                            ->end()
-                        ->end()
-                    ->end()
-                ->end()
             ->end()
         ;
     }

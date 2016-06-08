@@ -14,13 +14,13 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class SimulateShoppingCommand extends ConsoleCommand
 {
-    const DEFAULT_LIMIT_OF_PRODUCTS = 10;
+    const DEFAULT_LIMIT_OF_PRODUCTS = 5;
 
     /** {@inheritdoc} */
     protected function configure()
     {
         $this
-            ->setName('es_sandbox:basket:simulate-shopping')
+            ->setName('simulate-shopping')
             ->addArgument('limit', InputArgument::OPTIONAL, 'Limit of products')
             ->addArgument('basketId', InputArgument::OPTIONAL, 'Id of basket')
             ->setDescription('Shopping simulation');

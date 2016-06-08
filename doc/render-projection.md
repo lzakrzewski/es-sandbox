@@ -1,25 +1,74 @@
 # Render projection - `CLI` entry point
 
 ```
-bin/console es_sandbox:basket:render-projection
+bin/console render-projection
 ```
 
-This `CLI` renders recorded events on [Basket](doc/domain-model.md#aggregate) aggregate.
+This `CLI` renders recorded events on [Basket](domain-model.md#aggregate) aggregate.
 
 Arguments:
 - `engine` (optional) engine of projection, this argument can be `event-store` or `mysql`. Default `event-store`
-- `basketId` (optional) id of basket. It can be manually provided and it should be valid `uuid4` string. See [Online UUID Generator](https://www.uuidgenerator.net/),
+- `basketId` (optional) id of basket. Default is id of basket from latest simulation. It can be manually provided and it should be valid `uuid4` string. See [Online UUID Generator](https://www.uuidgenerator.net/),
 
-## Projection engine
+## Projection engines
+- `event-store` Projection is rendering basing on events recorded in `EventStore`
+- `mysql` Projection is separate read model storied in `baskets` table. There is `MysqlBasketProjector` which applies to read model every event recorded on `Basket`. Switching between engines of projections allows to observe difference in performance.
+
 
 ## EventStore.UI
+There is possibility to view/modify projection using `EventStore.UI` [http://127.0.0.1:2113/web/index.html#/projections](http://127.0.0.1:2113/web/index.html#/projections)
+[Projections and Queries](http://docs.geteventstore.com/introduction/projections/)
 
-`basketId` is also name of `stream` in `EventStore`. 
-You can view this stream using `EventStore.UI`. Default auth is `admin:changeit`.
-Example: 
-If basket id is `91e65f32-4fd6-4527-8995-8d76fbbe52a0` which is also name of stream and you configured `EventStore` on `http://127.0.0.1:2113` 
-then you should be able to view your stream on [http://127.0.0.1:2113/web/index.html#/streams/91e65f32-4fd6-4527-8995-8d76fbbe52a0](http://127.0.0.1:2113/web/index.html#/streams/91e65f32-4fd6-4527-8995-8d76fbbe52a0)
+## Example
+![](render-projection.png)
 
-More about writing streams: [http://docs.geteventstore.com/http-api/3.6.0/writing-to-a-stream/](http://docs.geteventstore.com/http-api/3.6.0/writing-to-a-stream/)
+## Query
+```javascript
+fromStream("stream-id")
+    .when({
+        $init: function(state, event) {
+            return {
+                basket: {
+                    products: []
+                }
+            }
+        },
+        $any: function(state, event) {
+            if (event.eventType == "ProductWasAddedToBasket") {
+                return addProduct(event.body, state);
+            }
 
-## Examples
+            if (event.eventType == "ProductWasRemovedFromBasket") {
+                return removeProduct(event.body.productId, state);
+            }
+
+            return state;
+        }
+    });
+
+addProduct = function(product, state) {
+    state.basket.products.push({
+        name: product.name,
+        productId: product.productId
+    });
+
+    return state;
+}
+
+removeProduct = function(productIdToRemove, state) {
+    state.basket.products = function() {
+        var idx,
+            products = [];
+
+        for (idx in state.basket.products) {
+            if (state.basket.products[idx].productId !== productIdToRemove) {
+                products.push(state.basket.products[idx]);
+            }
+        }
+
+        return products;
+    }();
+
+    return state;
+}
+```

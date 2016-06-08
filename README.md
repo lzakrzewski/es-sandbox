@@ -32,7 +32,7 @@ There are two way-s to install `es-sandbox`:
 ## Usage
 This application has `CLI` entry points:
 
-1. [Shopping simulation (Recording and writing events to a Stream)](doc/shopping-simulation.md)
+1. [Simulate shopping (Recording and writing events to a Stream)](doc/simulate-shopping.md)
 2. [Render projection (Renders projection of recorded events)](doc/render-projection.md)
 
 In case when you installed `es-sandbox` with `Docker` then before executing of `CLI` command you should connect to `php` running container:
@@ -40,5 +40,7 @@ In case when you installed `es-sandbox` with `Docker` then before executing of `
 make php
 ```
 
-### Examples
- 
+## Examples
+![](doc/simulate-shopping.png)
+
+![](doc/render-projection.png)

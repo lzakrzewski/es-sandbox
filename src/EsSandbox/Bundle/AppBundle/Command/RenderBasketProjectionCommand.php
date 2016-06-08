@@ -16,7 +16,7 @@ class RenderBasketProjectionCommand extends ConsoleCommand
     protected function configure()
     {
         $this
-            ->setName('es_sandbox:basket:render-projection')
+            ->setName('render-projection')
             ->addArgument('basketId', InputArgument::OPTIONAL, 'Id of basket')
             ->addArgument('engine', InputArgument::OPTIONAL, 'Engine of projection (event-store/mysql).')
             ->setDescription('Renders basket projection');

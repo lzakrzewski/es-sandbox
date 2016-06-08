@@ -1,10 +1,10 @@
 # Shopping simulation - `CLI` entry point
 
 ```
-bin/console es_sandbox:basket:simulate-shopping
+bin/console simulate-shopping
 ```
 
-This `CLI` writes events to `EventStore`. Events are emitting by [Basket](doc/domain-model.md#aggregate) aggregate.
+This `CLI` writes events to `EventStore`. Events are emitting by [Basket](domain-model.md#aggregate) aggregate.
 
 Arguments:
 - `limit` (optional) limit of products in basket. Default 5
@@ -20,4 +20,5 @@ then you should be able to view your stream on [http://127.0.0.1:2113/web/index.
 
 More about writing streams: [http://docs.geteventstore.com/http-api/3.6.0/writing-to-a-stream/](http://docs.geteventstore.com/http-api/3.6.0/writing-to-a-stream/)
 
-## Examples
+## Example
+![](simulate-shopping1.png)

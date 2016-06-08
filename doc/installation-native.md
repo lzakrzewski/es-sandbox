@@ -11,7 +11,7 @@ Every components which are necessary to run `es-sandbox` could be installed nati
 ## Installation
 1. Clone repository:  
     ```
-    git@github.com:lzakrzewski/es-sandbox.git
+    git clone git@github.com:lzakrzewski/es-sandbox.git
     ```
 2. Go to project directory:  
     ```

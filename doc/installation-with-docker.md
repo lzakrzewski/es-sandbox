@@ -7,7 +7,7 @@
 ## Installation
 1. Clone repository:  
     ```
-    git@github.com:lzakrzewski/es-sandbox.git
+    git clone git@github.com:lzakrzewski/es-sandbox.git
     ```
 2. Go to project directory:  
     ```
@@ -27,6 +27,8 @@ For ensure that necessary containers are running:
 ```
 docker ps
 ```
+
+**Notice** Docker should be able to work without `sudo`
 
 ## Connecting to Docker containers (necessary for executing `es-sandbox` CLI commands)
 ```

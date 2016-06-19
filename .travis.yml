@@ -6,6 +6,8 @@ env:
   - PHP_VERSION=7
 
 before_install:
+  - sudo apt-get update
+  - sudo apt-get -o Dpkg::Options::="--force-confnew" install -y docker-engine
   - make setup-es-sandbox-test $PHP_VERSION
 
 script:

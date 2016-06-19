@@ -11,24 +11,19 @@ ifeq (php, $(firstword $(MAKECMDGOALS)))
   $(eval $(ARGV):;@:)
 endif
 
-PHP_DOCKER_EXEC = @docker exec -u $(USER_ID) -i $(PHP_IMAGE)
+PHP_DOCKER_EXEC = @docker exec -i $(PHP_IMAGE)
 
 setup-php: \
 	tear-down-php \
 	build-php \
 	run-php \
-	create-user-php \
 	install-composer-deps \
-	show-php-img2 \
-
-show-php-img2:
-	@echo $(PHP_IMAGE)
 
 tear-down-php:
 	-@docker rm -f $(PHP_IMAGE) > /dev/null
 
 build-php:
-	@docker build -t $(PHP_IMAGE) $(PHP_DOCKER_DIR)
+	docker build $(BUILD_ARGS) -t $(PHP_IMAGE) $(PHP_DOCKER_DIR)
 
 run-php:
 	@docker run \
@@ -61,11 +56,8 @@ clear-cache-test:
 clear-cache-dev:
 	$(PHP_DOCKER_EXEC) composer cache-clear-dev
 
-create-user-php:
-	@docker exec -i $(PHP_IMAGE) $(BASH_BIN) -c '$(CREATE_USER)'
-
 php:
-	@docker exec -u $(USER_ID) -it $(PHP_IMAGE) $(BASH_BIN)
+	@docker exec -it $(PHP_IMAGE) $(BASH_BIN)
 
 test:
 	$(PHP_DOCKER_EXEC) composer test

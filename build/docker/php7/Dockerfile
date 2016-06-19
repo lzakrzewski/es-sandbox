@@ -19,6 +19,15 @@ RUN mkdir --parent /usr/src/composer && \
     php -r "unlink('composer-setup.php');" &&\
     mv composer.phar /usr/bin/composer
 
+ARG UID
+ARG GID
+ARG UNAME
+
 WORKDIR /var/www/es-sandbox
+
+RUN groupadd -f -g ${GID} ${UNAME} && \
+    useradd -d /var/www/es-sandbox -m -u ${UID} -g ${UNAME} ${UNAME}
+
+USER ${UNAME}
 
 CMD ["php", "--version"]

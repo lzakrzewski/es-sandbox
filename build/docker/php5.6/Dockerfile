@@ -21,6 +21,15 @@ RUN mkdir --parent /usr/src/composer && \
 
 RUN echo date.timezone = "UTC" >> /usr/local/etc/php/php.ini
 
+ARG UID
+ARG GID
+ARG UNAME
+
 WORKDIR /var/www/es-sandbox
+
+RUN groupadd -f -g ${GID} ${UNAME} && \
+    useradd -d /var/www/es-sandbox -m -u ${UID} -g ${UNAME} ${UNAME}
+
+USER ${UNAME}
 
 CMD ["php", "--version"]

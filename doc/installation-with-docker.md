@@ -2,7 +2,7 @@
 
 ## Requirements
 - Make
-- [Docker](https://docs.docker.com/engine/installation/)
+- [Docker](https://docs.docker.com/engine/installation/) 1.9 or higher
 
 ## Installation
 1. Clone repository:  
